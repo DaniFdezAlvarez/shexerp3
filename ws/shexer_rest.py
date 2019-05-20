@@ -1,8 +1,8 @@
 import traceback
 from flask import Flask, request
 from flask_cors import CORS
-from dbshx.shaper import NT
-from dbshx.shaper import Shaper
+from shexer.shaper import NT
+from shexer.shaper import Shaper
 import json
 
 ################ CONFIG
