@@ -17,7 +17,7 @@ In case you are not planning to use the web service feature of this repo, you do
 
 Shexer itself can be installed using pip as well:
     
-    $ pip install rdflib
+    $ pip install shexer
 
 ## Features
 The user must provide a list of classes (URIs). The prototype will track all their instances, explore the triples in which they appear, and build with that information a profile of the each class.
