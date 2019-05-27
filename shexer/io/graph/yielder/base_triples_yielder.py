@@ -17,4 +17,4 @@ class BaseTriplesYielder(object):
             return FileLineReader(source_file=source_file)
 
     def yield_triples(self):
-        raise NotImplementedError("Implement this method in derivated classes")
+        raise NotImplementedError("Implement this method in derived classes")

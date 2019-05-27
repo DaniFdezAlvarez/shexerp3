@@ -1,6 +1,6 @@
 from shexer.consts import NT
 from shexer.utils.factories.triple_yielders_factory import get_triple_yielder
-from shexer.core.instance_tracker import InstanceTracker
+from shexer.core.instances.instance_tracker import InstanceTracker
 from shexer.utils.factories.iri_factory import create_IRIs_from_string_list
 from shexer.utils.uri import remove_corners
 
@@ -12,7 +12,9 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                          namespaces_to_ignore=None,
                          raw_graph=None,
                          all_classes_mode=False,
-                         namespaces_dict=None):
+                         namespaces_dict=None,
+                         url_input=None,
+                         list_of_url_input=None):
     """
     Here I am assuming a correct combination of params. We check that when building a Shaper.
     If you come to dig here, behave properly ;)
@@ -27,6 +29,9 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
     :param namespaces_to_ignore:
     :param raw_graph:
     :param all_classes_mode:
+    :param namespaces_dict:
+    :param url_input:
+    :param list_of_url_input:
     :return:
     """
     instance_yielder = None
@@ -35,14 +40,18 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                               input_format=input_format,
                                               namespaces_to_ignore=namespaces_to_ignore,
                                               raw_graph=raw_graph,
-                                              namespaces_dict=namespaces_dict)
+                                              namespaces_dict=namespaces_dict,
+                                              url_input=url_input,
+                                              list_of_url_input=list_of_url_input)
     else:
         instance_yielder = get_triple_yielder(source_file=graph_file_input,
                                               list_of_source_files=graph_list_of_files_input,
                                               input_format=input_format,
                                               namespaces_to_ignore=namespaces_to_ignore,
                                               raw_graph=raw_graph,
-                                              namespaces_dict=namespaces_dict)
+                                              namespaces_dict=namespaces_dict,
+                                              url_input=url_input,
+                                              list_of_url_input=list_of_url_input)
     model_classes = None
     if not all_classes_mode:
         list_of_str_target_classes = _tune_target_classes_if_needed(target_classes) if target_classes is not None else _read_target_classes_from_file(file_target_classes)

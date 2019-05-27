@@ -15,13 +15,22 @@ _XML_WRONG_URI = "http://www.w3.org/XML/1998/namespace"
 
 class RdflibTripleYielder(BaseTriplesYielder):
 
-    def __init__(self, input_format=TURTLE, source_file=None, namespaces_to_ignore=None, allow_untyped_numbers=False,
+    def __init__(self, input_format=TURTLE, source=None, namespaces_to_ignore=None, allow_untyped_numbers=False,
                  raw_graph=None, namespaces_dict=None):
-        super(RdflibTripleYielder, self).__init__()
+        """
+
+        :param input_format:
+        :param source: It can be local (a file path) or remote (an url to download some content)
+        :param namespaces_to_ignore:
+        :param allow_untyped_numbers:
+        :param raw_graph:
+        :param namespaces_dict:
+        """
+        super().__init__()
         self._check_input_format(input_format)
 
         self._input_format = input_format
-        self._source_file = source_file
+        self._source = source
         self._namespaces_to_ignore = namespaces_to_ignore
         self._allow_untyped_numbers = allow_untyped_numbers
         self._raw_graph = raw_graph
@@ -69,8 +78,8 @@ class RdflibTripleYielder(BaseTriplesYielder):
 
     def _get_tmp_graph(self):
         result = Graph()
-        if self._source_file is not None:
-            result.parse(source=self._source_file, format=self._input_format)
+        if self._source is not None:
+            result.parse(source=self._source, format=self._input_format)
         else:
             result.parse(data=self._raw_graph, format=self._input_format)
         return result
