@@ -1,6 +1,6 @@
 from shexer.consts import NT
 from shexer.utils.factories.triple_yielders_factory import get_triple_yielder
-from shexer.core.instance_tracker import InstanceTracker
+from shexer.core.instances.instance_tracker import InstanceTracker
 from shexer.utils.factories.iri_factory import create_IRIs_from_string_list
 from shexer.utils.uri import remove_corners
 
