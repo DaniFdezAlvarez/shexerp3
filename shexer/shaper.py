@@ -14,6 +14,7 @@ class Shaper(object):
                  input_format=NT, instances_file_input=None,
                  graph_file_input=None, graph_list_of_files_input=None,
                  raw_graph=None,
+                 url_input=None, list_of_url_input=None,
                  namespaces_dict=None, namespaces_dict_file=None,
                  instantiation_property=None,
                  namespaces_to_ignore=None,
@@ -42,7 +43,9 @@ class Shaper(object):
 
         check_just_one_not_none((graph_file_input, "graph_file_input"),
                                 (graph_list_of_files_input, "graph_list_of_files_input"),
-                                 (raw_graph, "raw_graph"))
+                                 (raw_graph, "raw_graph"),
+                                (url_input, "url_input"),
+                                (list_of_url_input, "list_of_url_input"))
 
         check_one_or_zero_not_none((namespaces_dict, "namespaces_dict"),
                                    (namespaces_dict_file, "namespaces_dict_file"))
@@ -60,6 +63,8 @@ class Shaper(object):
         self._instances_file_input = instances_file_input
         self._graph_file_input = graph_file_input
         self._graph_list_of_files_input = graph_list_of_files_input
+        self._url_input = url_input
+        self._list_of_url_input = list_of_url_input
         self._namespaces_dict = namespaces_dict
         self._namespaces_dict_file = namespaces_dict_file  # TODO Need to parse this
         self._instantiation_property = instantiation_property
@@ -149,7 +154,9 @@ class Shaper(object):
                                   namespaces_to_ignore=self._namespaces_to_ignore,
                                   infer_numeric_types_for_untyped_literals=self._infer_numeric_types_for_untyped_literals,
                                   raw_graph=self._raw_graph,
-                                  namespaces_dict=self._namespaces_dict)
+                                  namespaces_dict=self._namespaces_dict,
+                                  url_input=self._url_input,
+                                  list_of_url_input=self._list_of_url_input)
 
 
     def _build_instance_tracker(self):
@@ -162,7 +169,9 @@ class Shaper(object):
                                     instantiation_property=self._instantiation_property,
                                     raw_graph=self._raw_graph,
                                     all_classes_mode=self._all_classes_mode,
-                                    namespaces_dict=self._namespaces_dict)
+                                    namespaces_dict=self._namespaces_dict,
+                                    url_input=self._url_input,
+                                    list_of_url_input=self._list_of_url_input)
 
     def _build_class_shexer(self):
         return get_class_shexer(class_instances_target_dict=self._target_classes_dict,
