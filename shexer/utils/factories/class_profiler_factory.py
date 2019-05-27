@@ -5,14 +5,17 @@ from shexer.core.class_profiler import ClassProfiler
 def get_class_profiler(target_classes_dict, source_file, list_of_source_files, input_format,
                        instantiation_property_str, namespaces_to_ignore=None,
                        infer_numeric_types_for_untyped_literals=False,
-                       raw_graph=None, namespaces_dict=None):
+                       raw_graph=None, namespaces_dict=None,
+                       url_input=None, list_of_url_input=None):
     yielder = get_triple_yielder(source_file=source_file,
                                  list_of_source_files=list_of_source_files,
                                  input_format=input_format,
                                  namespaces_to_ignore=namespaces_to_ignore,
                                  raw_graph=raw_graph,
                                  allow_untyped_numbers=infer_numeric_types_for_untyped_literals,
-                                 namespaces_dict=namespaces_dict)
+                                 namespaces_dict=namespaces_dict,
+                                 url_input=url_input,
+                                 list_of_url_input=list_of_url_input)
 
     return ClassProfiler(triples_yielder=yielder,
                          target_classes_dict=target_classes_dict,
