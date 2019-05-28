@@ -55,6 +55,19 @@ def decide_literal_type(a_literal):
     else:
         raise RuntimeError("Unrecognized literal type:" + a_literal)
 
+def is_a_correc_uri(target_uri, prefix_namespace_dict):
+    """
+    TODO: Here I am assuming that there is no forbiden char ( " < > # % { } | \ ^ ~ [ ] ` )
+    :param target_uri:
+    :param prefix_namespace_dict:
+    :return:
+    """
+    if target_uri[0] == "<" and target_uri[-1] == ">":
+        return True
+    for a_prefix in prefix_namespace_dict:
+        if target_uri.startswith(a_prefix + ":"):
+            return True
+        return False
 
 
 def there_is_arroba_after_last_quotes(target_str):

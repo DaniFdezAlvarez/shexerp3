@@ -58,7 +58,7 @@ def _parse_target_classes(data, error_pool):
     if type(data[TARGET_CLASSES_PARAM]) != list:
         error_pool.append("You must provide a non-empty list of URIs (string) in " + TARGET_CLASSES_PARAM)
         return
-    if len(data[TARGET_CLASSES_PARAM]) == 0 or type(data[TARGET_CLASSES_PARAM][0]) != unicode:
+    if len(data[TARGET_CLASSES_PARAM]) == 0 or type(data[TARGET_CLASSES_PARAM][0]) != str:
         error_pool.append("You must provide a non-empty list of URIs (string) in " + TARGET_CLASSES_PARAM)
         return
     return [str(a_uri) for a_uri in data[TARGET_CLASSES_PARAM]]
@@ -68,7 +68,7 @@ def _parse_graph(data, error_pool):
     if TARGET_GRAPH_PARAM not in data:
         error_pool.append(_missing_param_error(TARGET_GRAPH_PARAM))
         return
-    if type(data[TARGET_GRAPH_PARAM]) != unicode:
+    if type(data[TARGET_GRAPH_PARAM]) != str:
         error_pool.append("You must provide a str containing an RDF graph ")
         return
     if len(data[TARGET_GRAPH_PARAM]) > MAX_LEN:
@@ -81,8 +81,8 @@ def _parse_graph(data, error_pool):
 def _parse_str_param(data, error_pool, key, default_value, opt_message=""):
     result = default_value
     if key in data:
-        if type(data[key]) == unicode:
-            result = str(data[key])
+        if type(data[key]) == str:
+            result = data[key]
         else:
             error_pool.append(key + " must be a str. " + opt_message)
             return
