@@ -1,14 +1,10 @@
 
-def _add_prefix(unprefixed_elem, prefix):
-    return prefix + ":" + unprefixed_elem
-
-
-
 XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema#"
 XSD_PREFIX = "xsd"
 
 RDF_SYNTAX_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 RDF_PREFIX = "rdf"
+RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 
 DT_NAMESPACE = "http://dbpedia.org/datatype/"
 DT_PREFIX = "dt"
@@ -21,6 +17,10 @@ FLOAT_TYPE = "http://www.w3.org/2001/XMLSchema#float"
 INTEGER_TYPE = "http://www.w3.org/2001/XMLSchema#int"
 
 
+def _add_prefix(unprefixed_elem, prefix):
+    return prefix + ":" + unprefixed_elem
+
+
 def remove_corners(a_uri, raise_error_if_no_corners=True):
     if a_uri.startswith("<") and a_uri.endswith(">"):
         return a_uri[1:-1]
@@ -30,6 +30,8 @@ def remove_corners(a_uri, raise_error_if_no_corners=True):
         return a_uri
 
 
+def add_corners(a_uri):
+    return "<" + a_uri + ">"
 
 
 def decide_literal_type(a_literal):
@@ -56,11 +58,26 @@ def decide_literal_type(a_literal):
         raise RuntimeError("Unrecognized literal type:" + a_literal)
 
 
+def is_a_correc_uri(target_uri, prefix_namespace_dict):
+    """
+    TODO: Here I am assuming that there is no forbiden char ( " < > # % { } | \ ^ ~ [ ] ` )
+    :param target_uri:
+    :param prefix_namespace_dict:
+    :return:
+    """
+    if target_uri[0] == "<" and target_uri[-1] == ">":
+        return True
+    for a_prefix in prefix_namespace_dict:
+        if target_uri.startswith(a_prefix + ":"):
+            return True
+        return False
+
 
 def there_is_arroba_after_last_quotes(target_str):
     if target_str.rfind("@") > target_str.rfind('"'):
         return True
     return False
+
 
 def parse_literal(an_elem):
     content = an_elem[1:an_elem.find('"', 1)]
