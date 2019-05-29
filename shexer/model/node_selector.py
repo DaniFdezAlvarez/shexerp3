@@ -12,6 +12,10 @@ class NodeSelector(object):
         """
         raise NotImplementedError()
 
+    @property
+    def raw_selector(self):
+        return self._raw_selector
+
 
 
 
@@ -30,4 +34,8 @@ class NodeSelectorSparql(NodeSelector):
     def __init__(self, raw_selector, sparql_query_selector):
         super().__init__(raw_selector)
         self._sparql_query_selector = sparql_query_selector
+
+    @property
+    def sparql_query_selector(self):
+        return self._sparql_query_selector
 

@@ -1,5 +1,5 @@
 from shexer.utils.dict import reverse_keys_and_values
-from shexer.utils.uri import remove_corners
+from shexer.utils.uri import remove_corners, add_corners, RDF_TYPE
 from shexer.model.node_selector import NodeSelectorNoSparql, NodeSelectorSparql
 from rdflib.plugins import sparql
 import re
@@ -50,10 +50,11 @@ class NodeSelectorParser(object):
         if len(pieces) != 3:
             self._focus_node_error(raw_selector)
         subject_for_query, focus_count = self._parse_subj_obj_focus_expression(pieces[0], 0)
-        predicate_for_query = self._parse_uri_focus_expression(pieces[0])
+        predicate_for_query = self._parse_uri_focus_expression(pieces[1])
         object_for_query, focus_count = self._parse_subj_obj_focus_expression(pieces[2], focus_count)
 
         if focus_count != 1:
+            print("Mirrameee mami")
             raise ValueError("The node selector must have exactly one FOCUS")
 
         query = self._turn_focus_exp_tokens_into_query(subject_for_query, predicate_for_query, object_for_query)
@@ -61,8 +62,9 @@ class NodeSelectorParser(object):
                                   sparql_query_selector=query)
 
     def _turn_focus_exp_tokens_into_query(self, subj, pred, obj):
-        string_query = "SELECT " + _FOCUS_VARIABLE + "WHERE {" + subj + " " + pred + " " + obj + " . }"
-        return sparql.prepareQuery(string_query)
+        string_query = "SELECT " + _FOCUS_VARIABLE + " WHERE {" + subj + " " + pred + " " + obj + " . }"
+        print(string_query)
+        return sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
 
     def _parse_subj_obj_focus_expression(self, token, focus_count):
         if token.lower() == _FOCUS_LOWER:
@@ -73,14 +75,16 @@ class NodeSelectorParser(object):
             return self._parse_uri_focus_expression(token), focus_count
 
     def _parse_uri_focus_expression(self, token):
-        if token.endswith(">"):
+        if token == "a":
+            return add_corners(RDF_TYPE)
+        elif token.endswith(">"):
             if token.startswith("<"):
                 return token
         else:
             for a_prefix in self._prefix_namespace_dict:
                 if token.startswith(a_prefix + ":"):
-                    return self._unprefix_uri(prefix=a_prefix,
-                                              uri=token)
+                    return add_corners(self._unprefix_uri(prefix=a_prefix,
+                                              uri=token))
         raise ValueError("URI not well formed or with an unknown prefix: " + token)
 
     def _unprefix_uri(self, prefix, uri):
@@ -93,18 +97,15 @@ class NodeSelectorParser(object):
             try:
                 return self._parse_single_variable_select_query(raw_string[1:-1])
             except BaseException as e:
-                e.message = "The SPARQL query of the next node selector is not well formed: " \
-                            + raw_selector + ". Cause: " + e.message
+                print(type(e.args))
+                raise ValueError("The SPARQL query of the next node selector is not well formed: " \
+                        + raw_selector + ". Cause: " + str(e))
         raise ValueError("The SPARQL query of the next node selector is not surrounded by quotes: " + raw_selector)
 
-    @staticmethod
-    def _focus_node_error(raw_selector):
-        raise ValueError("This focus node expression cant be parsed: " + raw_selector)
-
-    @staticmethod
-    def _parse_single_variable_select_query(string_query):
+    def _parse_single_variable_select_query(self, string_query):
         # Is the query well-formed?
-        candidate_query = sparql.prepareQuery(string_query)
+        print(string_query)
+        candidate_query = sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
         # Is it a select query?
         if "select" not in string_query[:string_query.find("{")]:
             raise ValueError("The SPARQL query is not a SELECT query")
@@ -114,3 +115,7 @@ class NodeSelectorParser(object):
 
         return NodeSelectorSparql(raw_selector=string_query,
                                   sparql_query_selector=candidate_query)
+
+    @staticmethod
+    def _focus_node_error(raw_selector):
+        raise ValueError("This focus node expression cant be parsed: " + raw_selector)
