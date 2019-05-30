@@ -54,7 +54,6 @@ class NodeSelectorParser(object):
         object_for_query, focus_count = self._parse_subj_obj_focus_expression(pieces[2], focus_count)
 
         if focus_count != 1:
-            print("Mirrameee mami")
             raise ValueError("The node selector must have exactly one FOCUS")
 
         query = self._turn_focus_exp_tokens_into_query(subject_for_query, predicate_for_query, object_for_query)
@@ -63,7 +62,6 @@ class NodeSelectorParser(object):
 
     def _turn_focus_exp_tokens_into_query(self, subj, pred, obj):
         string_query = "SELECT " + _FOCUS_VARIABLE + " WHERE {" + subj + " " + pred + " " + obj + " . }"
-        print(string_query)
         return sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
 
     def _parse_subj_obj_focus_expression(self, token, focus_count):
@@ -97,14 +95,12 @@ class NodeSelectorParser(object):
             try:
                 return self._parse_single_variable_select_query(raw_string[1:-1])
             except BaseException as e:
-                print(type(e.args))
                 raise ValueError("The SPARQL query of the next node selector is not well formed: " \
                         + raw_selector + ". Cause: " + str(e))
         raise ValueError("The SPARQL query of the next node selector is not surrounded by quotes: " + raw_selector)
 
     def _parse_single_variable_select_query(self, string_query):
         # Is the query well-formed?
-        print(string_query)
         candidate_query = sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
         # Is it a select query?
         if "select" not in string_query[:string_query.find("{")]:

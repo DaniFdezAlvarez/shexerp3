@@ -40,11 +40,11 @@ class JsonShapeMapParser(ShapeMapParser):
 
     Example of expected format:
     [
-  { "nodeSelector": "<http://data.example/node1>,
-    "shapeLabel": "<http://schema.example/Shape2>
+  { "nodeSelector": "<http://data.example/node1>",
+    "shapeLabel": "<http://schema.example/Shape2>"
     },
-  { "nodeSelector": "<http://data.example/node1>,
-    "shapeLabel": "<http://schema.example/Shape2>
+  { "nodeSelector": "<http://data.example/node1>",
+    "shapeLabel": "<http://schema.example/Shape2>"
     }
 ]
     """
@@ -116,5 +116,6 @@ class FixedShapeMapParser(ShapeMapParser):
 
     @staticmethod
     def _remove_trailing_comma(line):
-        if line[-1] != ",":
+        if line[-1] == ",":
             return line[:-1]
+        return line
