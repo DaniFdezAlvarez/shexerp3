@@ -58,11 +58,11 @@ class NodeSelectorParser(object):
 
         query = self._turn_focus_exp_tokens_into_query(subject_for_query, predicate_for_query, object_for_query)
         return NodeSelectorSparql(raw_selector=raw_selector,
-                                  sparql_query_selector=query)
+                                  sparql_query_selector=query)  # todo!
 
     def _turn_focus_exp_tokens_into_query(self, subj, pred, obj):
-        string_query = "SELECT " + _FOCUS_VARIABLE + " WHERE {" + subj + " " + pred + " " + obj + " . }"
-        return sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
+        return self._namespaces_to_string() + "SELECT " + _FOCUS_VARIABLE + " WHERE {" + subj + " " + pred + " " + obj + " . }"
+        # return sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
 
     def _parse_subj_obj_focus_expression(self, token, focus_count):
         if token.lower() == _FOCUS_LOWER:
@@ -100,8 +100,8 @@ class NodeSelectorParser(object):
         raise ValueError("The SPARQL query of the next node selector is not surrounded by quotes: " + raw_selector)
 
     def _parse_single_variable_select_query(self, string_query):
-        # Is the query well-formed?
-        candidate_query = sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
+        # Is the query well-formed? If not, the next sentence raises error
+        sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
         # Is it a select query?
         if "select" not in string_query[:string_query.find("{")]:
             raise ValueError("The SPARQL query is not a SELECT query")
@@ -109,8 +109,20 @@ class NodeSelectorParser(object):
         if string_query[:string_query.find("{")].count("?") != 1:
             raise ValueError("The SPARQL query must have a single variable")
 
+        variable_id = self._parse_variable_in_single_variable_query(string_query)
+
         return NodeSelectorSparql(raw_selector=string_query,
-                                  sparql_query_selector=candidate_query)
+                                  sparql_query_selector=self._namespaces_to_string() + string_query,
+                                  id_variable_query=variable_id)
+
+    def _parse_variable_in_single_variable_query(self, string_query):
+        pass  # TODO!
+
+    def _namespaces_to_string(self):
+        namespaces = ""
+        for prefix, uri in self._prefix_namespace_dict.items():
+            namespaces += "PREFIX " + prefix + ": <" + uri + ">\n"
+        return namespaces
 
     @staticmethod
     def _focus_node_error(raw_selector):
