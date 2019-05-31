@@ -58,7 +58,8 @@ class NodeSelectorParser(object):
 
         query = self._turn_focus_exp_tokens_into_query(subject_for_query, predicate_for_query, object_for_query)
         return NodeSelectorSparql(raw_selector=raw_selector,
-                                  sparql_query_selector=query)  # todo!
+                                  sparql_query_selector=query,
+                                  id_variable_query=self._parse_variable_in_single_variable_query(query))
 
     def _turn_focus_exp_tokens_into_query(self, subj, pred, obj):
         return self._namespaces_to_string() + "SELECT " + _FOCUS_VARIABLE + " WHERE {" + subj + " " + pred + " " + obj + " . }"
@@ -116,7 +117,9 @@ class NodeSelectorParser(object):
                                   id_variable_query=variable_id)
 
     def _parse_variable_in_single_variable_query(self, string_query):
-        pass  # TODO!
+        index_first_char_var_name = string_query.find('?') + 1
+        index_last_char_var_name = string_query[index_first_char_var_name:].find(" ") + index_first_char_var_name
+        return string_query[index_first_char_var_name:index_last_char_var_name]
 
     def _namespaces_to_string(self):
         namespaces = ""

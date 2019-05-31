@@ -32,8 +32,8 @@ class NodeSelectorNoSparql(NodeSelector):
 
 ########################################################
 
-
 from shexer.io.sparql.query import query_endpoint_single_variable
+
 
 class NodeSelectorSparql(NodeSelector):
 
