@@ -16,8 +16,9 @@ _WILDCARD_VARIABLE = "?x"
 
 class NodeSelectorParser(object):
 
-    def __init__(self, namespaces_prefix_dict):
+    def __init__(self, namespaces_prefix_dict, endpoint_url=None):
         self._prefix_namespace_dict = reverse_keys_and_values(namespaces_prefix_dict)
+        self._endpoint_url = endpoint_url
 
     def parse_node_selector(self, raw_selector):
         raw_selector = raw_selector.strip()
@@ -32,14 +33,16 @@ class NodeSelectorParser(object):
 
     def _parse_unprefixed_node_selector(self, raw_selector):
         return NodeSelectorNoSparql(raw_selector=raw_selector,
-                                    taregt_node=remove_corners(raw_selector))
+                                    target_node=remove_corners(raw_selector),
+                                    sgraph=None)
 
     def _parse_prefixed_node_selector(self, raw_selector):
         for a_prefix in self._prefix_namespace_dict:
             if raw_selector.startswith(a_prefix + ":"):
                 return NodeSelectorNoSparql(raw_selector=raw_selector,
-                                            taregt_node=self._unprefix_uri(prefix=a_prefix,
-                                                                           uri=raw_selector))
+                                            target_node=self._unprefix_uri(prefix=a_prefix,
+                                                                           uri=raw_selector),
+                                            sgraph=None)
 
     def _parse_focus_expression(self, raw_selector):
         if raw_selector[0] != "{" or raw_selector[-1] != "}":
@@ -59,7 +62,8 @@ class NodeSelectorParser(object):
         query = self._turn_focus_exp_tokens_into_query(subject_for_query, predicate_for_query, object_for_query)
         return NodeSelectorSparql(raw_selector=raw_selector,
                                   sparql_query_selector=query,
-                                  id_variable_query=self._parse_variable_in_single_variable_query(query))
+                                  id_variable_query=self._parse_variable_in_single_variable_query(query),
+                                  sgraph=None)  # todo OJO AQUI
 
     def _turn_focus_exp_tokens_into_query(self, subj, pred, obj):
         return self._namespaces_to_string() + "SELECT " + _FOCUS_VARIABLE + " WHERE {" + subj + " " + pred + " " + obj + " . }"
@@ -114,7 +118,8 @@ class NodeSelectorParser(object):
 
         return NodeSelectorSparql(raw_selector=string_query,
                                   sparql_query_selector=self._namespaces_to_string() + string_query,
-                                  id_variable_query=variable_id)
+                                  id_variable_query=variable_id,
+                                  endpoint_url=self._endpoint_url)
 
     def _parse_variable_in_single_variable_query(self, string_query):
         index_first_char_var_name = string_query.find('?') + 1

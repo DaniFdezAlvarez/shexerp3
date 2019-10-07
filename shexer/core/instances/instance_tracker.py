@@ -26,7 +26,7 @@ class InstanceTracker(object):
         self._classes_considered_in_htree = set() if track_hierarchies else None
 
         self._annotator = get_proper_anotator(track_hierarchies=track_hierarchies,
-                                             instance_tracker_ref=self)
+                                              instance_tracker_ref=self)
 
     @property
     def relevant_triples(self):
@@ -71,7 +71,7 @@ class InstanceTracker(object):
     def _build_instances_dict(target_classes, all_classes_mode):
         result = {}
         if all_classes_mode:
-            return result  # In this case, we will add keys on the fly, while parsing the input graph.
+            return result  # In this case, we will add keys on the fly, while parsing the input graphic.
         for a_class in target_classes:
             result[a_class.iri] = set()
         return result
