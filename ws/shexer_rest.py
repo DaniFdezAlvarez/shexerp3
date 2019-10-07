@@ -15,7 +15,7 @@ MAX_LEN = 100000
 ################ PARAM NAMES
 
 TARGET_CLASSES_PARAM = "target_classes"
-TARGET_GRAPH_PARAM = "graph"
+TARGET_GRAPH_PARAM = "graphic"
 INPUT_FORMAT_PARAM = "input_format"
 INSTANTIATION_PROPERTY_PARAM = "instantiation_prop"
 NAMESPACES_TO_IGNORE_PARAM = "ignore"
@@ -69,10 +69,10 @@ def _parse_graph(data, error_pool):
         error_pool.append(_missing_param_error(TARGET_GRAPH_PARAM))
         return
     if type(data[TARGET_GRAPH_PARAM]) != str:
-        error_pool.append("You must provide a str containing an RDF graph ")
+        error_pool.append("You must provide a str containing an RDF graphic ")
         return
     if len(data[TARGET_GRAPH_PARAM]) > MAX_LEN:
-        error_pool.append("The size of the graph is too big for this deployment. Introduce a graph using less than "
+        error_pool.append("The size of the graphic is too big for this deployment. Introduce a graphic using less than "
                           + str(MAX_LEN) + " chars")
         return
     return str(data[TARGET_GRAPH_PARAM])

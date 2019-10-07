@@ -33,14 +33,16 @@ class NodeSelectorParser(object):
 
     def _parse_unprefixed_node_selector(self, raw_selector):
         return NodeSelectorNoSparql(raw_selector=raw_selector,
-                                    target_node=remove_corners(raw_selector))
+                                    target_node=remove_corners(raw_selector),
+                                    sgraph=None)
 
     def _parse_prefixed_node_selector(self, raw_selector):
         for a_prefix in self._prefix_namespace_dict:
             if raw_selector.startswith(a_prefix + ":"):
                 return NodeSelectorNoSparql(raw_selector=raw_selector,
                                             target_node=self._unprefix_uri(prefix=a_prefix,
-                                                                           uri=raw_selector))
+                                                                           uri=raw_selector),
+                                            sgraph=None)
 
     def _parse_focus_expression(self, raw_selector):
         if raw_selector[0] != "{" or raw_selector[-1] != "}":
@@ -61,7 +63,7 @@ class NodeSelectorParser(object):
         return NodeSelectorSparql(raw_selector=raw_selector,
                                   sparql_query_selector=query,
                                   id_variable_query=self._parse_variable_in_single_variable_query(query),
-                                  endpoint_url=self._endpoint_url)
+                                  sgraph=None)  # todo OJO AQUI
 
     def _turn_focus_exp_tokens_into_query(self, subj, pred, obj):
         return self._namespaces_to_string() + "SELECT " + _FOCUS_VARIABLE + " WHERE {" + subj + " " + pred + " " + obj + " . }"

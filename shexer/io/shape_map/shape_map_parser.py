@@ -34,7 +34,7 @@ _KEY_LABEL = "shapeLabel"
 
 class JsonShapeMapParser(ShapeMapParser):
     """
-    WARNING!! This is a toy parser. We are assuming manu wel--formed stuff
+    WARNING!! This is a toy parser. We are assuming many wel--formed stuff
     for the structure of the json itself and for the shape labels.
     Node selectors are well checked
 

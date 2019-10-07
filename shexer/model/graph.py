@@ -30,7 +30,9 @@ class EndpointSGraph(SGraph):
                                               str_query=str_query,
                                               endpoint_url=self._endpoint_url)
 
-    def yield_p_o_triples_of_target_nodes(self, target_nodes, depth, classes_at_last_level=True, instantiation_property=None, already_visited=None):
+    def yield_p_o_triples_of_target_nodes(self, target_nodes, depth, classes_at_last_level=True,
+                                          instantiation_property=None, already_visited=None,
+                                          strict_syntax_with_uri_corners=True):
         """
         If it is provided, the param already_visited can be modified during the execution of this method.
         The set already_visited can be used to avoid repetition of triples calling this methodd repeatedly
@@ -48,11 +50,12 @@ class EndpointSGraph(SGraph):
         new_target_nodes = []
         while depth > 0:
             for a_node in list_of_current_target_nodes:
-                if a_node not in already_visited:
+                if a_node not in current_already_visited:
                     current_already_visited.add(a_node)
                     for a_triple in self.yield_get_p_o_triples_of_an_s(a_node):
                         yield a_triple
-                        if self._is_an_unprefixed_iri(a_triple[2]):
+                        if self._is_an_unprefixed_iri(an_iri=a_triple[2],
+                                                      strict_syntax_with_uri_corners=strict_syntax_with_uri_corners ):
                             new_target_nodes.append(a_triple[2])
             depth -= 1
             list_of_current_target_nodes = new_target_nodes
@@ -66,10 +69,12 @@ class EndpointSGraph(SGraph):
 
 
 
-    def _is_an_unprefixed_iri(self, an_iri):
-        if an_iri[0] == "<" and an_iri[-1] == ">":
-            return True
-        return False
+    def _is_an_unprefixed_iri(self, an_iri, strict_syntax_with_uri_corners=True):
+        if strict_syntax_with_uri_corners:
+            return an_iri[0] == "<" and an_iri[-1] == ">"
+        else:
+            return an_iri.startswith("http://")  # Getting kicked in the chicken nuggets is worse than this decission
+
 
 
     def yield_class_triples_of_an_s(self, target_node, instantiation_property):

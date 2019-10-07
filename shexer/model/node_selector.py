@@ -1,3 +1,4 @@
+from shexer.consts import RDF_TYPE
 
 class NodeSelector(object):
 
@@ -13,12 +14,15 @@ class NodeSelector(object):
         """
         raise NotImplementedError()
 
-    def yield_graph_of_target_nodes(self, depth=1, classes_for_last_level=True):
-        for a_triple in self._sgraph:  # TODO! Call the method commented
-            pass
+    def yield_graph_of_target_nodes(self, depth=1, classes_at_last_level=True, instantiation_property=RDF_TYPE ):
+        for a_triple in self._sgraph.yield_p_o_triples_of_target_nodes(target_nodes=self.get_target_nodes(),
+                                                                       depth=depth,
+                                                                       classes_at_last_level=classes_at_last_level,
+                                                                       instantiation_property=instantiation_property,
+                                                                       already_visited=None):
+            yield a_triple
 
-            # yield_p_o_triples_of_target_nodes(self, target_nodes, depth, classes_at_last_level=True,
-            #                                   instantiation_property=None, already_visited=None):
+
 
     @property
     def raw_selector(self):
