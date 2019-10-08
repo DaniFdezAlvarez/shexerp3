@@ -5,8 +5,10 @@ from shexer.io.shape_map.node_selector.node_selector_parser import NodeSelectorP
 
 class ShapeMapParser(object):
 
-    def __init__(self, namespaces_prefix_dict):
-        self._node_selector_parser = NodeSelectorParser(namespaces_prefix_dict=namespaces_prefix_dict)
+    def __init__(self, namespaces_prefix_dict, sgraph):
+        self._node_selector_parser = NodeSelectorParser(namespaces_prefix_dict=namespaces_prefix_dict,
+                                                        sgraph=sgraph)
+        self._sgraph = sgraph
 
     def parse_shape_map(self, source_file=None, raw_content=None):
         self._check_input(source_file, raw_content)
@@ -49,8 +51,9 @@ class JsonShapeMapParser(ShapeMapParser):
 ]
     """
 
-    def __init__(self, namespaces_prefix_dict):
-        super().__init__(namespaces_prefix_dict)
+    def __init__(self, namespaces_prefix_dict, sgraph):
+        super().__init__(namespaces_prefix_dict=namespaces_prefix_dict,
+                         sgraph=sgraph)
 
     def _parse_shape_map_from_str(self, raw_content):
         result = ShapeMap()
@@ -77,8 +80,9 @@ class FixedShapeMapParser(ShapeMapParser):
     assume that its just because it is the last element.
     """
 
-    def __init__(self, namespaces_prefix_dict):
-        super().__init__(namespaces_prefix_dict)
+    def __init__(self, namespaces_prefix_dict, sgraph):
+        super().__init__(namespaces_prefix_dict=namespaces_prefix_dict,
+                         sgraph=sgraph)
 
     def _parse_shape_map_from_str(self, raw_content):
         result = ShapeMap()
