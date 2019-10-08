@@ -11,6 +11,8 @@ from shexer.utils.factories.shape_serializer_factory import get_shape_serializer
 class Shaper(object):
 
     def __init__(self, target_classes=None, file_target_classes=None,
+                 raw_shape_map=None, file_shape_map=None,
+                 graph_via_shape_map=False,
                  input_format=NT, instances_file_input=None,
                  graph_file_input=None, graph_list_of_files_input=None,
                  raw_graph=None,
@@ -54,6 +56,7 @@ class Shaper(object):
                                    file_target_classes=file_target_classes,
                                    all_classes_mode=all_classes_mode)
 
+        #TODO ---> Param check of shape_map and graph_via_shape_map
 
         self._check_input_format(input_format)
 
@@ -75,6 +78,9 @@ class Shaper(object):
         self._keep_less_specific = keep_less_specific
         self._raw_graph = raw_graph
         self._all_classes_mode = all_classes_mode
+        self._raw_shape_map = raw_shape_map
+        self._file_shape_map = file_shape_map
+        self._graph_via_shape_map = graph_via_shape_map
 
         self._instance_tracker = None
         self._target_classes_dict = None
