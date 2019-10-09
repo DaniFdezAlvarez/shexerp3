@@ -10,7 +10,7 @@ _VALUE_KEY = "value"
 
 def query_endpoint_single_variable(endpoint_url, str_query, variable_id, max_retries=10, sleep_time=5):
     """
-    It receives an SPARQL query with a single variable and returns a lit with the resulting nodes
+    It receives an SPARQL query with a single variable and returns a list with the resulting nodes
 
     :param endpoint_url:
     :param str_query:
