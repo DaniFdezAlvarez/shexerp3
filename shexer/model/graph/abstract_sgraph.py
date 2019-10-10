@@ -1,3 +1,5 @@
+from shexer.consts import RDF_TYPE
+
 class SGraph(object):
 
     def __init__(self):
@@ -34,7 +36,7 @@ class SGraph(object):
 
 
     def yield_p_o_triples_of_target_nodes(self, target_nodes, depth, classes_at_last_level=True,
-                                          instantiation_property=None, already_visited=None,
+                                          instantiation_property=RDF_TYPE, already_visited=None,
                                           strict_syntax_with_uri_corners=True):
         """
         If it is provided, the param already_visited can be modified during the execution of this method.

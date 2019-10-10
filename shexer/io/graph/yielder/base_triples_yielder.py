@@ -1,5 +1,5 @@
 
-from shexer.io.line_reader import FileLineReader
+from shexer.io.line_reader.file_line_reader import FileLineReader
 from shexer.io.line_reader.raw_string_line_reader import RawStringLineReader
 from shexer.utils.obj_references import check_just_one_not_none
 
