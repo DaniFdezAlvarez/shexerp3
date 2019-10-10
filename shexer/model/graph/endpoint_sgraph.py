@@ -14,6 +14,7 @@ class EndpointSGraph(SGraph):
         self._endpoint_url = endpoint_url
 
     def query_single_variable(self, str_query, variable_id):
+        print(str_query)
         return query_endpoint_single_variable(variable_id=variable_id,
                                               str_query=str_query,
                                               endpoint_url=self._endpoint_url)

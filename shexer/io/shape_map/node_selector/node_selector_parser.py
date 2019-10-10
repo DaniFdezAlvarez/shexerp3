@@ -1,4 +1,4 @@
-from shexer.utils.dict import reverse_keys_and_values
+
 from shexer.utils.uri import remove_corners, add_corners, RDF_TYPE
 from shexer.model.node_selector import NodeSelectorNoSparql, NodeSelectorSparql
 from rdflib.plugins import sparql
@@ -16,8 +16,8 @@ _WILDCARD_VARIABLE = "?x"
 
 class NodeSelectorParser(object):
 
-    def __init__(self, namespaces_prefix_dict, sgraph):
-        self._prefix_namespace_dict = reverse_keys_and_values(namespaces_prefix_dict)
+    def __init__(self, prefix_namespaces_dict, sgraph):
+        self._prefix_namespace_dict = prefix_namespaces_dict
         self._sgraph = sgraph
         # self._endpoint_url = endpoint_url
 
