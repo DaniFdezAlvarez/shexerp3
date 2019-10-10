@@ -19,7 +19,7 @@ class BaseAnnotator(object):
             return False
         elif self._all_classes_mode:
             if a_triple[_O].iri not in self._instances_dict:
-                # The next line "shouldnt" be executed jere, it fits better in annotation methods.
+                # The next line "shouldnt" be executed here, it fits better in annotation methods.
                 # However, doing it here avoid to check in those methods again the conditions in which this class
                 # should be added to the instnaceS_dict
                 self._add_new_class_to_instances_dict(a_triple[_O].iri)

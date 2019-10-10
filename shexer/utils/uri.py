@@ -33,6 +33,11 @@ def remove_corners(a_uri, raise_error_if_no_corners=True):
 def add_corners(a_uri):
     return "<" + a_uri + ">"
 
+def add_corners_if_it_is_an_uri(a_candidate_uri):
+    if a_candidate_uri.startswith("http://"):
+        return "<" + a_candidate_uri + ">"
+    return a_candidate_uri
+
 
 def decide_literal_type(a_literal):
     if "\"^^" not in a_literal:
@@ -58,7 +63,7 @@ def decide_literal_type(a_literal):
         raise RuntimeError("Unrecognized literal type:" + a_literal)
 
 
-def is_a_correc_uri(target_uri, prefix_namespace_dict):
+def is_a_correct_uri(target_uri, prefix_namespace_dict):
     """
     TODO: Here I am assuming that there is no forbiden char ( " < > # % { } | \ ^ ~ [ ] ` )
     :param target_uri:
@@ -83,6 +88,10 @@ def parse_literal(an_elem):
     content = an_elem[1:an_elem.find('"', 1)]
     elem_type = decide_literal_type(an_elem)
     return content, elem_type
+
+def parse_unquoted_literal(an_elem):
+    elem_type = decide_literal_type(an_elem)
+    return an_elem, elem_type
 
 
 

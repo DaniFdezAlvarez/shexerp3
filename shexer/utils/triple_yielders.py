@@ -2,7 +2,7 @@ from shexer.model.IRI import IRI
 from shexer.model.property import Property
 from shexer.model.Literal import Literal
 from shexer.model.bnode import BNode
-from shexer.utils.uri import remove_corners, parse_literal, FLOAT_TYPE, INTEGER_TYPE
+from shexer.utils.uri import remove_corners, parse_literal, parse_unquoted_literal, FLOAT_TYPE, INTEGER_TYPE
 
 
 def check_if_property_belongs_to_namespace_list(str_prop, namespaces):
@@ -36,7 +36,9 @@ def tune_subj(a_token):
         return BNode(identifier=a_token)
 
     else:  # ???
-        raise ValueError("Unrecognized type of token: " + a_token)
+        content, elem_type = parse_unquoted_literal(a_token)
+        return Literal(content=content,
+                       elem_type=elem_type)
 
 
 def tune_token(a_token, allow_untyped_numbers=False):
@@ -61,7 +63,9 @@ def tune_token(a_token, allow_untyped_numbers=False):
         except:
             pass
     else:  # ???
-        raise ValueError("Unrecognized type of token: " + a_token)
+        content, elem_type = parse_unquoted_literal(a_token)
+        return Literal(content=content,
+                       elem_type=elem_type)
 
 
 def _is_integer(float_number):
