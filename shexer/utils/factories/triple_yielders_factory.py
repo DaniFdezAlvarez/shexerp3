@@ -4,13 +4,24 @@ from shexer.io.graph.yielder.tsv_nt_triples_yielder import TsvNtTriplesYielder
 from shexer.io.graph.yielder.multi_tsv_nt_triples_yielder import MultiTsvNtTriplesYielder
 from shexer.io.graph.yielder.rdflib_triple_yielder import RdflibTripleYielder
 from shexer.io.graph.yielder.multi_rdflib_triple_yielder import MultiRdfLibTripleYielder
+from shexer.io.graph.yielder.remote.sgraph_from_selectors_triple_yielder import SgraphFromSelectorsTripleYielder
 
 from shexer.consts import NT, TSV_SPO, N3, TURTLE, RDF_XML
 
 
 def get_triple_yielder(source_file=None, list_of_source_files=None, input_format=NT, namespaces_to_ignore=None,
                        allow_untyped_numbers=False, raw_graph=None, namespaces_dict=None, url_input=None,
-                       list_of_url_input=None):
+                       list_of_url_input=None, shape_map_file=None, shape_map_raw=None,
+                       track_classes_for_entities_at_last_depth_level=True,
+                       depth_for_building_subgraph=1, url_endpoint=None):
+    if url_endpoint is not None:
+        return SgraphFromSelectorsTripleYielder(shape_map="",  #TODO : parse shape_map
+                                                depth="",
+                                                classes_at_last_level="",
+                                                instantiation_property="",
+                                                strict_syntax_with_corners="",  # TODO:propagate this to shaper interface
+                                                allow_untyped_numbers=allow_untyped_numbers
+                                                )
     if url_input is not None or list_of_url_input is not None:  # Always use rdflib to parse remote graphs
         if url_input:
             return RdflibTripleYielder(source=url_input,

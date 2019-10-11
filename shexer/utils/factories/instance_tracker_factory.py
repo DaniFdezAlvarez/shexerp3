@@ -14,7 +14,14 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                          all_classes_mode=False,
                          namespaces_dict=None,
                          url_input=None,
-                         list_of_url_input=None):
+                         list_of_url_input=None,
+                         shape_map_file=None,
+                         shape_map_raw=None,
+                         track_classes_for_entities_at_last_depth_level=True,
+                         depth_for_building_subgraph=1,
+                         url_endpoint=None
+                         ):
+
     """
     Here I am assuming a correct combination of params. We check that when building a Shaper.
     If you come to dig here, behave properly ;)

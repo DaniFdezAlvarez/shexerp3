@@ -7,13 +7,13 @@ from shexer.utils.uri import add_corners, add_corners_if_it_is_an_uri
 class SgraphFromSelectorsTripleYielder(BaseTriplesYielder):
 
     def __init__(self, shape_map, depth=1, classes_at_last_level=True, instantiation_property=RDF_TYPE,
-                 strict_syntaax_with_corners=False, allow_untyped_numbers=False):
+                 strict_syntax_with_corners=False, allow_untyped_numbers=False):
         super().__init__()
         self._shape_map = shape_map
         self._depth = depth
         self._classes_at_last_level = classes_at_last_level
         self._instantiation_property = instantiation_property
-        self._strict_syntax_with_corners = strict_syntaax_with_corners
+        self._strict_syntax_with_corners = strict_syntax_with_corners
         self._allow_untyped_numbers = allow_untyped_numbers
 
 

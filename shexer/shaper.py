@@ -11,12 +11,11 @@ from shexer.utils.factories.shape_serializer_factory import get_shape_serializer
 class Shaper(object):
 
     def __init__(self, target_classes=None, file_target_classes=None,
-                 raw_shape_map=None, file_shape_map=None,
-                 graph_via_shape_map=False,
+                 raw_shape_map=None,
                  input_format=NT, instances_file_input=None,
                  graph_file_input=None, graph_list_of_files_input=None,
                  raw_graph=None,
-                 url_input=None, list_of_url_input=None,
+                 url_graph_input=None, list_of_url_input=None,
                  namespaces_dict=None, namespaces_dict_file=None,
                  instantiation_property=None,
                  namespaces_to_ignore=None,
@@ -24,7 +23,12 @@ class Shaper(object):
                  discard_useless_constraints_with_positive_closure=True,
                  all_instances_are_compliant_mode=True,
                  keep_less_specific=True,
-                 all_classes_mode=False):
+                 all_classes_mode=False,
+                 shape_map_file=None,
+                 shape_map_raw=None,
+                 depth_for_building_subgraph=1,
+                 track_classes_for_entities_at_last_depth_level=True,
+                 url_endpoint=None):
         """
 
         :param target_classes:
@@ -45,8 +49,8 @@ class Shaper(object):
 
         check_just_one_not_none((graph_file_input, "graph_file_input"),
                                 (graph_list_of_files_input, "graph_list_of_files_input"),
-                                 (raw_graph, "raw_graph"),
-                                (url_input, "url_input"),
+                                (raw_graph, "raw_graph"),
+                                (url_graph_input, "url_input"),
                                 (list_of_url_input, "list_of_url_input"))
 
         check_one_or_zero_not_none((namespaces_dict, "namespaces_dict"),
@@ -66,7 +70,7 @@ class Shaper(object):
         self._instances_file_input = instances_file_input
         self._graph_file_input = graph_file_input
         self._graph_list_of_files_input = graph_list_of_files_input
-        self._url_input = url_input
+        self._url_graph_input = url_graph_input
         self._list_of_url_input = list_of_url_input
         self._namespaces_dict = namespaces_dict
         self._namespaces_dict_file = namespaces_dict_file  # TODO Need to parse this
@@ -79,8 +83,14 @@ class Shaper(object):
         self._raw_graph = raw_graph
         self._all_classes_mode = all_classes_mode
         self._raw_shape_map = raw_shape_map
-        self._file_shape_map = file_shape_map
-        self._graph_via_shape_map = graph_via_shape_map
+        self._shape_map_file = shape_map_file
+        self._shape_map_raw = shape_map_raw
+        self._depth_for_building_subgraph = depth_for_building_subgraph
+        self._track_classes_for_entities_at_last_depth_level = track_classes_for_entities_at_last_depth_level
+        self._url_endpoint=url_endpoint
+        #TODO check correctness of these last five params
+
+
 
         self._instance_tracker = None
         self._target_classes_dict = None
@@ -161,7 +171,7 @@ class Shaper(object):
                                   infer_numeric_types_for_untyped_literals=self._infer_numeric_types_for_untyped_literals,
                                   raw_graph=self._raw_graph,
                                   namespaces_dict=self._namespaces_dict,
-                                  url_input=self._url_input,
+                                  url_input=self._url_graph_input,
                                   list_of_url_input=self._list_of_url_input)
 
 
@@ -176,8 +186,15 @@ class Shaper(object):
                                     raw_graph=self._raw_graph,
                                     all_classes_mode=self._all_classes_mode,
                                     namespaces_dict=self._namespaces_dict,
-                                    url_input=self._url_input,
-                                    list_of_url_input=self._list_of_url_input)
+                                    url_input=self._url_graph_input,
+                                    list_of_url_input=self._list_of_url_input,
+
+                                    shape_map_file=self._shape_map_file,
+                                    shape_map_raw=self._shape_map_raw,
+                                    track_classes_for_entities_at_last_depth_level=self._track_classes_for_entities_at_last_depth_level,
+                                    depth_for_building_subgraph=self._depth_for_building_subgraph,
+                                    url_endpoint=self._url_endpoint
+                                    )
 
     def _build_class_shexer(self):
         return get_class_shexer(class_instances_target_dict=self._target_classes_dict,
