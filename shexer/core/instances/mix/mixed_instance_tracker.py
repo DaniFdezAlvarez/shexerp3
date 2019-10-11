@@ -14,6 +14,7 @@ class MixedInstanceTracker(AbstractInstanceTracker):
             self._integrate_dicts(reference_dict=reference_instances_dict,
                                   new_dict=a_tracker.track_instances(),
                                   new_tracker=a_tracker)
+        return reference_instances_dict
 
 
     def _integrate_dicts(self, reference_dict, new_dict, new_tracker):
