@@ -5,10 +5,9 @@ from shexer.consts import TURTLE
 
 class MultiRdfLibTripleYielder(MultifileBaseTripleYielder):
 
-    def __init__(self, list_of_files, input_format=TURTLE, namespaces_to_ignore=None, allow_untyped_numbers=False,
+    def __init__(self, list_of_files, input_format=TURTLE, allow_untyped_numbers=False,
                  namespaces_dict=None):
         super(MultiRdfLibTripleYielder, self).__init__(list_of_files=list_of_files,
-                                                       namespaces_to_ignore=namespaces_to_ignore,
                                                        allow_untyped_numbers=allow_untyped_numbers)
 
         self._input_format = input_format
@@ -21,7 +20,6 @@ class MultiRdfLibTripleYielder(MultifileBaseTripleYielder):
     def _constructor_file_yielder(self, a_source_file):
         return RdflibTripleYielder(source=a_source_file,
                                    allow_untyped_numbers=self._allow_untyped_numbers,
-                                   namespaces_to_ignore=self._namespaces_to_ignore,
                                    input_format=self._input_format)
 
     @property

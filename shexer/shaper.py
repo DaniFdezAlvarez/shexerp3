@@ -28,7 +28,9 @@ class Shaper(object):
                  shape_map_raw=None,
                  depth_for_building_subgraph=1,
                  track_classes_for_entities_at_last_depth_level=True,
-                 url_endpoint=None):
+                 strict_syntax_with_corners=False,
+                 url_endpoint=None,
+                 shape_map_format=None):
         """
 
         :param target_classes:
@@ -88,6 +90,8 @@ class Shaper(object):
         self._depth_for_building_subgraph = depth_for_building_subgraph
         self._track_classes_for_entities_at_last_depth_level = track_classes_for_entities_at_last_depth_level
         self._url_endpoint=url_endpoint
+        self._strict_syntax_with_corners = strict_syntax_with_corners
+        self._shape_map_format = shape_map_format
         #TODO check correctness of these last five params
 
 
@@ -188,12 +192,13 @@ class Shaper(object):
                                     namespaces_dict=self._namespaces_dict,
                                     url_input=self._url_graph_input,
                                     list_of_url_input=self._list_of_url_input,
-
                                     shape_map_file=self._shape_map_file,
                                     shape_map_raw=self._shape_map_raw,
                                     track_classes_for_entities_at_last_depth_level=self._track_classes_for_entities_at_last_depth_level,
                                     depth_for_building_subgraph=self._depth_for_building_subgraph,
-                                    url_endpoint=self._url_endpoint
+                                    url_endpoint=self._url_endpoint,
+                                    strict_syntax_with_corners=self._strict_syntax_with_corners,
+                                    shape_map_format=self._shape_map_format
                                     )
 
     def _build_class_shexer(self):

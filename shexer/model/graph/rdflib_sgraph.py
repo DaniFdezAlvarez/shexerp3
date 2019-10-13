@@ -3,7 +3,7 @@ from shexer.model.graph.abstract_sgraph import SGraph
 
 class RdflibSgraph(SGraph):
 
-    def __init__(self, rdflib_graph=None, source_file=None, format="turtle"):
+    def __init__(self, rdflib_graph=None, source_file=None, raw_graph=None, format="turtle"):
         """
         Pass an rdflib.Graph object or the params source_file and format to parse a local rdf
 
@@ -13,6 +13,7 @@ class RdflibSgraph(SGraph):
         """
         super().__init__()
         self._rdflib_graph = rdflib_graph if rdflib_graph is not None else self._build_rdflib_graph(source=source_file,
+                                                                                                    raw_graph=raw_graph,
                                                                                                     format=format)
 
     def query_single_variable(self, str_query, variable_id):
@@ -30,7 +31,10 @@ class RdflibSgraph(SGraph):
             yield str(s), str(p), str(o)
 
 
-    def _build_rdflib_graph(self, source, format):
+    def _build_rdflib_graph(self, source, raw_graph, format):
         result = Graph()
-        result.parse(source=source, format=format)
+        if source is not None:
+            result.parse(source=source, format=format)
+        else:
+            result.parse(data=raw_graph, format=format)
         return result
