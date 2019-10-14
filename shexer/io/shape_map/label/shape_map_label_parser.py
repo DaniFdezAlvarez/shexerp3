@@ -10,7 +10,6 @@ class ShapeMapLabelParser(object):
 
 
     def _is_a_prefixed_uri(self, raw_label):
-        # print(raw_label, raw_label.startswith("<"), raw_label.endswith(">"))
         if len(raw_label) < 2:
             return False
         if raw_label.startswith("<") and raw_label.endswith(">"):

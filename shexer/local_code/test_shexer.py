@@ -12,6 +12,13 @@ a_graph = """
     bf:seriesEnumeration "8961" ;
     bf:subseriesStatement "General foreign policy series,  9876-5432" ;
     bf:subseriesEnumeration   "volume 310" .
+    
+bf:Instance_2 a bf:Instance ; 
+    bf:seriesStatement "Department of another stuff" ; 
+    bf:seriesEnumeration "8961" ;
+    rdfs:label "Cosa wena" ;
+    bf:subseriesStatement "General foreign policy series,  1232-5674" ;
+    bf:subseriesEnumeration   "volume 311" .
 
 bf:Instance rdfs:subClassOf bf:Concept .
 bf:Concept rdfs:subClassOf bf:Class .
@@ -19,21 +26,181 @@ bf:Concept rdfs:subClassOf bf:Class .
 
 
 namespaces_dict={
+"http://id.loc.gov/ontologies/bibframe.rdf/" : "bf",
+"http://weso.es/" : "",
+"http://www.w3.org/2000/01/rdf-schema#": "rdfs"
 }
 
-shaper = Shaper(raw_graph=a_graph,
-                all_classes_mode=True,
-                input_format=TURTLE,
-                namespaces_dict=namespaces_dict)
+# ### raw + all_classes
+#
+# shaper = Shaper(raw_graph=a_graph,
+#                 all_classes_mode=True,
+#                 input_format=TURTLE,
+#                 namespaces_dict=namespaces_dict)
+#
+# result = shaper.shex_graph(aceptance_threshold=0.5,
+#                            string_output=True)
+#
+# print(result)
+#
+#
+# ### raw + target_classes
+#
+# print("---------")
+#
+# target_classes = ["http://id.loc.gov/ontologies/bibframe.rdf/Instance"]
+#
+# shaper = Shaper(raw_graph=a_graph,
+#                 all_classes_mode=False,
+#                 target_classes=target_classes,
+#                 input_format=TURTLE,
+#                 namespaces_dict=namespaces_dict)
+#
+# result = shaper.shex_graph(aceptance_threshold=0.5,
+#                            string_output=True)
+#
+# print(result)
+#
+# ### raw + selectores
+# from shexer.consts import FIXED_SHAPE_MAP
+#
+# raw_shape_map = """
+#
+# {FOCUS rdfs:subClassOf _}@:a_child
+# bf:Instance_2@:certain_instance
+# """
+# print("---------")
+# shaper = Shaper(raw_graph=a_graph,
+#                 all_classes_mode=False,
+#                 target_classes=None,
+#                 input_format=TURTLE,
+#                 shape_map_raw=raw_shape_map,
+#                 shape_map_format=FIXED_SHAPE_MAP,
+#                 namespaces_dict=namespaces_dict)
+#
+# result = shaper.shex_graph(aceptance_threshold=0.5,
+#                            string_output=True)
+#
+# print(result)
+#
+#
+# ### raw + selectors + all_classes
+#
+# print("---------")
+# shaper = Shaper(raw_graph=a_graph,
+#                 all_classes_mode=True,
+#                 target_classes=None,
+#                 input_format=TURTLE,
+#                 shape_map_raw=raw_shape_map,
+#                 shape_map_format=FIXED_SHAPE_MAP,
+#                 namespaces_dict=namespaces_dict)
+#
+# result = shaper.shex_graph(aceptance_threshold=0.5,
+#                            string_output=True)
+#
+# print(result)
+#
+#
+# ###################################################  File input
+#
+# print("------------------------------------------------------------"
+#       "")
+#
+# file_graph_name = "files\\test_shexer_graph.ttl"
+#
+# ### raw + all_classes
+#
+# shaper = Shaper(graph_file_input=file_graph_name,
+#                 all_classes_mode=True,
+#                 input_format=TURTLE,
+#                 namespaces_dict=namespaces_dict)
+#
+# result = shaper.shex_graph(aceptance_threshold=0.5,
+#                            string_output=True)
+#
+# print(result)
+#
+#
+# ### raw + target_classes
+#
+# print("---------")
+#
+# target_classes = ["http://id.loc.gov/ontologies/bibframe.rdf/Instance"]
+#
+# shaper = Shaper(graph_file_input=file_graph_name,
+#                 all_classes_mode=False,
+#                 target_classes=target_classes,
+#                 input_format=TURTLE,
+#                 namespaces_dict=namespaces_dict)
+#
+# result = shaper.shex_graph(aceptance_threshold=0.5,
+#                            string_output=True)
+#
+# print(result)
+#
+# ### raw + selectores
+# from shexer.consts import FIXED_SHAPE_MAP
+#
+# raw_shape_map = """
+#
+# {FOCUS rdfs:subClassOf _}@:a_child
+# bf:Instance_2@:certain_instance
+# """
+# print("---------")
+# shaper = Shaper(graph_file_input=file_graph_name,
+#                 all_classes_mode=False,
+#                 target_classes=None,
+#                 input_format=TURTLE,
+#                 shape_map_raw=raw_shape_map,
+#                 shape_map_format=FIXED_SHAPE_MAP,
+#                 namespaces_dict=namespaces_dict)
+#
+# result = shaper.shex_graph(aceptance_threshold=0.5,
+#                            string_output=True)
+#
+# print(result)
+#
+#
+# ### raw + selectors + all_classes
+#
+# print("---------")
+# shaper = Shaper(graph_file_input=file_graph_name,
+#                 all_classes_mode=True,
+#                 target_classes=None,
+#                 input_format=TURTLE,
+#                 shape_map_raw=raw_shape_map,
+#                 shape_map_format=FIXED_SHAPE_MAP,
+#                 namespaces_dict=namespaces_dict)
+#
+# result = shaper.shex_graph(aceptance_threshold=0.5,
+#                            string_output=True)
+#
+# print(result)
+
+
+######################################################### endpoint
+
+### endpoint + target
+print("---------")
+
+target_classes = ["http://www.wikidata.org/entity/Q44062313", "http://www.wikidata.org/entity/Q54856362"]
+endpoint_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql"
+instantiation_property = "http://www.wikidata.org/prop/direct/P1344"
+
+shaper = Shaper(all_classes_mode=False,
+                target_classes=target_classes,
+                url_endpoint=endpoint_url,
+                namespaces_dict=namespaces_dict,
+                instantiation_property=instantiation_property,
+                track_classes_for_entities_at_last_depth_level=False)
 
 result = shaper.shex_graph(aceptance_threshold=0.5,
                            string_output=True)
 
-htree = shaper._instance_tracker.htree
-# print(htree.iri_node._children)
-# print(htree.get_node_of_element("http://id.loc.gov/ontologies/bibframe.rdf/Class")._children)
-# print(htree.get_node_of_element("http://id.loc.gov/ontologies/bibframe.rdf/Class")._parents)
-# print(htree.get_node_of_element('http://id.loc.gov/ontologies/bibframe.rdf/Concept')._children)
-
-
 print(result)
+
+
+
+
+
+

@@ -1,11 +1,11 @@
 from shexer.consts import NT, FIXED_SHAPE_MAP
-from shexer.utils.factories.triple_yielders_factory import get_triple_yielder
+from shexer.utils.factories.triple_yielders_factory import get_triple_yielder, tune_target_classes_if_needed, \
+    read_target_classes_from_file
 from shexer.core.instances.instance_tracker import InstanceTracker
 from shexer.core.instances.mappings.shape_map_instance_tracker import ShapeMapInstanceTracker
 from shexer.core.instances.mix.mixed_instance_tracker import MixedInstanceTracker
 from shexer.utils.factories.iri_factory import create_IRIs_from_string_list
 from shexer.utils.factories.shape_map_parser_factory import get_shape_map_parser
-from shexer.utils.uri import remove_corners
 from shexer.model.graph.endpoint_sgraph import EndpointSGraph
 from shexer.model.graph.rdflib_sgraph import RdflibSgraph
 
@@ -67,7 +67,9 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                               track_classes_for_entities_at_last_depth_level=track_classes_for_entities_at_last_depth_level,
                                               depth_for_building_subgraph=depth_for_building_subgraph,
                                               url_endpoint=url_endpoint,
-                                              strict_syntax_with_corners=strict_syntax_with_corners
+                                              strict_syntax_with_corners=strict_syntax_with_corners,
+                                              target_classes=target_classes,
+                                              file_target_classes=file_target_classes
                                               )
     else:
         instance_yielder = get_triple_yielder(source_file=graph_file_input,
@@ -84,7 +86,9 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                               track_classes_for_entities_at_last_depth_level=track_classes_for_entities_at_last_depth_level,
                                               depth_for_building_subgraph=depth_for_building_subgraph,
                                               url_endpoint=url_endpoint,
-                                              strict_syntax_with_corners=strict_syntax_with_corners
+                                              strict_syntax_with_corners=strict_syntax_with_corners,
+                                              target_classes=target_classes,
+                                              file_target_classes=file_target_classes
                                               )
 
     selectors_tracker = None
@@ -98,20 +102,23 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                       graph_format=input_format)
         shape_map_parser = get_shape_map_parser(format=shape_map_format,
                                                 sgraph=sgraph,
-                                                namespaces_prefix_dict=namespaces_dict)
+                                                namespaces_prefix_dict=namespaces_dict,
+                                                target_classes=target_classes,
+                                                file_target_classes=file_target_classes)
         selectors_tracker = ShapeMapInstanceTracker(shape_map=shape_map_parser.parse_shape_map(source_file=shape_map_file,
                                                                                                raw_content=shape_map_raw))
     if _are_there_some_target_classes(target_classes, file_target_classes, all_classes_mode):
         model_classes = None
         if not all_classes_mode:
-            list_of_str_target_classes = _tune_target_classes_if_needed(
-                target_classes) if target_classes is not None else _read_target_classes_from_file(file_target_classes)
+            list_of_str_target_classes = tune_target_classes_if_needed(
+                target_classes) if target_classes is not None else read_target_classes_from_file(file_target_classes)
             model_classes = get_list_of_model_classes(list_of_str_target_classes)
 
         pure_instances_tracker = InstanceTracker(target_classes=model_classes,
                                                  triples_yielder=instance_yielder,
                                                  instantiation_property=instantiation_property,
-                                                 all_classes_mode=all_classes_mode)
+                                                 all_classes_mode=all_classes_mode,
+                                                 track_hierarchies=False)
 
     return _decide_tracker_to_return(selectors_tracker, pure_instances_tracker)
 
@@ -136,8 +143,8 @@ def _are_there_selectors(shape_map_file, shape_map_raw):
     return True
 
 
-def _are_there_some_target_classes(target_classes, file_atregt_classes, all_classes_mode):
-    if target_classes is None and file_atregt_classes is None and all_classes_mode is None:
+def _are_there_some_target_classes(target_classes, file_target_classes, all_classes_mode):
+    if target_classes is None and file_target_classes is None and not all_classes_mode:
         return False
     return True
 
@@ -146,20 +153,4 @@ def get_list_of_model_classes(list_of_str_target_classes):
     return create_IRIs_from_string_list(list_of_str_target_classes)
 
 
-def _tune_target_classes_if_needed(list_target_classes):
-    result = []
-    for a_original_class in list_target_classes:
-        result.append(remove_corners(a_uri=a_original_class,
-                                     raise_error_if_no_corners=False))
-    return result
 
-
-def _read_target_classes_from_file(file_target_classes):
-    result = []
-    with open(file_target_classes, "r") as in_stream:
-        for a_line in in_stream:
-            candidate = a_line.strip()
-            if candidate != "":
-                result.append(remove_corners(a_uri=candidate,
-                                             raise_error_if_no_corners=False))
-    return result
