@@ -14,6 +14,12 @@ class ShapeMap(object):
         for an_item in self._items:
             yield an_item
 
+    def get_sgraph(self):
+        if len(self._items) == 0:
+            return None
+        return self._items[0].node_selector.sgraph  # Assuming they all have the same sgraph
+
+
 class ShapeMapItem(object):
 
     def __init__(self, node_selector, shape_label):

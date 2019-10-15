@@ -1,12 +1,17 @@
 from shexer.utils.file import load_whole_file_content
 from shexer.model.shape_map import ShapeMap, ShapeMapItem
 from shexer.io.shape_map.node_selector.node_selector_parser import NodeSelectorParser
-
+from shexer.io.shape_map.label.shape_map_label_parser import ShapeMapLabelParser
+from shexer.utils.dict import reverse_keys_and_values
 
 class ShapeMapParser(object):
 
-    def __init__(self, namespaces_prefix_dict):
-        self._node_selector_parser = NodeSelectorParser(namespaces_prefix_dict=namespaces_prefix_dict)
+    def __init__(self, namespaces_prefix_dict, sgraph):
+        reversed_dict = reverse_keys_and_values(namespaces_prefix_dict)
+        self._node_selector_parser = NodeSelectorParser(prefix_namespaces_dict=reversed_dict,
+                                                        sgraph=sgraph)
+        self._label_parser = ShapeMapLabelParser(prefix_namespaces_dict=reversed_dict)
+        self._sgraph = sgraph
 
     def parse_shape_map(self, source_file=None, raw_content=None):
         self._check_input(source_file, raw_content)
@@ -49,8 +54,9 @@ class JsonShapeMapParser(ShapeMapParser):
 ]
     """
 
-    def __init__(self, namespaces_prefix_dict):
-        super().__init__(namespaces_prefix_dict)
+    def __init__(self, namespaces_prefix_dict, sgraph):
+        super().__init__(namespaces_prefix_dict=namespaces_prefix_dict,
+                         sgraph=sgraph)
 
     def _parse_shape_map_from_str(self, raw_content):
         result = ShapeMap()
@@ -58,7 +64,9 @@ class JsonShapeMapParser(ShapeMapParser):
         for a_list_elem in json_obj:
             result.add_item(ShapeMapItem(
                 node_selector=self._node_selector_parser.parse_node_selector(a_list_elem[_KEY_NODE_SELECTOR]),
-                shape_label=a_list_elem[_KEY_LABEL]))
+                shape_label=self._label_parser.parse_shape_map_label(a_list_elem[_KEY_LABEL])
+            )
+            )
         return result
 
 
@@ -77,8 +85,9 @@ class FixedShapeMapParser(ShapeMapParser):
     assume that its just because it is the last element.
     """
 
-    def __init__(self, namespaces_prefix_dict):
-        super().__init__(namespaces_prefix_dict)
+    def __init__(self, namespaces_prefix_dict, sgraph):
+        super().__init__(namespaces_prefix_dict=namespaces_prefix_dict,
+                         sgraph=sgraph)
 
     def _parse_shape_map_from_str(self, raw_content):
         result = ShapeMap()
@@ -111,7 +120,7 @@ class FixedShapeMapParser(ShapeMapParser):
         pieces = line.split("@")
         if len(pieces) != 2:
             raise ValueError("There must be exactly a '@' char for each couple selector-label")
-        return ShapeMapItem(shape_label=pieces[1].strip(),
+        return ShapeMapItem(shape_label=self._label_parser.parse_shape_map_label(pieces[1].strip()),
                             node_selector=self._node_selector_parser.parse_node_selector(pieces[0].strip()))
 
     @staticmethod

@@ -6,6 +6,10 @@ class NodeSelector(object):
         self._raw_selector = raw_selector
         self._sgraph = sgraph
 
+    @property
+    def sgraph(self):
+        return self._sgraph
+
     def get_target_nodes(self):
         """
         It return a list of target URIs. It may require to execute some query against a given endpoint

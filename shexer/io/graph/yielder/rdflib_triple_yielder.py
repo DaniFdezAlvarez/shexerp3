@@ -15,7 +15,7 @@ _XML_WRONG_URI = "http://www.w3.org/XML/1998/namespace"
 
 class RdflibTripleYielder(BaseTriplesYielder):
 
-    def __init__(self, input_format=TURTLE, source=None, namespaces_to_ignore=None, allow_untyped_numbers=False,
+    def __init__(self, input_format=TURTLE, source=None, allow_untyped_numbers=False,
                  raw_graph=None, namespaces_dict=None):
         """
 
@@ -31,7 +31,6 @@ class RdflibTripleYielder(BaseTriplesYielder):
 
         self._input_format = input_format
         self._source = source
-        self._namespaces_to_ignore = namespaces_to_ignore
         self._allow_untyped_numbers = allow_untyped_numbers
         self._raw_graph = raw_graph
         self._namespaces_dict = namespaces_dict if namespaces_dict is not None else {}
