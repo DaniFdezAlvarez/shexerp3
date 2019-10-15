@@ -14,7 +14,6 @@ class EndpointSGraph(SGraph):
         self._endpoint_url = endpoint_url
 
     def query_single_variable(self, str_query, variable_id):
-        print(str_query)
         return query_endpoint_single_variable(variable_id=variable_id,
                                               str_query=str_query,
                                               endpoint_url=self._endpoint_url)
@@ -34,4 +33,5 @@ class EndpointSGraph(SGraph):
                                                     str_query=str_query,
                                                     p_id=_DEF_PRED_ID,
                                                     o_id=_DEF_OBJ_ID):
+
             yield target_node, a_tuple_po[0], a_tuple_po[1]

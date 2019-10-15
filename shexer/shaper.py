@@ -1,6 +1,6 @@
 from shexer.utils.obj_references import check_just_one_not_none, check_one_or_zero_not_none
 
-from shexer.consts import SHEX, NT, TSV_SPO, N3, TURTLE, RDF_XML
+from shexer.consts import SHEX, NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP
 from shexer.utils.factories.class_profiler_factory import get_class_profiler
 from shexer.utils.factories.instance_tracker_factory import get_instance_tracker
 from shexer.utils.factories.class_shexer_factory import get_class_shexer
@@ -11,7 +11,6 @@ from shexer.utils.factories.shape_serializer_factory import get_shape_serializer
 class Shaper(object):
 
     def __init__(self, target_classes=None, file_target_classes=None,
-                 raw_shape_map=None,
                  input_format=NT, instances_file_input=None,
                  graph_file_input=None, graph_list_of_files_input=None,
                  raw_graph=None,
@@ -30,7 +29,7 @@ class Shaper(object):
                  track_classes_for_entities_at_last_depth_level=True,
                  strict_syntax_with_corners=False,
                  url_endpoint=None,
-                 shape_map_format=None):
+                 shape_map_format=FIXED_SHAPE_MAP):
         """
 
         :param target_classes:
@@ -88,7 +87,6 @@ class Shaper(object):
         self._keep_less_specific = keep_less_specific
         self._raw_graph = raw_graph
         self._all_classes_mode = all_classes_mode
-        self._raw_shape_map = raw_shape_map
         self._shape_map_file = shape_map_file
         self._shape_map_raw = shape_map_raw
         self._depth_for_building_subgraph = depth_for_building_subgraph

@@ -102,9 +102,7 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                       graph_format=input_format)
         shape_map_parser = get_shape_map_parser(format=shape_map_format,
                                                 sgraph=sgraph,
-                                                namespaces_prefix_dict=namespaces_dict,
-                                                target_classes=target_classes,
-                                                file_target_classes=file_target_classes)
+                                                namespaces_prefix_dict=namespaces_dict)
         selectors_tracker = ShapeMapInstanceTracker(shape_map=shape_map_parser.parse_shape_map(source_file=shape_map_file,
                                                                                                raw_content=shape_map_raw))
     if _are_there_some_target_classes(target_classes, file_target_classes, all_classes_mode):

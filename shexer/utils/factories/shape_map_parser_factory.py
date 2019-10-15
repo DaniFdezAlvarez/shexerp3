@@ -1,7 +1,7 @@
 from shexer.consts import JSON, FIXED_SHAPE_MAP
 from shexer.io.shape_map.shape_map_parser import JsonShapeMapParser, FixedShapeMapParser
 
-def get_shape_map_parser(format, sgraph, namespaces_prefix_dict, target_classes, file_target_classes):
+def get_shape_map_parser(format, sgraph, namespaces_prefix_dict):
     if format == JSON:
         return JsonShapeMapParser(sgraph=sgraph,
                                   namespaces_prefix_dict=namespaces_prefix_dict)

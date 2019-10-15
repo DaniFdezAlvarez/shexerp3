@@ -15,15 +15,13 @@ from shexer.utils.uri import remove_corners
 from shexer.consts import NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP
 
 
-def _produce_shape_map_according_tp_input(sm_format, sgraph, namespaces_prefix_dict, target_classes,
+def _produce_shape_map_according_to_input(sm_format, sgraph, namespaces_prefix_dict, target_classes,
                                           file_target_classes, shape_map_file, shape_map_raw,
                                           instantiation_property):
     if shape_map_raw is not None or shape_map_file is not None:
         shape_map_parser = get_shape_map_parser(format=sm_format,
                                                 sgraph=sgraph,
-                                                namespaces_prefix_dict=namespaces_prefix_dict,
-                                                target_classes=target_classes,
-                                                file_target_classes=file_target_classes)
+                                                namespaces_prefix_dict=namespaces_prefix_dict)
 
         return shape_map_parser.parse_shape_map(source_file=shape_map_file,
                                                 raw_content=shape_map_raw)
@@ -45,7 +43,7 @@ def get_triple_yielder(source_file=None, list_of_source_files=None, input_format
     if url_endpoint is not None:
         sgrpah=EndpointSGraph(endpoint_url=url_endpoint)
 
-        shape_map = _produce_shape_map_according_tp_input(sm_format=shape_map_format,
+        shape_map = _produce_shape_map_according_to_input(sm_format=shape_map_format,
                                                           sgraph=sgrpah,
                                                           namespaces_prefix_dict=namespaces_dict,
                                                           target_classes=target_classes,

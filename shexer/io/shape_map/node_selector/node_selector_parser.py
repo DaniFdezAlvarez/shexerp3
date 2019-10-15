@@ -109,7 +109,7 @@ class NodeSelectorParser(object):
         # Is the query well-formed? If not, the next sentence raises error
         sparql.prepareQuery(string_query, initNs=self._prefix_namespace_dict)
         # Is it a select query?
-        if "select" not in string_query[:string_query.find("{")]:
+        if "select" not in string_query[:string_query.find("{")].lower():
             raise ValueError("The SPARQL query is not a SELECT query")
         # Does it have a single variable
         if string_query[:string_query.find("{")].count("?") != 1:
