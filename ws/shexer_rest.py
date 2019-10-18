@@ -25,9 +25,9 @@ ALL_INSTANCES_COMPLIANT_PARAM = "all_compliant"
 KEEP_LESS_SPECIFIC_PARAM = "keep_less_specific"
 ACEPTANCE_THRESHOLD_PARAM = "threshold"
 ALL_CLASSES_MODE_PARAM = "all_classes"
-SHAPE_MAP = "shape_map"
-REMOTE_GRAPH = "graph_url"
-ENDPOINT_GRAPH = "endpoint"
+SHAPE_MAP_PARAM = "shape_map"
+REMOTE_GRAPH_PARAM = "graph_url"
+ENDPOINT_GRAPH_PARAM = "endpoint"
 
 
 
@@ -56,30 +56,30 @@ def _missing_param_error(param):
 
 
 def _parse_endpoint_sparql(data, error_pool):
-    if ENDPOINT_GRAPH not in data:
+    if ENDPOINT_GRAPH_PARAM not in data:
         return None
-    if type(data[ENDPOINT_GRAPH]) != str:
-        error_pool.append("You must provide a URL (string) in the field " + ENDPOINT_GRAPH)
+    if type(data[ENDPOINT_GRAPH_PARAM]) != str:
+        error_pool.append("You must provide a URL (string) in the field " + ENDPOINT_GRAPH_PARAM)
         return None
-    return str(data[ENDPOINT_GRAPH])
+    return str(data[ENDPOINT_GRAPH_PARAM])
 
 
 def _parse_remote_graph(data, error_pool):
-    if REMOTE_GRAPH not in data:
+    if REMOTE_GRAPH_PARAM not in data:
         return None
-    if type(data[REMOTE_GRAPH]) != str:
-        error_pool.append("You must provide a URL (string) in the field " + REMOTE_GRAPH)
+    if type(data[REMOTE_GRAPH_PARAM]) != str:
+        error_pool.append("You must provide a URL (string) in the field " + REMOTE_GRAPH_PARAM)
         return None
-    return str(data[REMOTE_GRAPH])
+    return str(data[REMOTE_GRAPH_PARAM])
 
 
 def _parse_shape_map(data, error_pool):
-    if SHAPE_MAP not in data:
+    if SHAPE_MAP_PARAM not in data:
         return None
-    if type(data[SHAPE_MAP]) != str:
+    if type(data[SHAPE_MAP_PARAM]) != str:
         error_pool.append("You must provide a string containing the shape map")
         return
-    return str(data[SHAPE_MAP])
+    return str(data[SHAPE_MAP_PARAM])
 
 
 def _parse_namespaces_to_ignore(data, error_pool):
@@ -95,9 +95,6 @@ def _parse_namespaces_to_ignore(data, error_pool):
 
 
 def _parse_target_classes(data, error_pool):
-    # if TARGET_CLASSES_PARAM not in data:
-    #     error_pool.append(_missing_param_error(TARGET_CLASSES_PARAM))
-    #     return  # TODO comprueba cosas
     if type(data[TARGET_CLASSES_PARAM]) != list:
         error_pool.append("You must provide a non-empty list of URIs (string) in " + TARGET_CLASSES_PARAM)
         return
@@ -108,9 +105,6 @@ def _parse_target_classes(data, error_pool):
 
 
 def _parse_graph(data, error_pool):
-    # if TARGET_GRAPH_PARAM not in data:
-    #     error_pool.append(_missing_param_error(TARGET_GRAPH_PARAM))
-    #     return # TODO
     if type(data[TARGET_GRAPH_PARAM]) != str:
         error_pool.append("You must provide a str containing an RDF graph ")
         return
@@ -195,7 +189,8 @@ def _parse_threshold(data, error_pool):
 
 def _call_shaper(target_classes, graph, input_fotmat, instantiation_prop,
                  infer_untyped_num, discard_useles_constraints, all_compliant,
-                 keep_less_specific, threshold, all_classes_mode, namespaces_dict):
+                 keep_less_specific, threshold, all_classes_mode, namespaces_dict,
+                 namespaces_to_ignore, shape_map, remote_graph, endpoint_sparql):
     shaper = Shaper(target_classes=target_classes,
                     input_format=input_fotmat,
                     instantiation_property=instantiation_prop,
@@ -205,17 +200,45 @@ def _call_shaper(target_classes, graph, input_fotmat, instantiation_prop,
                     keep_less_specific=keep_less_specific,
                     raw_graph=graph,
                     all_classes_mode=all_classes_mode,
-                    namespaces_dict=namespaces_dict)
+                    namespaces_dict=namespaces_dict,
+                    namespaces_to_ignore=namespaces_to_ignore,
+                    shape_map_raw=shape_map,
+                    url_graph_input=remote_graph,
+                    url_endpoint=endpoint_sparql)
     result = shaper.shex_graph(aceptance_threshold=threshold, string_output=True)
     return _jsonize_response(result)
 
 
 def _check_combination_error_input_data(data, error_pool):
-    pass  # TODO
+    target_params = [TARGET_GRAPH_PARAM, REMOTE_GRAPH_PARAM, ENDPOINT_GRAPH_PARAM]
+    counter = 0
+    for elem in target_params:
+        if elem in data:
+            counter += 1
+    if counter != 1:
+        error_pool.append("You must provide exactly one of the following params: " + ", ".join(target_params) + ".")
+        return True
+    return False
 
 
-def _check_combination_error_target_shapes(data, error_pool):
-    pass  # TODO
+def _check_combination_error_target_shapes(data, error_pool, all_classes_mode):
+    target_params = [TARGET_CLASSES_PARAM, SHAPE_MAP_PARAM]
+    counter = 0
+    for elem in target_params:
+        if elem in data:
+            counter += 1
+    if counter == 1:
+        return False
+    if counter == 0 and ALL_CLASSES_MODE_PARAM in data and all_classes_mode == True:
+        return False
+    error_pool.append("Yoy must provide exactly one of " + ", ".join(target_params) + " or set " + ALL_CLASSES_MODE_PARAM + " to True")
+    return True
+
+def _check_all_classes_mode_uncompatibility(data, error_pool, all_classes_mode):
+    if all_classes_mode and ENDPOINT_GRAPH_PARAM in data and SHAPE_MAP_PARAM not in data:
+        error_pool.append("If you use all classes mode with input via endpoint, you must provide a shape map as well "
+                          "to let sheXer knows what part of the graph it should consider.")
+
 
 
 ################ Default namespace
@@ -258,10 +281,11 @@ def shexer():
             remote_graph = _parse_remote_graph(data, error_pool)
             endpoint_sparql = _parse_endpoint_sparql(data, error_pool)
 
-        err_target = _check_combination_error_target_shapes(data, error_pool)
+        err_target = _check_combination_error_target_shapes(data, error_pool, all_classes_mode)
         if not err_target:
             target_classes = _parse_target_classes(data, error_pool)
             shape_map = _parse_shape_map(data, error_pool)
+            _check_all_classes_mode_uncompatibility(data, error_pool, all_classes_mode)
 
         # remote_graph = _parse_remote_graph(data, error_pool)
         # endpoint_sparql = _parse_endpoint_sparql(data, error_pool)
