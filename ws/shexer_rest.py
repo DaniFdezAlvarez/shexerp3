@@ -15,7 +15,7 @@ MAX_LEN = 100000
 ################ PARAM NAMES
 
 TARGET_CLASSES_PARAM = "target_classes"
-TARGET_GRAPH_PARAM = "graphic"
+TARGET_GRAPH_PARAM = "raw_graph"
 INPUT_FORMAT_PARAM = "input_format"
 INSTANTIATION_PROPERTY_PARAM = "instantiation_prop"
 NAMESPACES_TO_IGNORE_PARAM = "ignore"
@@ -25,6 +25,10 @@ ALL_INSTANCES_COMPLIANT_PARAM = "all_compliant"
 KEEP_LESS_SPECIFIC_PARAM = "keep_less_specific"
 ACEPTANCE_THRESHOLD_PARAM = "threshold"
 ALL_CLASSES_MODE_PARAM = "all_classes"
+SHAPE_MAP = "shape_map"
+REMOTE_GRAPH = "graph_url"
+ENDPOINT_GRAPH = "endpoint"
+
 
 
 
@@ -51,10 +55,49 @@ def _missing_param_error(param):
     return "Missing mandatory param: " + param
 
 
-def _parse_target_classes(data, error_pool):
-    if TARGET_CLASSES_PARAM not in data:
-        error_pool.append(_missing_param_error(TARGET_CLASSES_PARAM))
+def _parse_endpoint_sparql(data, error_pool):
+    if ENDPOINT_GRAPH not in data:
+        return None
+    if type(data[ENDPOINT_GRAPH]) != str:
+        error_pool.append("You must provide a URL (string) in the field " + ENDPOINT_GRAPH)
+        return None
+    return str(data[ENDPOINT_GRAPH])
+
+
+def _parse_remote_graph(data, error_pool):
+    if REMOTE_GRAPH not in data:
+        return None
+    if type(data[REMOTE_GRAPH]) != str:
+        error_pool.append("You must provide a URL (string) in the field " + REMOTE_GRAPH)
+        return None
+    return str(data[REMOTE_GRAPH])
+
+
+def _parse_shape_map(data, error_pool):
+    if SHAPE_MAP not in data:
+        return None
+    if type(data[SHAPE_MAP]) != str:
+        error_pool.append("You must provide a string containing the shape map")
         return
+    return str(data[SHAPE_MAP])
+
+
+def _parse_namespaces_to_ignore(data, error_pool):
+    if NAMESPACES_TO_IGNORE_PARAM not in data:
+        return None
+    if type(data[TARGET_CLASSES_PARAM]) != list:
+        error_pool.append("You must provide a non-empty list of URIs (string) in " + NAMESPACES_TO_IGNORE_PARAM)
+        return None
+    if len(data[NAMESPACES_TO_IGNORE_PARAM]) == 0 or type(data[NAMESPACES_TO_IGNORE_PARAM][0]) != str:
+        error_pool.append("You must provide a non-empty list of URIs (string) in " + NAMESPACES_TO_IGNORE_PARAM)
+        return
+    return [str(a_uri) for a_uri in data[NAMESPACES_TO_IGNORE_PARAM]]
+
+
+def _parse_target_classes(data, error_pool):
+    # if TARGET_CLASSES_PARAM not in data:
+    #     error_pool.append(_missing_param_error(TARGET_CLASSES_PARAM))
+    #     return  # TODO comprueba cosas
     if type(data[TARGET_CLASSES_PARAM]) != list:
         error_pool.append("You must provide a non-empty list of URIs (string) in " + TARGET_CLASSES_PARAM)
         return
@@ -65,14 +108,14 @@ def _parse_target_classes(data, error_pool):
 
 
 def _parse_graph(data, error_pool):
-    if TARGET_GRAPH_PARAM not in data:
-        error_pool.append(_missing_param_error(TARGET_GRAPH_PARAM))
-        return
+    # if TARGET_GRAPH_PARAM not in data:
+    #     error_pool.append(_missing_param_error(TARGET_GRAPH_PARAM))
+    #     return # TODO
     if type(data[TARGET_GRAPH_PARAM]) != str:
-        error_pool.append("You must provide a str containing an RDF graphic ")
+        error_pool.append("You must provide a str containing an RDF graph ")
         return
     if len(data[TARGET_GRAPH_PARAM]) > MAX_LEN:
-        error_pool.append("The size of the graphic is too big for this deployment. Introduce a graphic using less than "
+        error_pool.append("The size of the graphic is too big for this deployment. Introduce a graph using less than "
                           + str(MAX_LEN) + " chars")
         return
     return str(data[TARGET_GRAPH_PARAM])
@@ -166,6 +209,15 @@ def _call_shaper(target_classes, graph, input_fotmat, instantiation_prop,
     result = shaper.shex_graph(aceptance_threshold=threshold, string_output=True)
     return _jsonize_response(result)
 
+
+def _check_combination_error_input_data(data, error_pool):
+    pass  # TODO
+
+
+def _check_combination_error_target_shapes(data, error_pool):
+    pass  # TODO
+
+
 ################ Default namespace
 
 default_namespaces = {"http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
@@ -185,7 +237,6 @@ def shexer():
     error_pool = []
     try:
         data = request.json
-        graph = _parse_graph(data, error_pool)
         input_fotmat = _parse_input_format(data, error_pool)
         instantiation_prop = _parse_instantiation_prop(data, error_pool)
         infer_untyped_num = _parse_infer_untyped_num(data, error_pool)
@@ -194,9 +245,29 @@ def shexer():
         keep_less_specific = _parse_keep_less_specific(data, error_pool)
         threshold = _parse_threshold(data, error_pool)
         all_classes_mode = _parse_all_classes_mode(data, error_pool)
-        target_classes = None if all_classes_mode else _parse_target_classes(data, error_pool)
+        namespaces_to_ignore = _parse_namespaces_to_ignore(data, error_pool)
+        target_classes = None
+        graph = None
+        shape_map = None
+        remote_graph = None
+        endpoint_sparql = None
+
+        err_input = _check_combination_error_input_data(data, error_pool)
+        if not err_input:
+            graph = _parse_graph(data, error_pool)
+            remote_graph = _parse_remote_graph(data, error_pool)
+            endpoint_sparql = _parse_endpoint_sparql(data, error_pool)
+
+        err_target = _check_combination_error_target_shapes(data, error_pool)
+        if not err_target:
+            target_classes = _parse_target_classes(data, error_pool)
+            shape_map = _parse_shape_map(data, error_pool)
+
+        # remote_graph = _parse_remote_graph(data, error_pool)
+        # endpoint_sparql = _parse_endpoint_sparql(data, error_pool)
 
         if len(error_pool) == 0:
+            #todo: Call shaper with the new params!
             return _call_shaper(target_classes=target_classes,
                                 graph=graph,
                                 input_fotmat=input_fotmat,
