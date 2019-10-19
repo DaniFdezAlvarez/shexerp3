@@ -62,10 +62,10 @@ def tune_token(a_token, allow_untyped_numbers=False):
                            elem_type=FLOAT_TYPE)
         except:
             pass
-    else:  # ???
-        content, elem_type = parse_unquoted_literal(a_token)
-        return Literal(content=content,
-                       elem_type=elem_type)
+
+    content, elem_type = parse_unquoted_literal(a_token)
+    return Literal(content=content,
+                   elem_type=elem_type)
 
 
 def _is_integer(float_number):
