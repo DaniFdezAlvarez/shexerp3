@@ -379,7 +379,10 @@ class ShexSerializer(object):
         return False
 
     def _serialize_shape_name(self, a_shape):
-        self._write_line(a_shape.name.replace("@", ":"))
+        name = a_shape.name.replace("@", ":")
+        if ":" not in name:
+            name = "<" + name + ">"
+        self._write_line(name)
 
     def _serialize_opening_of_rules(self):
         self._write_line("{")

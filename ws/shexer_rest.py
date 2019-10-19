@@ -1,8 +1,9 @@
 import traceback
 from flask import Flask, request
 from flask_cors import CORS
-from shexer.shaper import NT
+from shexer.consts import NT, RDF_TYPE
 from shexer.shaper import Shaper
+from shexer.utils.uri import remove_corners
 import json
 
 ################ CONFIG
@@ -85,7 +86,7 @@ def _parse_shape_map(data, error_pool):
 def _parse_namespaces_to_ignore(data, error_pool):
     if NAMESPACES_TO_IGNORE_PARAM not in data:
         return None
-    if type(data[TARGET_CLASSES_PARAM]) != list:
+    if type(data[NAMESPACES_TO_IGNORE_PARAM]) != list:
         error_pool.append("You must provide a non-empty list of URIs (string) in " + NAMESPACES_TO_IGNORE_PARAM)
         return None
     if len(data[NAMESPACES_TO_IGNORE_PARAM]) == 0 or type(data[NAMESPACES_TO_IGNORE_PARAM][0]) != str:
@@ -95,6 +96,8 @@ def _parse_namespaces_to_ignore(data, error_pool):
 
 
 def _parse_target_classes(data, error_pool):
+    if TARGET_CLASSES_PARAM not in data:
+        return None
     if type(data[TARGET_CLASSES_PARAM]) != list:
         error_pool.append("You must provide a non-empty list of URIs (string) in " + TARGET_CLASSES_PARAM)
         return
@@ -105,6 +108,8 @@ def _parse_target_classes(data, error_pool):
 
 
 def _parse_graph(data, error_pool):
+    if TARGET_GRAPH_PARAM not in data:
+        return None
     if type(data[TARGET_GRAPH_PARAM]) != str:
         error_pool.append("You must provide a str containing an RDF graph ")
         return
@@ -139,13 +144,15 @@ def _parse_bool_param(data, error_pool, key, default_value, opt_message=""):
 
 
 def _parse_input_format(data, error_pool):
-    return _parse_str_param(data=data, error_pool=error_pool, key=INPUT_FORMAT_PARAM, default_value="NT")
+    return _parse_str_param(data=data, error_pool=error_pool, key=INPUT_FORMAT_PARAM, default_value=NT)
 
 
 def _parse_instantiation_prop(data, error_pool):
-    return _parse_str_param(data=data, error_pool=error_pool, key=INSTANTIATION_PROPERTY_PARAM,
-                            default_value=NT,
-                            opt_message="The default value is rdf:type")
+    candidate = _parse_str_param(data=data, error_pool=error_pool, key=INSTANTIATION_PROPERTY_PARAM,
+                                 default_value=RDF_TYPE,
+                                 opt_message="The default value is rdf:type")
+    return remove_corners(a_uri=candidate,
+                          raise_error_if_no_corners=False)
 
 
 def _parse_infer_untyped_num(data, error_pool):
@@ -214,6 +221,7 @@ def _check_combination_error_input_data(data, error_pool):
     counter = 0
     for elem in target_params:
         if elem in data:
+
             counter += 1
     if counter != 1:
         error_pool.append("You must provide exactly one of the following params: " + ", ".join(target_params) + ".")
@@ -302,13 +310,17 @@ def shexer():
                                 keep_less_specific=keep_less_specific,
                                 threshold=threshold,
                                 all_classes_mode=all_classes_mode,
-                                namespaces_dict=default_namespaces)
+                                namespaces_dict=default_namespaces,
+                                endpoint_sparql=endpoint_sparql,
+                                shape_map=shape_map,
+                                remote_graph=remote_graph,
+                                namespaces_to_ignore=namespaces_to_ignore)
         else:
            return _return_json_error_pool(error_pool)
 
     except BaseException as e:
         traceback.print_exc()
-        error_pool.append(e.message)
+        error_pool.append(str(e))
         return _return_json_error_pool(error_pool)
 
 CORS(app)
