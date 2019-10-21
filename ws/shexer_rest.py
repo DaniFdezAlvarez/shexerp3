@@ -8,7 +8,7 @@ import json
 
 ################ CONFIG
 
-PORT = 5008
+PORT = 8080
 HOST = "0.0.0.0"
 MAX_LEN = 100000
 
@@ -320,7 +320,7 @@ def shexer():
 
     except BaseException as e:
         traceback.print_exc()
-        error_pool.append(str(e))
+        error_pool.append("Internal unexpected server error: " + str(e))
         return _return_json_error_pool(error_pool)
 
 CORS(app)
