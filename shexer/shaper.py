@@ -1,6 +1,6 @@
 from shexer.utils.obj_references import check_just_one_not_none, check_one_or_zero_not_none
 
-from shexer.consts import SHEX, NT, TSV_SPO, N3, TURTLE, RDF_XML
+from shexer.consts import SHEX, NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP
 from shexer.utils.factories.class_profiler_factory import get_class_profiler
 from shexer.utils.factories.instance_tracker_factory import get_instance_tracker
 from shexer.utils.factories.class_shexer_factory import get_class_shexer
@@ -14,7 +14,7 @@ class Shaper(object):
                  input_format=NT, instances_file_input=None,
                  graph_file_input=None, graph_list_of_files_input=None,
                  raw_graph=None,
-                 url_input=None, list_of_url_input=None,
+                 url_graph_input=None, list_of_url_input=None,
                  namespaces_dict=None, namespaces_dict_file=None,
                  instantiation_property=None,
                  namespaces_to_ignore=None,
@@ -22,7 +22,14 @@ class Shaper(object):
                  discard_useless_constraints_with_positive_closure=True,
                  all_instances_are_compliant_mode=True,
                  keep_less_specific=True,
-                 all_classes_mode=False):
+                 all_classes_mode=False,
+                 shape_map_file=None,
+                 shape_map_raw=None,
+                 depth_for_building_subgraph=1,
+                 track_classes_for_entities_at_last_depth_level=True,
+                 strict_syntax_with_corners=False,
+                 url_endpoint=None,
+                 shape_map_format=FIXED_SHAPE_MAP):
         """
 
         :param target_classes:
@@ -43,17 +50,22 @@ class Shaper(object):
 
         check_just_one_not_none((graph_file_input, "graph_file_input"),
                                 (graph_list_of_files_input, "graph_list_of_files_input"),
-                                 (raw_graph, "raw_graph"),
-                                (url_input, "url_input"),
-                                (list_of_url_input, "list_of_url_input"))
+                                (raw_graph, "raw_graph"),
+                                (url_graph_input, "url_input"),
+                                (list_of_url_input, "list_of_url_input"),
+                                (url_endpoint, "url_endpoint")
+                                )
 
         check_one_or_zero_not_none((namespaces_dict, "namespaces_dict"),
                                    (namespaces_dict_file, "namespaces_dict_file"))
 
         self._check_target_classes(target_classes=target_classes,
                                    file_target_classes=file_target_classes,
-                                   all_classes_mode=all_classes_mode)
+                                   all_classes_mode=all_classes_mode,
+                                   shape_map_raw=shape_map_raw,
+                                   shape_map_file=shape_map_file)
 
+        #TODO ---> Param check of shape_map and graph_via_shape_map
 
         self._check_input_format(input_format)
 
@@ -63,7 +75,7 @@ class Shaper(object):
         self._instances_file_input = instances_file_input
         self._graph_file_input = graph_file_input
         self._graph_list_of_files_input = graph_list_of_files_input
-        self._url_input = url_input
+        self._url_graph_input = url_graph_input
         self._list_of_url_input = list_of_url_input
         self._namespaces_dict = namespaces_dict
         self._namespaces_dict_file = namespaces_dict_file  # TODO Need to parse this
@@ -75,6 +87,16 @@ class Shaper(object):
         self._keep_less_specific = keep_less_specific
         self._raw_graph = raw_graph
         self._all_classes_mode = all_classes_mode
+        self._shape_map_file = shape_map_file
+        self._shape_map_raw = shape_map_raw
+        self._depth_for_building_subgraph = depth_for_building_subgraph
+        self._track_classes_for_entities_at_last_depth_level = track_classes_for_entities_at_last_depth_level
+        self._url_endpoint=url_endpoint
+        self._strict_syntax_with_corners = strict_syntax_with_corners
+        self._shape_map_format = shape_map_format
+        #TODO check correctness of these last five params
+
+
 
         self._instance_tracker = None
         self._target_classes_dict = None
@@ -155,8 +177,16 @@ class Shaper(object):
                                   infer_numeric_types_for_untyped_literals=self._infer_numeric_types_for_untyped_literals,
                                   raw_graph=self._raw_graph,
                                   namespaces_dict=self._namespaces_dict,
-                                  url_input=self._url_input,
-                                  list_of_url_input=self._list_of_url_input)
+                                  url_input=self._url_graph_input,
+                                  list_of_url_input=self._list_of_url_input,
+                                  shape_map_file=self._shape_map_file,
+                                  shape_map_raw=self._shape_map_raw,
+                                  track_classes_for_entities_at_last_depth_level=self._track_classes_for_entities_at_last_depth_level,
+                                  depth_for_building_subgraph=self._depth_for_building_subgraph,
+                                  url_endpoint=self._url_endpoint,
+                                  strict_syntax_with_corners=self._strict_syntax_with_corners,
+                                  target_classes=self._target_classes,
+                                  file_target_classes=self._file_target_classes)
 
 
     def _build_instance_tracker(self):
@@ -170,8 +200,16 @@ class Shaper(object):
                                     raw_graph=self._raw_graph,
                                     all_classes_mode=self._all_classes_mode,
                                     namespaces_dict=self._namespaces_dict,
-                                    url_input=self._url_input,
-                                    list_of_url_input=self._list_of_url_input)
+                                    url_input=self._url_graph_input,
+                                    list_of_url_input=self._list_of_url_input,
+                                    shape_map_file=self._shape_map_file,
+                                    shape_map_raw=self._shape_map_raw,
+                                    track_classes_for_entities_at_last_depth_level=self._track_classes_for_entities_at_last_depth_level,
+                                    depth_for_building_subgraph=self._depth_for_building_subgraph,
+                                    url_endpoint=self._url_endpoint,
+                                    strict_syntax_with_corners=self._strict_syntax_with_corners,
+                                    shape_map_format=self._shape_map_format
+                                    )
 
     def _build_class_shexer(self):
         return get_class_shexer(class_instances_target_dict=self._target_classes_dict,
@@ -188,13 +226,19 @@ class Shaper(object):
             raise ValueError("Currently unsupported input format: " + input_format)
 
     @staticmethod
-    def _check_target_classes(target_classes, file_target_classes, all_classes_mode):
+    def _check_target_classes(target_classes, file_target_classes, all_classes_mode, shape_map_file, shape_map_raw):
         if not all_classes_mode:
             check_just_one_not_none((target_classes, "target_classes"),
-                                    (file_target_classes, "file_target_classes"))
+                                    (file_target_classes, "file_target_classes"),
+                                    (shape_map_file, "shape_map_file"),
+                                    (shape_map_raw, "shape_map_raw")
+                                    )
         else:
             if target_classes is not None or file_target_classes is not None:
                 raise ValueError("You must provide a list of target classes XOR set all_classes_mode to True")
+            # But all_classes mode is compatible with shape_map_selectors. Setting all_classes_mode = True and
+            # providing some selectros will cause shexer to shex both the shapes specified in the selectors
+            # and to create a shape for eahc element with an instance in the target graph
 
     @staticmethod
     def _check_output_format(output_format):

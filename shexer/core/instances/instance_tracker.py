@@ -1,7 +1,8 @@
 from shexer.model.property import Property
 from shexer.utils.uri import remove_corners
 from shexer.utils.factories.h_tree import get_basic_h_tree
-from shexer.core.instances.annotators import get_proper_anotator
+from shexer.core.instances.annotators.annotator_func import get_proper_anotator
+from shexer.core.instances.abstract_instance_tracker import AbstractInstanceTracker
 
 
 
@@ -9,7 +10,7 @@ _RDF_TYPE = Property(content="http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
 _RDFS_SUBCLASS_OF = Property(content="http://www.w3.org/2000/01/rdf-schema#subClassOf")
 
 
-class InstanceTracker(object):
+class InstanceTracker(AbstractInstanceTracker):
 
     def __init__(self, target_classes, triples_yielder, instantiation_property=_RDF_TYPE,
                  all_classes_mode=False, subclass_property=_RDFS_SUBCLASS_OF, track_hierarchies=True):
@@ -26,7 +27,11 @@ class InstanceTracker(object):
         self._classes_considered_in_htree = set() if track_hierarchies else None
 
         self._annotator = get_proper_anotator(track_hierarchies=track_hierarchies,
-                                             instance_tracker_ref=self)
+                                              instance_tracker_ref=self)
+
+    @property
+    def disambiguator_prefix(self):
+        return "class_"
 
     @property
     def relevant_triples(self):
@@ -64,14 +69,14 @@ class InstanceTracker(object):
     def is_an_instantiation_prop(self, a_property):
         return a_property == self._instantiation_property
 
-    def is_a_subcalss_property(self, a_property):
+    def is_a_subclass_property(self, a_property):
         return a_property == self._subclass_property
 
     @staticmethod
     def _build_instances_dict(target_classes, all_classes_mode):
         result = {}
         if all_classes_mode:
-            return result  # In this case, we will add keys on the fly, while parsing the input graph.
+            return result  # In this case, we will add keys on the fly, while parsing the input graphic.
         for a_class in target_classes:
             result[a_class.iri] = set()
         return result
