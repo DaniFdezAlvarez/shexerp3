@@ -63,7 +63,7 @@ shaper = Shaper(target_classes=target_classes,
                 instantiation_property="http://example.org/type")  # Default rdf:type
 
 
-shaper.shex_graph(output_file=shex_target_file,
+shaper.shex_graph(output_file=output_file,
                   aceptance_threshold=0.1)
 
 print("Done!")
