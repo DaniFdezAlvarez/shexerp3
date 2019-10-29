@@ -26,7 +26,7 @@ class Shaper(object):
                  shape_map_file=None,
                  shape_map_raw=None,
                  depth_for_building_subgraph=1,
-                 track_classes_for_entities_at_last_depth_level=True,
+                 track_classes_for_entities_at_last_depth_level=False,
                  strict_syntax_with_corners=False,
                  url_endpoint=None,
                  shape_map_format=FIXED_SHAPE_MAP):
