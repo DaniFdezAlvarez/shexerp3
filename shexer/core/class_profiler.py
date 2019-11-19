@@ -2,6 +2,7 @@
 from shexer.model.IRI import IRI_ELEM_TYPE
 from shexer.utils.shapes import build_shapes_name_for_class_uri
 from shexer.model.property import Property
+from shexer.model.bnode import BNode
 from shexer.utils.uri import remove_corners
 
 RDF_TYPE_STR = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
@@ -192,7 +193,10 @@ class ClassProfiler(object):
         return True if self._is_subject_in_target_classes(a_triple) else False
 
     def _is_subject_in_target_classes(self, a_triple):
-        str_subj = a_triple[_S].iri
+        subj = a_triple[_S]
+        if isinstance(subj, BNode):
+            return False
+        str_subj = subj.iri
         for class_key in self._target_classes_dict:
             if str_subj in self._target_classes_dict[class_key]:
                 return True

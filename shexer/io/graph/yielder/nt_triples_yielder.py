@@ -44,6 +44,10 @@ class NtTriplesYielder(BaseTriplesYielder):
                 last_index = self._look_for_last_index_of_literal_token(str_line, current_first_index)
                 result.append(str_line[current_first_index:last_index + 1])
                 current_first_index = last_index + 1
+            elif str_line[current_first_index] == '_':
+                last_index = self._look_for_last_index_of_bnode_token(str_line, current_first_index)
+                result.append(str_line[current_first_index:last_index + 1])
+                current_first_index = last_index + 1
             elif str_line[current_first_index] == '.':
 
                 break
@@ -56,6 +60,11 @@ class NtTriplesYielder(BaseTriplesYielder):
         target_substring = target_str[first_index:]
         index_sub = target_substring.find(">")
         return index_sub + (len(target_str) - len(target_substring))
+
+    def _look_for_last_index_of_bnode_token(self, target_str, first_index):
+        target_substring = target_str[first_index:]
+        index_sub = target_substring.find(" ")
+        return index_sub + (len(target_str) - len(target_substring)) - 1
 
     def _look_for_last_index_of_literal_token(self, target_str, first_index):
         target_substring = target_str[first_index:]
