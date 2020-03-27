@@ -13,6 +13,16 @@ HOST = "0.0.0.0"
 MAX_LEN = 100000
 
 
+################ Default namespace
+
+default_namespaces = {"http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
+                      "http://www.w3.org/2000/01/rdf-schema#": "rdfs",
+                      "http://www.w3.org/2001/XMLSchema#": "xml",
+                      "http://www.w3.org/XML/1998/namespace/": "xml",
+                      "http://www.w3.org/2002/07/owl#" : "owl"
+                      }
+
+
 ################ PARAM NAMES
 
 TARGET_CLASSES_PARAM = "target_classes"
@@ -29,11 +39,25 @@ ALL_CLASSES_MODE_PARAM = "all_classes"
 SHAPE_MAP_PARAM = "shape_map"
 REMOTE_GRAPH_PARAM = "graph_url"
 ENDPOINT_GRAPH_PARAM = "endpoint"
+NAMESPACES_PARAM = "prefixes"
 
 
 
 
 ################ SUPPORT FUNCTIONS
+
+
+def _build_namespaces_dict(new_prefixes, defaults):
+    """
+    It merges the default list of namespaces with a
+
+    :param new_prefixes:
+    :param defaults:
+    :return:
+    """
+    for a_key in new_prefixes:
+        defaults[a_key] = new_prefixes[a_key]
+
 
 def _jsonize_response(response):
     result = json.dumps({'result' : response})
@@ -93,6 +117,21 @@ def _parse_namespaces_to_ignore(data, error_pool):
         error_pool.append("You must provide a non-empty list of URIs (string) in " + NAMESPACES_TO_IGNORE_PARAM)
         return
     return [str(a_uri) for a_uri in data[NAMESPACES_TO_IGNORE_PARAM]]
+
+
+def _parse_namespaces(data, error_pool):
+    if NAMESPACES_PARAM not in data:
+        return {}
+    if type(data[NAMESPACES_PARAM]) != dict:
+        error_pool.append("You must provide a dict namespace_URI --> prefix  in " + NAMESPACES_PARAM)
+        return {}
+    if len(data[NAMESPACES_TO_IGNORE_PARAM]) == 0:
+        error_pool.append("You must provide a dict namespace_URI --> prefix  in " + NAMESPACES_PARAM)
+        return {}
+    result = {}
+    for a_key in data[NAMESPACES_PARAM]:
+        result[str(a_key)] = str(data[NAMESPACES_PARAM][a_key])
+    return result
 
 
 def _parse_target_classes(data, error_pool):
@@ -249,16 +288,6 @@ def _check_all_classes_mode_uncompatibility(data, error_pool, all_classes_mode):
 
 
 
-################ Default namespace
-
-default_namespaces = {"http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
-                      "http://www.w3.org/2000/01/rdf-schema#": "rdfs",
-                      "http://www.w3.org/2001/XMLSchema#": "xml",
-                      "http://www.w3.org/XML/1998/namespace/": "xml",
-                      "http://www.w3.org/2002/07/owl#" : "owl"
-                      }
-
-
 ################ WS
 
 app = Flask(__name__)
@@ -277,6 +306,7 @@ def shexer():
         threshold = _parse_threshold(data, error_pool)
         all_classes_mode = _parse_all_classes_mode(data, error_pool)
         namespaces_to_ignore = _parse_namespaces_to_ignore(data, error_pool)
+        namespaces = _parse_namespaces(data, error_pool)
         target_classes = None
         graph = None
         shape_map = None
@@ -310,7 +340,7 @@ def shexer():
                                 keep_less_specific=keep_less_specific,
                                 threshold=threshold,
                                 all_classes_mode=all_classes_mode,
-                                namespaces_dict=default_namespaces,
+                                namespaces_dict=_build_namespaces_dict(namespaces, default_namespaces),
                                 endpoint_sparql=endpoint_sparql,
                                 shape_map=shape_map,
                                 remote_graph=remote_graph,
