@@ -12,7 +12,7 @@ from shexer.utils.translators.list_of_classes_to_shape_map import ListOfClassesT
 from shexer.utils.dict import reverse_keys_and_values
 from shexer.utils.uri import remove_corners
 
-from shexer.consts import NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP
+from shexer.consts import NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP, JSON_LD
 
 
 def _produce_shape_map_according_to_input(sm_format, sgraph, namespaces_prefix_dict, target_classes,
@@ -87,7 +87,7 @@ def get_triple_yielder(source_file=None, list_of_source_files=None, input_format
         else:
             result = MultiTsvNtTriplesYielder(list_of_files=list_of_source_files,
                                               allow_untyped_numbers=allow_untyped_numbers)
-    elif input_format in [TURTLE, N3, RDF_XML]:
+    elif input_format in [TURTLE, N3, RDF_XML, JSON_LD]:
         if source_file is not None or raw_graph is not None:
             result = RdflibTripleYielder(source=source_file,
                                          allow_untyped_numbers=allow_untyped_numbers,
