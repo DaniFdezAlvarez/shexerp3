@@ -13,27 +13,123 @@ HOST = "0.0.0.0"
 MAX_LEN = 100000
 
 
+################ Default namespace
+
+default_namespaces = {"http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
+                      "http://www.w3.org/2000/01/rdf-schema#": "rdfs",
+                      "http://www.w3.org/2001/XMLSchema#": "xml",
+                      "http://www.w3.org/XML/1998/namespace/": "xml",
+                      "http://www.w3.org/2002/07/owl#": "owl"
+                      }
+
+
 ################ PARAM NAMES
 
 TARGET_CLASSES_PARAM = "target_classes"
+"""
+List of strings: List of target classes to associate a shape with
+"""
+
 TARGET_GRAPH_PARAM = "raw_graph"
+"""
+String: RDF content to be analyzed
+"""
+
 INPUT_FORMAT_PARAM = "input_format"
+"""
+String: RDF syntax used. Ntriples is used by default Accepted values -->
+
+"nt" (n-triples)
+"turtle" (turtle)
+"xml" (RDF/XML)
+"n3" (n3)
+"json-ld" (JSON LD)
+"tsv_spo" (lines with subject predicate and object separated by tab '\\t' chars 
+"""
+
+
 INSTANTIATION_PROPERTY_PARAM = "instantiation_prop"
+"""
+String: property used to links an instance with its class. rdf:type by default.
+"""
+
+
 NAMESPACES_TO_IGNORE_PARAM = "ignore"
+"""
+List of Strings: List of namespaces whose properties should be ignored during the shexing process.
+"""
+
 INFER_NUMERIC_TYPES_PARAM = "infer_untyped_nums"
+"""
+Bool: default, True. If True, it tries to infer the numeric type (xsd:int, xsd:float..) of 
+untyped numeric literals 
+"""
+
 DISCARD_USELESS_CONSTRAINTS_PARAM = "discard_useless_constraints"
+"""
+Bool: default, True. default, True. If True, it keeps just the most possible specific constraint w.r.t. cardinality 
+"""
+
 ALL_INSTANCES_COMPLIANT_PARAM = "all_compliant"
+"""
+Bool: default, True. default, True. If False, the shapes produced may not be compliant with all the entities considered
+to build them. This is because it won't use Kleene closeres for any constraint. 
+"""
+
 KEEP_LESS_SPECIFIC_PARAM = "keep_less_specific"
+"""
+Bool: default, True. It prefers to use "+" closures rather than exact cardinalities in the triple constraints
+"""
+
 ACEPTANCE_THRESHOLD_PARAM = "threshold"
+"""
+Float: number in [0,1] that indicates the minimum proportion of entities that should have a given feature for this
+to be accepted as a triple constraint in the produced shape.
+"""
+
 ALL_CLASSES_MODE_PARAM = "all_classes"
+"""
+Bool: default, False. If True, it generates a shape for every elements with at least an instance 
+in the considered graph.
+"""
 SHAPE_MAP_PARAM = "shape_map"
+"""
+String: shape map to associate nodes with shapes. It uses the same syntax of validation shape maps. 
+"""
+
 REMOTE_GRAPH_PARAM = "graph_url"
+"""
+String: URL to retrieve an online raw graph.
+"""
+
 ENDPOINT_GRAPH_PARAM = "endpoint"
+"""
+String: URL of an SPARQL endpoint.
+"""
+
+NAMESPACES_PARAM = "prefixes"
+"""
+Dict. key are namespaces and values are prefixes. The pairs key value provided here will be used 
+to parse the RDF content and t write the resulting shapes.
+"""
 
 
 
 
 ################ SUPPORT FUNCTIONS
+
+
+def _build_namespaces_dict(new_prefixes, defaults):
+    """
+    It merges the default list of namespaces with a
+
+    :param new_prefixes:
+    :param defaults:
+    :return:
+    """
+    for a_key in new_prefixes:
+        defaults[a_key] = new_prefixes[a_key]
+
 
 def _jsonize_response(response):
     result = json.dumps({'result' : response})
@@ -93,6 +189,21 @@ def _parse_namespaces_to_ignore(data, error_pool):
         error_pool.append("You must provide a non-empty list of URIs (string) in " + NAMESPACES_TO_IGNORE_PARAM)
         return
     return [str(a_uri) for a_uri in data[NAMESPACES_TO_IGNORE_PARAM]]
+
+
+def _parse_namespaces(data, error_pool):
+    if NAMESPACES_PARAM not in data:
+        return {}
+    if type(data[NAMESPACES_PARAM]) != dict:
+        error_pool.append("You must provide a dict namespace_URI --> prefix  in " + NAMESPACES_PARAM)
+        return {}
+    if len(data[NAMESPACES_TO_IGNORE_PARAM]) == 0:
+        error_pool.append("You must provide a dict namespace_URI --> prefix  in " + NAMESPACES_PARAM)
+        return {}
+    result = {}
+    for a_key in data[NAMESPACES_PARAM]:
+        result[str(a_key)] = str(data[NAMESPACES_PARAM][a_key])
+    return result
 
 
 def _parse_target_classes(data, error_pool):
@@ -249,16 +360,6 @@ def _check_all_classes_mode_uncompatibility(data, error_pool, all_classes_mode):
 
 
 
-################ Default namespace
-
-default_namespaces = {"http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
-                      "http://www.w3.org/2000/01/rdf-schema#": "rdfs",
-                      "http://www.w3.org/2001/XMLSchema#": "xml",
-                      "http://www.w3.org/XML/1998/namespace/": "xml",
-                      "http://www.w3.org/2002/07/owl#" : "owl"
-                      }
-
-
 ################ WS
 
 app = Flask(__name__)
@@ -277,6 +378,7 @@ def shexer():
         threshold = _parse_threshold(data, error_pool)
         all_classes_mode = _parse_all_classes_mode(data, error_pool)
         namespaces_to_ignore = _parse_namespaces_to_ignore(data, error_pool)
+        namespaces = _parse_namespaces(data, error_pool)
         target_classes = None
         graph = None
         shape_map = None
@@ -310,7 +412,7 @@ def shexer():
                                 keep_less_specific=keep_less_specific,
                                 threshold=threshold,
                                 all_classes_mode=all_classes_mode,
-                                namespaces_dict=default_namespaces,
+                                namespaces_dict=_build_namespaces_dict(namespaces, default_namespaces),
                                 endpoint_sparql=endpoint_sparql,
                                 shape_map=shape_map,
                                 remote_graph=remote_graph,
