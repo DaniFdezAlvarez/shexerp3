@@ -1,6 +1,6 @@
 from rdflib.graph import Graph, URIRef, Literal, BNode
 from shexer.io.graph.yielder.base_triples_yielder import BaseTriplesYielder
-from shexer.consts import N3, TURTLE, RDF_XML, NT
+from shexer.consts import N3, TURTLE, RDF_XML, NT, JSON_LD
 
 from shexer.model.Literal import Literal as model_Literal
 from shexer.model.IRI import IRI as model_IRI
@@ -9,7 +9,7 @@ from shexer.model.property import Property as model_Property
 
 from shexer.utils.uri import decide_literal_type
 
-_SUPPORTED_FORMATS = [N3, TURTLE, RDF_XML, NT]
+_SUPPORTED_FORMATS = [N3, TURTLE, RDF_XML, NT, JSON_LD]
 
 _XML_WRONG_URI = "http://www.w3.org/XML/1998/namespace"
 
