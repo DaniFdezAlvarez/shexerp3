@@ -204,7 +204,7 @@ def _parse_namespaces(data, error_pool):
     if type(data[NAMESPACES_PARAM]) != dict:
         error_pool.append("You must provide a dict namespace_URI --> prefix  in " + NAMESPACES_PARAM)
         return {}
-    if len(data[NAMESPACES_TO_IGNORE_PARAM]) == 0:
+    if len(data[NAMESPACES_PARAM]) == 0:
         error_pool.append("You must provide a dict namespace_URI --> prefix  in " + NAMESPACES_PARAM)
         return {}
     result = {}
