@@ -135,6 +135,7 @@ def _build_namespaces_dict(new_prefixes, defaults):
     """
     for a_key in new_prefixes:
         defaults[a_key] = new_prefixes[a_key]
+    return defaults
 
 
 def _jsonize_response(response):
