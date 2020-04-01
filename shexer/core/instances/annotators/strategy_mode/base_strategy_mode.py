@@ -11,3 +11,6 @@ class BaseStrategyMode(object):
 
     def annotate_triple(self, a_triple):
         raise NotImplementedError()
+
+    def annotation_post_parsing(self):
+        pass  # By default, do nothing.

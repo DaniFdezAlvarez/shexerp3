@@ -19,3 +19,4 @@ class AllClasesMode(BaseStrategyMode):
             self._anotator_ref.add_new_class_to_instances_dict(a_triple[_O].iri)
             self._anotator_ref.anotate_instance(a_triple)
 
+

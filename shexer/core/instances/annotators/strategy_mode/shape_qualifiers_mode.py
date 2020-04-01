@@ -12,7 +12,7 @@ class ShapeQualifiersMode(BaseStrategyMode):
 
 
     def is_relevant_triple(self, a_triple):
-        if check_if_property_belongs_to_namespace_list(str_prop=a_triple[_P],
+        if check_if_property_belongs_to_namespace_list(str_prop=a_triple[_P].iri,
                                                        namespaces=self._namespaces_for_qualifiers_props):
             return True
         return False
@@ -20,16 +20,28 @@ class ShapeQualifiersMode(BaseStrategyMode):
 
     def annotate_triple(self, a_triple):
         self._anotate_qualifier_prop(a_triple[_P])
-        self._anotate_instance_of_a_qualifier(a_triple[_O])
+        self._anotate_instance_of_a_qualifier(a_triple)
 
 
     def _anotate_instance_of_a_qualifier(self, a_triple):
-        self._instances_dict[self._dict_of_qualifier_properties[a_triple[_P]]].add(a_triple[_O])
+        self._instances_dict[self._dict_of_qualifier_properties[a_triple[_P].iri]].add(a_triple[_O].iri)
 
 
     def _anotate_qualifier_prop(self, a_property):
-        if a_property not in self._dict_of_qualifier_properties:
-            self._dict_of_qualifier_properties[a_property] = build_shape_name_for_qualifier_prop_uri(a_property)
-            self._instances_dict[self._dict_of_qualifier_properties[a_property]] = set()
+        str_prop = a_property.iri
+        if str_prop not in self._dict_of_qualifier_properties:
+            self._dict_of_qualifier_properties[str_prop] = build_shape_name_for_qualifier_prop_uri(str_prop)
+            self._instances_dict[self._dict_of_qualifier_properties[str_prop]] = set()
+
+    # def annotation_post_parsing(self):
+        # for a_key in self._dict_of_qualifier_properties:
+        #
+        #     prop_shape_name = self._dict_of_qualifier_properties[a_key]
+        #     # print(prop_shape_name, a_key)
+        #     if len(self._instances_dict[prop_shape_name]) == 0:
+        #         print("Gone!", prop_shape_name)
+        #         del self._instances_dict[prop_shape_name]
+        #     else:
+        #         print(prop_shape_name, self._instances_dict[prop_shape_name])
 
 

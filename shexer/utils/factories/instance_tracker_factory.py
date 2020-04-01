@@ -26,7 +26,9 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                          track_classes_for_entities_at_last_depth_level=True,
                          depth_for_building_subgraph=1,
                          url_endpoint=None,
-                         strict_syntax_with_corners=False
+                         strict_syntax_with_corners=False,
+                         namespaces_for_qualifier_props=None,
+                         shape_qualifiers_mode=False
                          ):
     """
 
@@ -105,9 +107,9 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                                 namespaces_prefix_dict=namespaces_dict)
         selectors_tracker = ShapeMapInstanceTracker(shape_map=shape_map_parser.parse_shape_map(source_file=shape_map_file,
                                                                                                raw_content=shape_map_raw))
-    if _are_there_some_target_classes(target_classes, file_target_classes, all_classes_mode):
+    if _are_there_some_target_classes(target_classes, file_target_classes, all_classes_mode, shape_qualifiers_mode):
         model_classes = None
-        if not all_classes_mode:
+        if all_classes_mode or target_classes is not None:
             list_of_str_target_classes = tune_target_classes_if_needed(
                 target_classes) if target_classes is not None else read_target_classes_from_file(file_target_classes)
             model_classes = get_list_of_model_classes(list_of_str_target_classes)
@@ -116,7 +118,9 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                                  triples_yielder=instance_yielder,
                                                  instantiation_property=instantiation_property,
                                                  all_classes_mode=all_classes_mode,
-                                                 track_hierarchies=False)
+                                                 track_hierarchies=False,
+                                                 namespaces_for_qualifier_props=namespaces_for_qualifier_props,
+                                                 shape_qualifiers_mode=shape_qualifiers_mode)
 
     return _decide_tracker_to_return(selectors_tracker, pure_instances_tracker)
 
@@ -141,8 +145,8 @@ def _are_there_selectors(shape_map_file, shape_map_raw):
     return True
 
 
-def _are_there_some_target_classes(target_classes, file_target_classes, all_classes_mode):
-    if target_classes is None and file_target_classes is None and not all_classes_mode:
+def _are_there_some_target_classes(target_classes, file_target_classes, all_classes_mode, shape_qualifiers_mode):
+    if target_classes is None and file_target_classes is None and not all_classes_mode and not shape_qualifiers_mode:
         return False
     return True
 

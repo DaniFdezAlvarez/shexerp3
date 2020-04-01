@@ -39,7 +39,7 @@ class BaseAnnotator(object):
         #     return False
         # return True
 
-    def anotate_triple(self, a_triple):
+    def annotate_triple(self, a_triple):
         self._strategy_mode.annotate_triple(a_triple)
 
         # if self._instance_tracker.is_an_instantiation_prop(a_triple[_P]):
@@ -51,7 +51,7 @@ class BaseAnnotator(object):
             self._instances_dict[class_uri] = set()
 
     def anotation_post_parsing(self):
-        pass  # Done! Nothing to do here
+        self._strategy_mode.annotation_post_parsing()
 
     def _anotate_instance(self, a_triple):
         self._instances_dict[a_triple[_O].iri].add(a_triple[_S].iri)

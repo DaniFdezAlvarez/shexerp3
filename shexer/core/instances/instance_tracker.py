@@ -17,7 +17,7 @@ class InstanceTracker(AbstractInstanceTracker):
                  shape_qualifiers_mode=False, namespaces_for_qualifier_props=None):
         self._target_classes = target_classes
         self._all_classes_mode = all_classes_mode
-        self._instances_dict = self._build_instances_dict(self._target_classes, self._all_classes_mode)
+        self._instances_dict = self._build_instances_dict(self._target_classes)
         self._triples_yielder = triples_yielder
         self._instantiation_property = self._decide_instantiation_property(instantiation_property)
         self._relevant_triples = 0
@@ -77,12 +77,20 @@ class InstanceTracker(AbstractInstanceTracker):
         return a_property == self._subclass_property
 
     @staticmethod
-    def _build_instances_dict(target_classes, all_classes_mode):
+    def _build_instances_dict(target_classes):
+        """
+        If there are target classes, we can build their dictionary now. Otherwise, all_classes_mode or
+        shape_qualifiers_mode will fill the instances dict in future methods
+
+        :param target_classes:
+        :return:
+        """
         result = {}
-        if all_classes_mode:
-            return result  # In this case, we will add keys on the fly, while parsing the input graph.
-        for a_class in target_classes:
-            result[a_class.iri] = set()
+        if target_classes is not None:
+            for a_class in target_classes:
+                result[a_class.iri] = set()
+        # return result  # In this case, we will add keys on the fly, while parsing the input graph.
+
         return result
 
     @staticmethod

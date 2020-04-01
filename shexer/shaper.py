@@ -29,7 +29,9 @@ class Shaper(object):
                  track_classes_for_entities_at_last_depth_level=False,
                  strict_syntax_with_corners=False,
                  url_endpoint=None,
-                 shape_map_format=FIXED_SHAPE_MAP):
+                 shape_map_format=FIXED_SHAPE_MAP,
+                 shape_qualifiers_mode=False,
+                 namespaces_for_qualifier_props=None):
         """
 
         :param target_classes:
@@ -89,12 +91,15 @@ class Shaper(object):
         self._all_classes_mode = all_classes_mode
         self._shape_map_file = shape_map_file
         self._shape_map_raw = shape_map_raw
+
         self._depth_for_building_subgraph = depth_for_building_subgraph
         self._track_classes_for_entities_at_last_depth_level = track_classes_for_entities_at_last_depth_level
-        self._url_endpoint=url_endpoint
+        self._url_endpoint = url_endpoint
         self._strict_syntax_with_corners = strict_syntax_with_corners
         self._shape_map_format = shape_map_format
-        #TODO check correctness of these last five params
+        self._shape_qualifiers_mode = shape_qualifiers_mode
+        self._namespaces_for_qualifier_props = namespaces_for_qualifier_props
+        #TODO check correctness of these last seven params
 
 
 
@@ -208,8 +213,9 @@ class Shaper(object):
                                     depth_for_building_subgraph=self._depth_for_building_subgraph,
                                     url_endpoint=self._url_endpoint,
                                     strict_syntax_with_corners=self._strict_syntax_with_corners,
-                                    shape_map_format=self._shape_map_format
-                                    )
+                                    shape_map_format=self._shape_map_format,
+                                    namespaces_for_qualifier_props=self._namespaces_for_qualifier_props,
+                                    shape_qualifiers_mode=self._shape_qualifiers_mode)
 
     def _build_class_shexer(self):
         return get_class_shexer(class_instances_target_dict=self._target_classes_dict,

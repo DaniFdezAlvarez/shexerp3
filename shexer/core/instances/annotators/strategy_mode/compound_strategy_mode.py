@@ -17,3 +17,7 @@ class CompoundStrategyMode(BaseStrategyMode):
     def annotate_triple(self, a_triple):
         for a_strategy in self._list_of_strategies:
             a_strategy.annotate_triple(a_triple)
+
+    def annotation_post_parsing(self):
+        for a_strategy in self._list_of_strategies:
+            a_strategy.annotation_post_parsing()
