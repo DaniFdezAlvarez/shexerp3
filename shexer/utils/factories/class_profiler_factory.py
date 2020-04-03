@@ -14,7 +14,8 @@ def get_class_profiler(target_classes_dict, source_file, list_of_source_files, i
                        url_endpoint=None,
                        strict_syntax_with_corners=False,
                        target_classes=None,
-                       file_target_classes=None):
+                       file_target_classes=None,
+                       built_remote_graph=None):
     yielder = get_triple_yielder(source_file=source_file,
                                  list_of_source_files=list_of_source_files,
                                  input_format=input_format,
@@ -32,7 +33,8 @@ def get_class_profiler(target_classes_dict, source_file, list_of_source_files, i
                                  instantiation_property=instantiation_property_str,
                                  strict_syntax_with_corners=strict_syntax_with_corners,
                                  target_classes=target_classes,
-                                 file_target_classes=file_target_classes)
+                                 file_target_classes=file_target_classes,
+                                 built_remote_graph=built_remote_graph)
 
     return ClassProfiler(triples_yielder=yielder,
                          target_classes_dict=target_classes_dict,

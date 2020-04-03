@@ -31,17 +31,17 @@ def _produce_shape_map_according_to_input(sm_format, sgraph, namespaces_prefix_d
         target_classes = tune_target_classes_if_needed(
                 target_classes) if target_classes is not None else read_target_classes_from_file(file_target_classes)
         return translator.str_class_list_to_shape_map_sparql_selectors(str_list=target_classes,
-                                                                instantiation_property=instantiation_property)
+                                                                       instantiation_property=instantiation_property)
 
 def get_triple_yielder(source_file=None, list_of_source_files=None, input_format=NT, namespaces_to_ignore=None,
                        allow_untyped_numbers=False, raw_graph=None, namespaces_dict=None, url_input=None,
                        list_of_url_input=None, shape_map_file=None, shape_map_raw=None, shape_map_format=FIXED_SHAPE_MAP,
                        track_classes_for_entities_at_last_depth_level=True, depth_for_building_subgraph=1,
                        url_endpoint=None, instantiation_property=None, strict_syntax_with_corners=False,
-                       target_classes=None, file_target_classes=None):
+                       target_classes=None, file_target_classes=None, built_remote_graph=None):
     result = None
     if url_endpoint is not None:
-        sgrpah=EndpointSGraph(endpoint_url=url_endpoint)
+        sgrpah = built_remote_graph if built_remote_graph is not None else EndpointSGraph(endpoint_url=url_endpoint)
 
         shape_map = _produce_shape_map_according_to_input(sm_format=shape_map_format,
                                                           sgraph=sgrpah,

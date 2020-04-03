@@ -17,7 +17,8 @@ _O = 2
 
 class ClassProfiler(object):
 
-    def __init__(self, triples_yielder, target_classes_dict, instantiation_property_str=RDF_TYPE_STR):
+    def __init__(self, triples_yielder, target_classes_dict, instantiation_property_str=RDF_TYPE_STR,
+                 remove_empty_shapes=False, original_target_classes=None, original_selectors=None ):
         self._triples_yielder = triples_yielder
         self._target_classes_dict = target_classes_dict
         self._instances_shape_dict = {}
@@ -25,6 +26,9 @@ class ClassProfiler(object):
         self._shape_names_dict = self._build_shape_names_dict()
         self._relevant_triples = 0
         self._instantiation_property_str = self._decide_instantiation_property(instantiation_property_str)
+        self._remove_empty_shapes=remove_empty_shapes
+        self._original_target_nodes = self._determine_original_target_nodes_if_needed(original_target_classes,
+                                                                                      original_selectors)
 
 
 
@@ -201,3 +205,11 @@ class ClassProfiler(object):
             if str_subj in self._target_classes_dict[class_key]:
                 return True
         return False
+
+    def _determine_original_target_nodes_if_needed(self, original_target_classes, original_selectors):
+        if not self._remove_empty_shapes:
+            return None  # We dont need this structure if there are no shapes to remove.
+        result = set()
+        if original_target_classes is not None:
+            for a_class in original_target_classes:
+                result.add(a_class)

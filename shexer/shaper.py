@@ -4,6 +4,7 @@ from shexer.consts import SHEX, NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MA
 from shexer.utils.factories.class_profiler_factory import get_class_profiler
 from shexer.utils.factories.instance_tracker_factory import get_instance_tracker
 from shexer.utils.factories.class_shexer_factory import get_class_shexer
+from shexer.utils.factories.remote_graph_factory import get_remote_graph_if_needed
 from shexer.io.profile.formater.abstract_profile_serializer import AbstractProfileSerializer
 from shexer.utils.factories.shape_serializer_factory import get_shape_serializer
 
@@ -101,6 +102,9 @@ class Shaper(object):
         self._namespaces_for_qualifier_props = namespaces_for_qualifier_props
         #TODO check correctness of these last seven params
 
+        self._built_remote_graph = get_remote_graph_if_needed(endpoint_url=url_endpoint,
+                                                              store_locally=True)
+
 
 
         self._instance_tracker = None
@@ -191,7 +195,8 @@ class Shaper(object):
                                   url_endpoint=self._url_endpoint,
                                   strict_syntax_with_corners=self._strict_syntax_with_corners,
                                   target_classes=self._target_classes,
-                                  file_target_classes=self._file_target_classes)
+                                  file_target_classes=self._file_target_classes,
+                                  built_remote_graph=self._built_remote_graph)
 
 
     def _build_instance_tracker(self):
@@ -215,7 +220,8 @@ class Shaper(object):
                                     strict_syntax_with_corners=self._strict_syntax_with_corners,
                                     shape_map_format=self._shape_map_format,
                                     namespaces_for_qualifier_props=self._namespaces_for_qualifier_props,
-                                    shape_qualifiers_mode=self._shape_qualifiers_mode)
+                                    shape_qualifiers_mode=self._shape_qualifiers_mode,
+                                    built_remote_graph=self._built_remote_graph)
 
     def _build_class_shexer(self):
         return get_class_shexer(class_instances_target_dict=self._target_classes_dict,

@@ -28,7 +28,8 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                          url_endpoint=None,
                          strict_syntax_with_corners=False,
                          namespaces_for_qualifier_props=None,
-                         shape_qualifiers_mode=False
+                         shape_qualifiers_mode=False,
+                         built_remote_graph=None
                          ):
     """
 
@@ -71,7 +72,8 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                               url_endpoint=url_endpoint,
                                               strict_syntax_with_corners=strict_syntax_with_corners,
                                               target_classes=target_classes,
-                                              file_target_classes=file_target_classes
+                                              file_target_classes=file_target_classes,
+                                              built_remote_graph=built_remote_graph
                                               )
     else:
         instance_yielder = get_triple_yielder(source_file=graph_file_input,
@@ -90,7 +92,8 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                               url_endpoint=url_endpoint,
                                               strict_syntax_with_corners=strict_syntax_with_corners,
                                               target_classes=target_classes,
-                                              file_target_classes=file_target_classes
+                                              file_target_classes=file_target_classes,
+                                              built_remote_graph=built_remote_graph
                                               )
 
     selectors_tracker = None
@@ -101,7 +104,8 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                       raw_graph=raw_graph,
                                       graph_file_input=graph_file_input,
                                       url_input=url_input,
-                                      graph_format=input_format)
+                                      graph_format=input_format,
+                                      built_remote_graph=built_remote_graph)
         shape_map_parser = get_shape_map_parser(format=shape_map_format,
                                                 sgraph=sgraph,
                                                 namespaces_prefix_dict=namespaces_dict)
@@ -125,9 +129,9 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
     return _decide_tracker_to_return(selectors_tracker, pure_instances_tracker)
 
 
-def _get_adequate_sgraph(endpoint_url, graph_file_input, url_input, graph_format, raw_graph):
+def _get_adequate_sgraph(endpoint_url, graph_file_input, url_input, graph_format, raw_graph, built_remote_graph):
     if endpoint_url is not None:
-        return EndpointSGraph(endpoint_url=endpoint_url)
+        return built_remote_graph if built_remote_graph is not None else EndpointSGraph(endpoint_url=endpoint_url)
     else:
         return RdflibSgraph(source_file=graph_file_input if graph_file_input is not None else url_input,
                             raw_graph=raw_graph,

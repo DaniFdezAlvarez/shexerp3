@@ -39,7 +39,7 @@ def query_endpoint_single_variable(endpoint_url, str_query, variable_id, max_ret
             if first_failure and not fake_user_agent:
                 sparql.agent = _FAKE_USER_AGENT
                 first_failure = not first_failure
-    last_error.msg = "Max number of attempt reached, it is not possible to perform the query. Msg:\n" + last_error.msg
+    last_error.msg = "Max number of attempts reached, it is not possible to perform the query. Msg:\n" + last_error.msg
 
 
 
