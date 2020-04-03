@@ -7,8 +7,9 @@ from shexer.model.shape import STARTING_CHAR_FOR_SHAPE_NAME
 
 class BaseStatementSerializer(object):
 
-    def __init__(self, instantiation_property_str):
+    def __init__(self, instantiation_property_str, disable_comments=False):
         self._instantiation_property_str = instantiation_property_str
+        self._disable_comments = disable_comments
 
 
     def serialize_statement_with_indent_level(self, a_statement, is_last_statement_of_shape, namespaces_dict):
@@ -24,7 +25,7 @@ class BaseStatementSerializer(object):
         result = st_property + SPACES_GAP_BETWEEN_TOKENS + st_target_element + SPACES_GAP_BETWEEN_TOKENS + \
                  cardinality + BaseStatementSerializer.closure_of_statement(is_last_statement_of_shape)
 
-        if a_statement.cardinality != KLEENE_CLOSURE:
+        if a_statement.cardinality != KLEENE_CLOSURE and not self._disable_comments:
             result += BaseStatementSerializer.adequate_amount_of_final_spaces(result)
             result += BaseStatementSerializer.probability_representation(a_statement.probability)
         tuples_line_indent.append((result, 1))

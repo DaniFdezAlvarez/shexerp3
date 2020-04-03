@@ -16,6 +16,18 @@ class Shape(object):
     def class_uri(self):
         return self._class_uri
 
+    @property
+    def n_statements(self):
+        return len(self._statements)
+
+    @property
+    def statements(self):
+        return self._statements
+
+    @statements.setter
+    def statements(self, statements):
+        self._statements = statements
+
     def yield_statements(self):
         for a_statement in self._statements:
             yield a_statement

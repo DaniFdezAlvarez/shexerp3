@@ -38,7 +38,7 @@ shaper = Shaper(raw_graph=a_graph,
                 input_format=TURTLE,
                 namespaces_dict=namespaces_dict)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -56,7 +56,7 @@ shaper = Shaper(raw_graph=a_graph,
                 input_format=TURTLE,
                 namespaces_dict=namespaces_dict)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -78,7 +78,7 @@ shaper = Shaper(raw_graph=a_graph,
                 shape_map_format=FIXED_SHAPE_MAP,
                 namespaces_dict=namespaces_dict)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -95,7 +95,7 @@ shaper = Shaper(raw_graph=a_graph,
                 shape_map_format=FIXED_SHAPE_MAP,
                 namespaces_dict=namespaces_dict)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -115,7 +115,7 @@ shaper = Shaper(graph_file_input=file_graph_name,
                 input_format=TURTLE,
                 namespaces_dict=namespaces_dict)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -133,7 +133,7 @@ shaper = Shaper(graph_file_input=file_graph_name,
                 input_format=TURTLE,
                 namespaces_dict=namespaces_dict)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -155,7 +155,7 @@ shaper = Shaper(graph_file_input=file_graph_name,
                 shape_map_format=FIXED_SHAPE_MAP,
                 namespaces_dict=namespaces_dict)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -172,7 +172,7 @@ shaper = Shaper(graph_file_input=file_graph_name,
                 shape_map_format=FIXED_SHAPE_MAP,
                 namespaces_dict=namespaces_dict)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -194,7 +194,7 @@ shaper = Shaper(all_classes_mode=False,
                 instantiation_property=instantiation_property,
                 track_classes_for_entities_at_last_depth_level=False)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 
 print(result)
@@ -217,7 +217,7 @@ shaper = Shaper(all_classes_mode=False,
                 instantiation_property=instantiation_property,
                 track_classes_for_entities_at_last_depth_level=False)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 print(result)
 
@@ -239,7 +239,7 @@ shaper = Shaper(all_classes_mode=True,
                 instantiation_property=instantiation_property,
                 track_classes_for_entities_at_last_depth_level=False)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 print(result)
 
@@ -260,7 +260,7 @@ shaper = Shaper(all_classes_mode=True,
                 namespaces_dict=namespaces_dict,
                 instantiation_property=instantiation_property)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 print(result)
 
@@ -277,7 +277,7 @@ shaper = Shaper(all_classes_mode=False,
                 namespaces_dict=namespaces_dict,
                 instantiation_property=instantiation_property)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 print(result)
 
@@ -300,7 +300,7 @@ shaper = Shaper(all_classes_mode=False,
                 namespaces_dict=namespaces_dict,
                 instantiation_property=instantiation_property)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 print(result)
 
@@ -323,7 +323,7 @@ shaper = Shaper(all_classes_mode=True,
                 namespaces_dict=namespaces_dict,
                 instantiation_property=instantiation_property)
 
-result = shaper.shex_graph(aceptance_threshold=0.5,
+result = shaper.shex_graph(acceptance_threshold=0.5,
                            string_output=True)
 print(result)
 

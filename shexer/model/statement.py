@@ -30,6 +30,9 @@ class Statement(object):
         else:
             self._comments.insert(0, comment)
 
+    def remove_comments(self):
+        self._comments = []
+
 
 
     @property

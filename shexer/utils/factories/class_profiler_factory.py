@@ -15,7 +15,9 @@ def get_class_profiler(target_classes_dict, source_file, list_of_source_files, i
                        strict_syntax_with_corners=False,
                        target_classes=None,
                        file_target_classes=None,
-                       built_remote_graph=None):
+                       built_remote_graph=None,
+                       built_shape_map=None,
+                       remove_empty_shapes=True):
     yielder = get_triple_yielder(source_file=source_file,
                                  list_of_source_files=list_of_source_files,
                                  input_format=input_format,
@@ -34,8 +36,12 @@ def get_class_profiler(target_classes_dict, source_file, list_of_source_files, i
                                  strict_syntax_with_corners=strict_syntax_with_corners,
                                  target_classes=target_classes,
                                  file_target_classes=file_target_classes,
-                                 built_remote_graph=built_remote_graph)
+                                 built_remote_graph=built_remote_graph,
+                                 built_shape_map=built_shape_map)
 
     return ClassProfiler(triples_yielder=yielder,
                          target_classes_dict=target_classes_dict,
-                         instantiation_property_str=instantiation_property_str)
+                         instantiation_property_str=instantiation_property_str,
+                         original_target_classes=target_classes,
+                         original_shape_map=built_shape_map,
+                         remove_empty_shapes=remove_empty_shapes)

@@ -10,13 +10,13 @@ from shexer.io.shex.formater.statement_serializers.fixed_prop_choice_statement_s
 
 class ShexSerializer(object):
 
-    def __init__(self, target_file, shapes_list, aceptance_threshold=0.4, namespaces_dict=None,
+    def __init__(self, target_file, shapes_list, namespaces_dict=None,
                  tolerance_to_keep_similar_rules=0.01, keep_less_specific=True, string_return=False,
                  instantiation_property_str=RDF_TYPE_STR, discard_useless_positive_closures=True,
-                 all_compliant_mode=True):
+                 all_compliant_mode=True, disable_comments=False):
         self._target_file = target_file
         self._shapes_list = shapes_list
-        self._aceptance_theshold = aceptance_threshold
+        # self._aceptance_theshold = aceptance_threshold
         self._lines_buffer = []
         self._tolerance = tolerance_to_keep_similar_rules
         self._namespaces_dict = namespaces_dict if namespaces_dict is not None else {}
@@ -26,6 +26,7 @@ class ShexSerializer(object):
         self._instantiation_property_str = self._decide_instantiation_property(instantiation_property_str)
         self._discard_useless_positive_closures = discard_useless_positive_closures
         self._all_compliant_mode = all_compliant_mode
+        self._disable_comments = disable_comments
 
     def serialize_shex(self):
 
@@ -104,8 +105,15 @@ class ShexSerializer(object):
         if self._all_compliant_mode:
             self._modify_cardinalities_of_statements_non_compliant_with_all_instances(valid_statements)
 
+        if self._disable_comments:
+            self._remove_comments_from_statements(valid_statements)
+
         self._write_valid_statements_of_a_shape(valid_statements)
 
+
+    def _remove_comments_from_statements(self, valid_statements):
+        for a_statement in valid_statements:
+            a_statement.remove_comments()
 
     def _modify_cardinalities_of_statements_non_compliant_with_all_instances(self, statements):
         for a_statement in statements:
@@ -138,16 +146,14 @@ class ShexSerializer(object):
 
     def _select_valid_statements_of_shape(self, a_shape):
         original_statements = [a_statement for a_statement in a_shape.yield_statements()]
-        if len(original_statements) == 0 or original_statements[0].probability < self._aceptance_theshold:
-            return []  # Here I am assuming order
+        if len(original_statements) == 0:
+            return []
 
         for a_statement in original_statements:  # TODO Refactor!!! This is not the place to set the serializer
             self._set_serializer_object_for_statements(a_statement)
 
         result = []
         for i in range(0, len(original_statements)):
-            if original_statements[i].probability < self._aceptance_theshold:
-                break  # Here I am assuming order
             result.append(original_statements[i])
 
         result = self._group_constraints_with_same_prop_and_obj(result)
@@ -159,7 +165,8 @@ class ShexSerializer(object):
 
     def _set_serializer_object_for_statements(self, statement):
         statement.serializer_object = BaseStatementSerializer(
-            instantiation_property_str=self._instantiation_property_str)
+            instantiation_property_str=self._instantiation_property_str,
+            disable_comments=self._disable_comments)
 
 
     def _group_IRI_constraints(self, candidate_statements):
@@ -258,7 +265,8 @@ class ShexSerializer(object):
                                                           cardinality=POSITIVE_CLOSURE,
                                                           probability=target_probability,
                                                           serializer_object=FixedPropChoiceStatementSerializer(
-                                                              instantiation_property_str=self._instantiation_property_str)
+                                                              instantiation_property_str=self._instantiation_property_str,
+                                                              disable_comments=self._disable_comments)
                                                           )
             for a_statement in to_compose:
                 if a_statement.st_type != IRI_ELEM_TYPE:

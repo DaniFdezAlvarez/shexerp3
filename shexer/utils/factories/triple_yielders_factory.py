@@ -15,9 +15,11 @@ from shexer.utils.uri import remove_corners
 from shexer.consts import NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP, JSON_LD
 
 
-def _produce_shape_map_according_to_input(sm_format, sgraph, namespaces_prefix_dict, target_classes,
-                                          file_target_classes, shape_map_file, shape_map_raw,
-                                          instantiation_property):
+def produce_shape_map_according_to_input(sm_format, sgraph, namespaces_prefix_dict, target_classes,
+                                         file_target_classes, shape_map_file, shape_map_raw,
+                                         instantiation_property, shape_map_already_built=None):
+    if shape_map_already_built is not None:
+        return shape_map_already_built
     if shape_map_raw is not None or shape_map_file is not None:
         shape_map_parser = get_shape_map_parser(format=sm_format,
                                                 sgraph=sgraph,
@@ -38,19 +40,22 @@ def get_triple_yielder(source_file=None, list_of_source_files=None, input_format
                        list_of_url_input=None, shape_map_file=None, shape_map_raw=None, shape_map_format=FIXED_SHAPE_MAP,
                        track_classes_for_entities_at_last_depth_level=True, depth_for_building_subgraph=1,
                        url_endpoint=None, instantiation_property=None, strict_syntax_with_corners=False,
-                       target_classes=None, file_target_classes=None, built_remote_graph=None):
+                       target_classes=None, file_target_classes=None, built_remote_graph=None,
+                       built_shape_map=None):
     result = None
     if url_endpoint is not None:
         sgrpah = built_remote_graph if built_remote_graph is not None else EndpointSGraph(endpoint_url=url_endpoint)
 
-        shape_map = _produce_shape_map_according_to_input(sm_format=shape_map_format,
-                                                          sgraph=sgrpah,
-                                                          namespaces_prefix_dict=namespaces_dict,
-                                                          target_classes=target_classes,
-                                                          file_target_classes=file_target_classes,
-                                                          shape_map_file=shape_map_file,
-                                                          shape_map_raw=shape_map_raw,
-                                                          instantiation_property=instantiation_property)
+        shape_map = built_shape_map
+        if built_shape_map is None:
+            shape_map = produce_shape_map_according_to_input(sm_format=shape_map_format,
+                                                             sgraph=sgrpah,
+                                                             namespaces_prefix_dict=namespaces_dict,
+                                                             target_classes=target_classes,
+                                                             file_target_classes=file_target_classes,
+                                                             shape_map_file=shape_map_file,
+                                                             shape_map_raw=shape_map_raw,
+                                                             instantiation_property=instantiation_property)
         result = SgraphFromSelectorsTripleYielder(shape_map=shape_map,
                                                   depth=depth_for_building_subgraph,
                                                   classes_at_last_level=track_classes_for_entities_at_last_depth_level,
