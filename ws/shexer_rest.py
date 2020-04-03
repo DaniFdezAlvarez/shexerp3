@@ -113,10 +113,16 @@ Dict. key are namespaces and values are prefixes. The pairs key value provided h
 to parse the RDF content and t write the resulting shapes.
 """
 
-QUERY_DEPTH = "query_depth"
+QUERY_DEPTH_PARAM = "query_depth"
 """
 Integer: default, 1. It indicates the depth to generate queries when targeting a SPARQL endpoint.
 Currently it can be 1 or 2.
+"""
+
+DISABLE_COMMENTS_PARAM = "disable_comments"
+"""
+Bool: default, False. When set to True, the shapes do not include comment 
+with ratio of entities compliant with a triple constraint
 """
 
 
@@ -294,6 +300,11 @@ def _parse_all_classes_mode(data, error_pool):
                              default_value=False,
                              opt_message="The default value is False")
 
+def _parse_disable_comments(data, error_pool):
+    return _parse_bool_param(data=data, error_pool=error_pool, key=DISABLE_COMMENTS_PARAM,
+                             default_value=False,
+                             opt_message="The default value is False")
+
 
 def _parse_keep_less_specific(data, error_pool):
     return _parse_bool_param(data=data, error_pool=error_pool, key=ALL_INSTANCES_COMPLIANT_PARAM,
@@ -314,13 +325,13 @@ def _parse_threshold(data, error_pool):
 
 
 def _parse_query_depth(data, error_pool):
-    if QUERY_DEPTH in data:
+    if QUERY_DEPTH_PARAM in data:
         try:
-            result = int(data[QUERY_DEPTH])
+            result = int(data[QUERY_DEPTH_PARAM])
             if result > 2 or result < 1:
                 raise ValueError()
         except BaseException as e:
-            error_pool.append(QUERY_DEPTH + " must contain a an integer (1 or 2). The default value is 1.")
+            error_pool.append(QUERY_DEPTH_PARAM + " must contain a an integer (1 or 2). The default value is 1.")
     return 1
 
 
@@ -329,7 +340,7 @@ def _call_shaper(target_classes, graph, input_fotmat, instantiation_prop,
                  infer_untyped_num, discard_useles_constraints, all_compliant,
                  keep_less_specific, threshold, all_classes_mode, namespaces_dict,
                  namespaces_to_ignore, shape_map, remote_graph, endpoint_sparql,
-                 query_depth):
+                 query_depth, disable_comments):
     shaper = Shaper(target_classes=target_classes,
                     input_format=input_fotmat,
                     instantiation_property=instantiation_prop,
@@ -344,7 +355,8 @@ def _call_shaper(target_classes, graph, input_fotmat, instantiation_prop,
                     shape_map_raw=shape_map,
                     url_graph_input=remote_graph,
                     url_endpoint=endpoint_sparql,
-                    depth_for_building_subgraph=query_depth)
+                    depth_for_building_subgraph=query_depth,
+                    disable_comments=disable_comments)
     result = shaper.shex_graph(acceptance_threshold=threshold, string_output=True)
     return _jsonize_response(result)
 
@@ -402,6 +414,7 @@ def shexer():
         namespaces_to_ignore = _parse_namespaces_to_ignore(data, error_pool)
         namespaces = _parse_namespaces(data, error_pool)
         query_depth = _parse_query_depth(data, error_pool)
+        disable_comments = _parse_disable_comments(data, error_pool)
         target_classes = None
         graph = None
         shape_map = None
@@ -440,7 +453,8 @@ def shexer():
                                 shape_map=shape_map,
                                 remote_graph=remote_graph,
                                 namespaces_to_ignore=namespaces_to_ignore,
-                                query_depth=query_depth)
+                                query_depth=query_depth,
+                                disable_comments=disable_comments)
         else:
            return _return_json_error_pool(error_pool)
 
