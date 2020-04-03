@@ -1,6 +1,7 @@
 
 from shexer.model.IRI import IRI_ELEM_TYPE
 from shexer.utils.shapes import build_shapes_name_for_class_uri
+from shexer.utils.target_elements import determine_original_target_nodes_if_needed
 from shexer.model.property import Property
 from shexer.model.bnode import BNode
 from shexer.utils.uri import remove_corners
@@ -17,7 +18,8 @@ _O = 2
 
 class ClassProfiler(object):
 
-    def __init__(self, triples_yielder, target_classes_dict, instantiation_property_str=RDF_TYPE_STR):
+    def __init__(self, triples_yielder, target_classes_dict, instantiation_property_str=RDF_TYPE_STR,
+                 remove_empty_shapes=True, original_target_classes=None, original_shape_map=None ):
         self._triples_yielder = triples_yielder
         self._target_classes_dict = target_classes_dict
         self._instances_shape_dict = {}
@@ -25,7 +27,10 @@ class ClassProfiler(object):
         self._shape_names_dict = self._build_shape_names_dict()
         self._relevant_triples = 0
         self._instantiation_property_str = self._decide_instantiation_property(instantiation_property_str)
-
+        self._remove_empty_shapes=remove_empty_shapes
+        self._original_target_nodes = determine_original_target_nodes_if_needed(remove_empty_shapes=remove_empty_shapes,
+                                                                                original_target_classes=original_target_classes,
+                                                                                original_shape_map=original_shape_map)
 
 
 
@@ -35,6 +40,7 @@ class ClassProfiler(object):
         # print("Profiler... shape of instances built!")
         self._build_class_profile()
         # print("Profiler... class profile built!")
+        self._clean_class_profile()
         return self._classes_shape_dict
 
     def get_target_classes_dict(self):
@@ -59,6 +65,7 @@ class ClassProfiler(object):
             result[a_class] = name
         return result
 
+
     def _build_classes_shape_dict_with_just_classes(self):
         result = {}
         for a_class_key in self._target_classes_dict:
@@ -75,9 +82,11 @@ class ClassProfiler(object):
                     result.append( (a_prop, a_type, a_valid_cardinality) )
         return result
 
+
     def _infer_valid_cardinalities(self, a_property, a_cardinality):
         """
-        Special teratment for self._instantiation_property_str. If thats the property, we are targetting specific URIs instead of the type IRI.
+        Special teratment for self._instantiation_property_str. If thats the property, we are targetting specific URIs
+        instead of the type IRI.
         Cardinality will be always "1"
         :param a_property:
         :param a_cardinality:
@@ -97,6 +106,42 @@ class ClassProfiler(object):
                 if self._is_instance_of_class(an_instance, a_class):
                     self._anotate_instance_features_for_class(a_class, feautres_3tuple)
 
+    def _clean_class_profile(self):
+        if not self._remove_empty_shapes:
+            return
+        shapes_to_remove = self._detect_shapes_to_remove()
+
+        while(len(shapes_to_remove) != 0):
+            self._iteration_remove_empty_shapes(shapes_to_remove)
+            shapes_to_remove = self._detect_shapes_to_remove()
+
+    def _detect_shapes_to_remove(self):
+        shapes_to_remove = set()
+        for a_shape_key in self._classes_shape_dict:
+            if not self._is_original_target_shape(a_shape_key):
+                if not self._has_it_annotated_features(a_shape_key):
+                    shapes_to_remove.add(a_shape_key)
+        return shapes_to_remove
+
+    def _is_original_target_shape(self, shape_label):
+        return shape_label in self._original_target_nodes
+
+    def _has_it_annotated_features(self, shape_label):
+        if shape_label not in self._classes_shape_dict:
+            return False
+        return len(self._classes_shape_dict[shape_label]) > 0
+
+    def _iteration_remove_empty_shapes(self, target_shapes):
+        for a_shape_label_key in self._classes_shape_dict:
+            for a_prop_key in self._classes_shape_dict[a_shape_label_key]:
+                # print(self._classes_shape_dict[a_shape_label_key][a_prop_key])
+                for a_shape_to_remove in target_shapes:
+                    if a_shape_to_remove in self._classes_shape_dict[a_shape_label_key][a_prop_key]:
+                        del self._classes_shape_dict[a_shape_label_key][a_prop_key][a_shape_to_remove]
+        for a_shape_to_remove in target_shapes:
+            if a_shape_to_remove in self._classes_shape_dict:
+                del self._classes_shape_dict[a_shape_to_remove]
+
 
     def _anotate_instance_features_for_class(self, a_class, features_3tuple):
         for a_feature_3tuple in features_3tuple:
@@ -114,7 +159,6 @@ class ClassProfiler(object):
             self._classes_shape_dict[a_class][str_prop][str_type] = {}
         if cardinality not in self._classes_shape_dict[a_class][str_prop][str_type]:
             self._classes_shape_dict[a_class][str_prop][str_type][cardinality] = 0
-
 
 
     def _is_instance_of_class(self, an_instance_str, a_class_str):
@@ -201,3 +245,4 @@ class ClassProfiler(object):
             if str_subj in self._target_classes_dict[class_key]:
                 return True
         return False
+

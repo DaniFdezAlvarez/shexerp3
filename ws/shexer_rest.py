@@ -345,7 +345,7 @@ def _call_shaper(target_classes, graph, input_fotmat, instantiation_prop,
                     url_graph_input=remote_graph,
                     url_endpoint=endpoint_sparql,
                     depth_for_building_subgraph=query_depth)
-    result = shaper.shex_graph(aceptance_threshold=threshold, string_output=True)
+    result = shaper.shex_graph(acceptance_threshold=threshold, string_output=True)
     return _jsonize_response(result)
 
 

@@ -1,5 +1,13 @@
-from rdflib import URIRef, Graph
+from rdflib import URIRef, Graph, Literal, BNode
 from shexer.model.graph.abstract_sgraph import SGraph
+from shexer.utils.triple_yielders import tune_token, tune_prop, tune_subj
+from shexer.utils.uri import add_corners_if_it_is_an_uri
+from shexer.core.instances.pconsts import _S, _P, _O
+from shexer.model.IRI import IRI as ModelIRI
+from shexer.model.property import Property as ModelProperty
+from shexer.model.Literal import Literal as ModelLiteral
+from shexer.model.bnode import BNode as ModelBnode
+
 
 class RdflibSgraph(SGraph):
 
@@ -29,6 +37,35 @@ class RdflibSgraph(SGraph):
     def yield_class_triples_of_an_s(self, target_node, instantiation_property):
         for s ,p, o in self._rdflib_graph.triples((URIRef(target_node), URIRef(instantiation_property), None)):
             yield str(s), str(p), str(o)
+
+    def add_triple(self, a_triple):
+        """
+        It receives a tuple of 3 string elements. It adds it to the local rdflib graph
+        :param a_triple:
+        :return:
+        """
+
+        subj = tune_subj(add_corners_if_it_is_an_uri(a_triple[_S]),
+                         raise_error_if_no_corners=False)
+        prop = tune_prop(add_corners_if_it_is_an_uri(a_triple[_P]),
+                         raise_error_if_no_corners=False)
+        obj = tune_token(add_corners_if_it_is_an_uri(a_triple[_O]),
+                         raise_error_if_no_corners=False)
+
+        self._rdflib_graph.add((self._turn_obj_into_rdflib_element(subj),
+                                self._turn_obj_into_rdflib_element(prop),
+                                self._turn_obj_into_rdflib_element(obj)))
+
+    def _turn_obj_into_rdflib_element(self, model_elem):
+        if type(model_elem) == ModelIRI or type(model_elem) == ModelProperty:
+            return URIRef(model_elem.iri)
+        elif type(model_elem) == ModelLiteral:
+            return Literal(lexical_or_value=str(model_elem),
+                           datatype=model_elem.elem_type)
+        elif type(model_elem) == ModelBnode:
+            return BNode(value=str(model_elem))
+        else:
+            raise ValueError("Unexpected type of element. " + str(model_elem) + ": " + str(type(model_elem)))
 
 
     def _build_rdflib_graph(self, source, raw_graph, format):

@@ -13,15 +13,19 @@ _RDFS_SUBCLASS_OF = Property(content="http://www.w3.org/2000/01/rdf-schema#subCl
 class InstanceTracker(AbstractInstanceTracker):
 
     def __init__(self, target_classes, triples_yielder, instantiation_property=_RDF_TYPE,
-                 all_classes_mode=False, subclass_property=_RDFS_SUBCLASS_OF, track_hierarchies=True):
-        self._instances_dict = self._build_instances_dict(target_classes, all_classes_mode)
+                 all_classes_mode=False, subclass_property=_RDFS_SUBCLASS_OF, track_hierarchies=True,
+                 shape_qualifiers_mode=False, namespaces_for_qualifier_props=None):
+        self._target_classes = target_classes
+        self._all_classes_mode = all_classes_mode
+        self._instances_dict = self._build_instances_dict(self._target_classes)
         self._triples_yielder = triples_yielder
         self._instantiation_property = self._decide_instantiation_property(instantiation_property)
         self._relevant_triples = 0
         self._not_relevant_triples = 0
-        self._all_classes_mode = all_classes_mode
         self._subclass_property = subclass_property
         self._track_hierarchies = track_hierarchies
+        self._shape_qualifiers_mode = shape_qualifiers_mode
+        self._namespaces_for_qualifiers_props = [] if namespaces_for_qualifier_props is None else namespaces_for_qualifier_props
 
         self._htree = get_basic_h_tree() if track_hierarchies else None
         self._classes_considered_in_htree = set() if track_hierarchies else None
@@ -48,7 +52,7 @@ class InstanceTracker(AbstractInstanceTracker):
     def track_instances(self):
         self._reset_count()
         for a_revelant_triple in self._yield_relevant_triples():
-            self._annotator.anotate_triple(a_revelant_triple)
+            self._annotator.annotate_triple(a_revelant_triple)
         self._annotator.anotation_post_parsing()
 
         return self._instances_dict
@@ -73,12 +77,20 @@ class InstanceTracker(AbstractInstanceTracker):
         return a_property == self._subclass_property
 
     @staticmethod
-    def _build_instances_dict(target_classes, all_classes_mode):
+    def _build_instances_dict(target_classes):
+        """
+        If there are target classes, we can build their dictionary now. Otherwise, all_classes_mode or
+        shape_qualifiers_mode will fill the instances dict in future methods
+
+        :param target_classes:
+        :return:
+        """
         result = {}
-        if all_classes_mode:
-            return result  # In this case, we will add keys on the fly, while parsing the input graphic.
-        for a_class in target_classes:
-            result[a_class.iri] = set()
+        if target_classes is not None:
+            for a_class in target_classes:
+                result[a_class.iri] = set()
+        # return result  # In this case, we will add keys on the fly, while parsing the input graph.
+
         return result
 
     @staticmethod
@@ -117,7 +129,7 @@ class InstanceTracker(AbstractInstanceTracker):
     #         return False
     #     elif self._all_classes_mode:
     #         if a_triple[_O].iri not in self._instances_dict:
-    #             self._add_new_class_to_instances_dict(a_triple[_O].iri)
+    #             self.add_new_class_to_instances_dict(a_triple[_O].iri)
     #             return True
     #     elif a_triple[_O].iri not in self._instances_dict:
     #         return False

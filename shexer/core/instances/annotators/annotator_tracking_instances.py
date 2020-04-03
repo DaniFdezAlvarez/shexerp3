@@ -6,17 +6,17 @@ class AnnotatorTrackingInstances(BaseAnnotator):
     def __init__(self, instance_tracker):
         super().__init__(instance_tracker)
 
-    def anotate_triple(self, a_triple):
+    def annotate_triple(self, a_triple):
         if self._instance_tracker.is_subclass_property(a_triple[_P]):
             self._anotate_subclass(a_triple)
         else:
-            super().anotate_triple(a_triple)
+            super().annotate_triple(a_triple)
 
     def is_relevant_triple(self, a_triple):
         if a_triple[_P] == self._subclass_property:
             return True
         else:
-            return super().anotate_triple(a_triple)
+            return super().annotate_triple(a_triple)
 
     def anotation_post_parsing(self):
         for a_key_class in self._instances_dict:
