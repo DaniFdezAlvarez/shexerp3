@@ -41,7 +41,6 @@ class ClassProfiler(object):
         self._build_class_profile()
         # print("Profiler... class profile built!")
         self._clean_class_profile()
-        print(self._classes_shape_dict)
         return self._classes_shape_dict
 
     def get_target_classes_dict(self):
@@ -138,14 +137,10 @@ class ClassProfiler(object):
                 # print(self._classes_shape_dict[a_shape_label_key][a_prop_key])
                 for a_shape_to_remove in target_shapes:
                     if a_shape_to_remove in self._classes_shape_dict[a_shape_label_key][a_prop_key]:
-                        print("Weee")
                         del self._classes_shape_dict[a_shape_label_key][a_prop_key][a_shape_to_remove]
-        print(self._classes_shape_dict.keys())
-        print(target_shapes)
         for a_shape_to_remove in target_shapes:
             if a_shape_to_remove in self._classes_shape_dict:
                 del self._classes_shape_dict[a_shape_to_remove]
-        print(self._classes_shape_dict.keys())
 
 
     def _anotate_instance_features_for_class(self, a_class, features_3tuple):

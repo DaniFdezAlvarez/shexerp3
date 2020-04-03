@@ -56,12 +56,31 @@ class BaseStatementSerializer(object):
         if a_token.startswith(STARTING_CHAR_FOR_SHAPE_NAME):  # Shape
             return "@:" + a_token.replace(STARTING_CHAR_FOR_SHAPE_NAME, "")
 
-        for a_namespace in namespaces_dict:  # Prefixed element (all literals are prefixed elements)
-            if a_namespace in a_token:
-                return a_token.replace(a_namespace, namespaces_dict[a_namespace] + ":")
+        candidate_prefixed = BaseStatementSerializer._prefixize_uri_if_possible(uri=a_token,
+                                                                                namespaces_dict=namespaces_dict)
+        if candidate_prefixed is not None:
+            return candidate_prefixed
+
 
         return "<" + a_token + ">"  # Complete URIs
 
+    @staticmethod
+    def _prefixize_uri_if_possible(uri, namespaces_dict):
+        """
+        It returns None it it doesnt find an adequate prefix
+
+        :param uri:
+        :param namespaces_dict:
+        :return:
+        """
+        best_match = None
+        for a_namespace in namespaces_dict:  # Prefixed element (all literals are prefixed elements)
+            if uri.startswith(a_namespace):
+                if best_match is None or len(best_match) < len(a_namespace):
+                    best_match = a_namespace
+
+
+        return None if best_match is None else uri.replace(best_match, namespaces_dict[best_match] + ":")
 
     @staticmethod
     def probability_representation(probability):
