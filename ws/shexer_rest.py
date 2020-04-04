@@ -450,7 +450,7 @@ def shexer():
         query_depth = _parse_query_depth(data, error_pool)
         disable_comments = _parse_disable_comments(data, error_pool)
 
-        shape_qualifiers_mode = _parse_shape_qualifiers_mode(data, error_pool),
+        shape_qualifiers_mode = _parse_shape_qualifiers_mode(data, error_pool)
         namespaces_for_qualifier_props = _parse_namespaces_for_qualifiers(data, error_pool)
 
         target_classes = None
@@ -494,7 +494,8 @@ def shexer():
                                 query_depth=query_depth,
                                 disable_comments=disable_comments,
                                 namespaces_for_qualifier_props=namespaces_for_qualifier_props,
-                                shape_qualifiers_mode=shape_qualifiers_mode)
+                                shape_qualifiers_mode=shape_qualifiers_mode
+                                )
 
 
         else:
