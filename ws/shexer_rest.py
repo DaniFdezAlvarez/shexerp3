@@ -360,6 +360,7 @@ def _parse_query_depth(data, error_pool):
             result = int(data[QUERY_DEPTH_PARAM])
             if result > 2 or result < 1:
                 raise ValueError()
+            return result
         except BaseException as e:
             error_pool.append(QUERY_DEPTH_PARAM + " must contain a an integer (1 or 2). The default value is 1.")
     return 1
