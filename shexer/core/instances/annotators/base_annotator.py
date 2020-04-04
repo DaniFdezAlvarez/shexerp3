@@ -42,8 +42,6 @@ class BaseAnnotator(object):
     def annotate_triple(self, a_triple):
         self._strategy_mode.annotate_triple(a_triple)
 
-        # if self._instance_tracker.is_an_instantiation_prop(a_triple[_P]):
-        #     self._anotate_instance(a_triple)
 
 
     def add_new_class_to_instances_dict(self, class_uri):
@@ -53,14 +51,14 @@ class BaseAnnotator(object):
     def anotation_post_parsing(self):
         self._strategy_mode.annotation_post_parsing()
 
-    def _anotate_instance(self, a_triple):
+    def annotate_instance(self, a_triple):
         self._instances_dict[a_triple[_O].iri].add(a_triple[_S].iri)
 
     def _get_proper_strategy(self):
         strategies_list = []
         if self._all_classes_mode:
             strategies_list.append(AllClasesMode(anotator_ref=self))
-        if self._target_classes is not None and len(self._target_classes > 0):
+        if self._target_classes is not None and len(self._target_classes) > 0:
             strategies_list.append(TargetClassesMode(anotator_ref=self))
         if self._shape_qualifiers_mode:
             strategies_list.append(

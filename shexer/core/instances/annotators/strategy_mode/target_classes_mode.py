@@ -16,7 +16,7 @@ class TargetClassesMode(BaseStrategyMode):
 
     def annotate_triple(self, a_triple):
         if self._instance_tracker.is_an_instantiation_prop(a_triple[_P]):
-            self._anotator_ref.anotate_instance(a_triple)
+            self._anotator_ref.annotate_instance(a_triple)
 
 
         # if self._instance_tracker.is_an_instantiation_prop(a_triple[_P]):
