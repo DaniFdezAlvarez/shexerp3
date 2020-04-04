@@ -125,6 +125,18 @@ Bool: default, False. When set to True, the shapes do not include comment
 with ratio of entities compliant with a triple constraint
 """
 
+QUALIFIER_NAMESPACES_PARAM = "namespaces_for_qualifiers"
+"""
+List. Default, None. When a list with elements is provided, the properties in the namespaces specified are considered
+to be pointers to qualifier nodes.
+"""
+
+SHAPE_QUALIFIERS_MODE_PARAM = "shape_qualifiers_mode"
+"""
+Bool: default, False. When set to true, a shape is generated for those nodes detected as qualifiers according to
+Wikidata data model and the properties pointing to them specified in QUALIFIER_NAMESPACES_PARAM
+"""
+
 
 
 
@@ -202,6 +214,19 @@ def _parse_namespaces_to_ignore(data, error_pool):
         error_pool.append("You must provide a non-empty list of URIs (string) in " + NAMESPACES_TO_IGNORE_PARAM)
         return
     return [str(a_uri) for a_uri in data[NAMESPACES_TO_IGNORE_PARAM]]
+
+
+def _parse_namespaces_for_qualifiers(data, error_pool):
+    if QUALIFIER_NAMESPACES_PARAM not in data:
+        return None
+    if type(data[QUALIFIER_NAMESPACES_PARAM]) != list:
+        error_pool.append("You must provide a non-empty list of URIs (string) in " + QUALIFIER_NAMESPACES_PARAM)
+        return None
+    if len(data[QUALIFIER_NAMESPACES_PARAM]) == 0 or type(data[QUALIFIER_NAMESPACES_PARAM][0]) != str:
+        error_pool.append("You must provide a non-empty list of URIs (string) in " + QUALIFIER_NAMESPACES_PARAM)
+        return
+    return [str(a_uri) for a_uri in data[QUALIFIER_NAMESPACES_PARAM]]
+
 
 
 def _parse_namespaces(data, error_pool):
@@ -300,6 +325,11 @@ def _parse_all_classes_mode(data, error_pool):
                              default_value=False,
                              opt_message="The default value is False")
 
+def _parse_shape_qualifiers_mode(data, error_pool):
+    return _parse_bool_param(data=data, error_pool=error_pool, key=SHAPE_QUALIFIERS_MODE_PARAM,
+                             default_value=False,
+                             opt_message="The default value is False")
+
 def _parse_disable_comments(data, error_pool):
     return _parse_bool_param(data=data, error_pool=error_pool, key=DISABLE_COMMENTS_PARAM,
                              default_value=False,
@@ -340,7 +370,8 @@ def _call_shaper(target_classes, graph, input_fotmat, instantiation_prop,
                  infer_untyped_num, discard_useles_constraints, all_compliant,
                  keep_less_specific, threshold, all_classes_mode, namespaces_dict,
                  namespaces_to_ignore, shape_map, remote_graph, endpoint_sparql,
-                 query_depth, disable_comments):
+                 query_depth, disable_comments, namespaces_for_qualifier_props,
+                 shape_qualifiers_mode):
     shaper = Shaper(target_classes=target_classes,
                     input_format=input_fotmat,
                     instantiation_property=instantiation_prop,
@@ -356,7 +387,10 @@ def _call_shaper(target_classes, graph, input_fotmat, instantiation_prop,
                     url_graph_input=remote_graph,
                     url_endpoint=endpoint_sparql,
                     depth_for_building_subgraph=query_depth,
-                    disable_comments=disable_comments)
+                    disable_comments=disable_comments,
+                    namespaces_for_qualifier_props=namespaces_for_qualifier_props,
+                    shape_qualifiers_mode=shape_qualifiers_mode
+                    )
     result = shaper.shex_graph(acceptance_threshold=threshold, string_output=True)
     return _jsonize_response(result)
 
@@ -415,6 +449,10 @@ def shexer():
         namespaces = _parse_namespaces(data, error_pool)
         query_depth = _parse_query_depth(data, error_pool)
         disable_comments = _parse_disable_comments(data, error_pool)
+
+        shape_qualifiers_mode = _parse_shape_qualifiers_mode(data, error_pool),
+        namespaces_for_qualifier_props = _parse_namespaces_for_qualifiers(data, error_pool)
+
         target_classes = None
         graph = None
         shape_map = None
@@ -454,7 +492,11 @@ def shexer():
                                 remote_graph=remote_graph,
                                 namespaces_to_ignore=namespaces_to_ignore,
                                 query_depth=query_depth,
-                                disable_comments=disable_comments)
+                                disable_comments=disable_comments,
+                                namespaces_for_qualifier_props=namespaces_for_qualifier_props,
+                                shape_qualifiers_mode=shape_qualifiers_mode)
+
+
         else:
            return _return_json_error_pool(error_pool)
 
