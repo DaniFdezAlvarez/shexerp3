@@ -1,7 +1,7 @@
 from shexer.model.property import Property
 from shexer.utils.uri import remove_corners
 from shexer.utils.factories.h_tree import get_basic_h_tree
-from shexer.core.instances.annotators.annotator_func import get_proper_anotator
+from shexer.core.instances.annotators.annotator_func import get_proper_annotator
 from shexer.core.instances.abstract_instance_tracker import AbstractInstanceTracker
 
 
@@ -30,8 +30,8 @@ class InstanceTracker(AbstractInstanceTracker):
         self._htree = get_basic_h_tree() if track_hierarchies else None
         self._classes_considered_in_htree = set() if track_hierarchies else None
 
-        self._annotator = get_proper_anotator(track_hierarchies=track_hierarchies,
-                                              instance_tracker_ref=self)
+        self._annotator = get_proper_annotator(track_hierarchies=track_hierarchies,
+                                               instance_tracker_ref=self)
 
     @property
     def disambiguator_prefix(self):
@@ -53,7 +53,7 @@ class InstanceTracker(AbstractInstanceTracker):
         self._reset_count()
         for a_revelant_triple in self._yield_relevant_triples():
             self._annotator.annotate_triple(a_revelant_triple)
-        self._annotator.anotation_post_parsing()
+        self._annotator.annotation_post_parsing()
 
         return self._instances_dict
 

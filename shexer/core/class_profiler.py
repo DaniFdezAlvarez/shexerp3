@@ -104,7 +104,7 @@ class ClassProfiler(object):
             feautres_3tuple = self._infer_3tuple_features(an_instance)
             for a_class in self._target_classes_dict:
                 if self._is_instance_of_class(an_instance, a_class):
-                    self._anotate_instance_features_for_class(a_class, feautres_3tuple)
+                    self._annotate_instance_features_for_class(a_class, feautres_3tuple)
 
     def _clean_class_profile(self):
         if not self._remove_empty_shapes:
@@ -143,7 +143,7 @@ class ClassProfiler(object):
                 del self._classes_shape_dict[a_shape_to_remove]
 
 
-    def _anotate_instance_features_for_class(self, a_class, features_3tuple):
+    def _annotate_instance_features_for_class(self, a_class, features_3tuple):
         for a_feature_3tuple in features_3tuple:
             self._introduce_needed_elements_in_shape_classes_dict(a_class, a_feature_3tuple)
             # 3tuple: 0->str_prop, 1->str_type, 2->cardinality
@@ -170,10 +170,10 @@ class ClassProfiler(object):
     def _build_shape_of_instances(self):
         for a_triple in self._yield_relevant_triples():
             self._relevant_triples += 1
-            self._anotate_feature_of_target_instance(a_triple)
+            self._annotate_feature_of_target_instance(a_triple)
 
 
-    def _anotate_feature_of_target_instance(self, a_triple):
+    def _annotate_feature_of_target_instance(self, a_triple):
         str_subj = a_triple[_S].iri
         str_prop = a_triple[_P].iri
         type_obj = self._decide_type_obj(a_triple[_O], str_prop)

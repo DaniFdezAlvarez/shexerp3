@@ -3,8 +3,8 @@ from shexer.core.instances.annotators.strategy_mode.base_strategy_mode import Ba
 
 class CompoundStrategyMode(BaseStrategyMode):
 
-    def __init__(self, anotator_ref, list_of_strategies):
-        super().__init__(anotator_ref)
+    def __init__(self, annotator_ref, list_of_strategies):
+        super().__init__(annotator_ref)
         self._list_of_strategies = list_of_strategies
 
 

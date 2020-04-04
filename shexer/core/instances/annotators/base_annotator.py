@@ -48,7 +48,7 @@ class BaseAnnotator(object):
         if class_uri not in self._instances_dict:
             self._instances_dict[class_uri] = set()
 
-    def anotation_post_parsing(self):
+    def annotation_post_parsing(self):
         self._strategy_mode.annotation_post_parsing()
 
     def annotate_instance(self, a_triple):
@@ -57,12 +57,12 @@ class BaseAnnotator(object):
     def _get_proper_strategy(self):
         strategies_list = []
         if self._all_classes_mode:
-            strategies_list.append(AllClasesMode(anotator_ref=self))
+            strategies_list.append(AllClasesMode(annotator_ref=self))
         if self._target_classes is not None and len(self._target_classes) > 0:
-            strategies_list.append(TargetClassesMode(anotator_ref=self))
+            strategies_list.append(TargetClassesMode(annotator_ref=self))
         if self._shape_qualifiers_mode:
             strategies_list.append(
-                ShapeQualifiersMode(anotator_ref=self,
+                ShapeQualifiersMode(annotator_ref=self,
                                     namespaces_for_qualifiers_props=self._namespaces_for_qualifiers_props))
 
         if len(strategies_list) == 0:
@@ -70,5 +70,5 @@ class BaseAnnotator(object):
         if len(strategies_list) == 1:
             return strategies_list[0]
         else:
-            return CompoundStrategyMode(anotator_ref=self,
+            return CompoundStrategyMode(annotator_ref=self,
                                         list_of_strategies=strategies_list)
