@@ -125,7 +125,7 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
         selectors_tracker = ShapeMapInstanceTracker(shape_map=valid_shape_map)
     if _are_there_some_target_classes(target_classes, file_target_classes, all_classes_mode, shape_qualifiers_mode):
         model_classes = None
-        if all_classes_mode or target_classes is not None:
+        if file_target_classes or target_classes is not None:
             list_of_str_target_classes = tune_target_classes_if_needed(
                 target_classes) if target_classes is not None else read_target_classes_from_file(file_target_classes)
             model_classes = get_list_of_model_classes(list_of_str_target_classes)
