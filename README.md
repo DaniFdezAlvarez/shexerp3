@@ -92,7 +92,7 @@ shaper = Shaper(target_classes=target_classes,
 
 
 shaper.shex_graph(output_file=output_file,
-                  aceptance_threshold=0.1)
+                  acceptance_threshold=0.1)
 
 print("Done!")
 
