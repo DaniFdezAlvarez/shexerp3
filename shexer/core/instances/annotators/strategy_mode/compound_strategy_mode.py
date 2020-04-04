@@ -10,7 +10,7 @@ class CompoundStrategyMode(BaseStrategyMode):
 
     def is_relevant_triple(self, a_triple):
         for a_strategy in self._list_of_strategies:
-            if a_strategy.is_relevan_triple(a_triple):
+            if a_strategy.is_relevant_triple(a_triple):
                 return True
         return False
 
