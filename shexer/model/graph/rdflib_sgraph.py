@@ -31,12 +31,12 @@ class RdflibSgraph(SGraph):
 
     def yield_p_o_triples_of_an_s(self, target_node):
         for s, p ,o in self._rdflib_graph.triples((URIRef(target_node), None, None)):
-            yield str(s), str(p), str(o)
+            yield str(s), str(p), self._add_lang_if_needed(o)
 
 
     def yield_class_triples_of_an_s(self, target_node, instantiation_property):
         for s ,p, o in self._rdflib_graph.triples((URIRef(target_node), URIRef(instantiation_property), None)):
-            yield str(s), str(p), str(o)
+            yield str(s), str(p), self._add_lang_if_needed(o)
 
     def add_triple(self, a_triple):
         """
@@ -74,4 +74,15 @@ class RdflibSgraph(SGraph):
             result.parse(source=source, format=format)
         else:
             result.parse(data=raw_graph, format=format)
+        return result
+
+    def _add_lang_if_needed(self, rdflib_obj):
+        """
+        It return a string representation with lang if it is a langString
+        :param rdflib_obj:
+        :return:
+        """
+        result = str(rdflib_obj)
+        if type(rdflib_obj) == Literal and rdflib_obj.language is not None:
+            result = '"' + result + '"@' + rdflib_obj.language
         return result
