@@ -99,6 +99,8 @@ class RdflibTripleYielder(BaseTriplesYielder):
     @staticmethod
     def _turn_into_model_literal(rdflib_literal):
         content = str(rdflib_literal)
+        if rdflib_literal.language is not None:
+            content = '"' + content + '"@' + rdflib_literal.language
         return model_Literal(content=content,
                              elem_type=decide_literal_type(content))
 
