@@ -17,7 +17,7 @@ MAX_LEN = 100000
 
 default_namespaces = {"http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
                       "http://www.w3.org/2000/01/rdf-schema#": "rdfs",
-                      "http://www.w3.org/2001/XMLSchema#": "xml",
+                      "http://www.w3.org/2001/XMLSchema#": "xsd",
                       "http://www.w3.org/XML/1998/namespace/": "xml",
                       "http://www.w3.org/2002/07/owl#": "owl"
                       }
