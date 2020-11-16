@@ -2,7 +2,7 @@ from shexer.io.graph.yielder.multi_nt_triples_yielder import MultiNtTriplesYield
 from shexer.io.graph.yielder.nt_triples_yielder import NtTriplesYielder
 from shexer.io.graph.yielder.tsv_nt_triples_yielder import TsvNtTriplesYielder
 from shexer.io.graph.yielder.multi_tsv_nt_triples_yielder import MultiTsvNtTriplesYielder
-from shexer.io.graph.yielder.rdflib_triple_yielder import RdflibTripleYielder
+from shexer.io.graph.yielder.rdflib_triple_yielder import RdflibParserTripleYielder, RdflibTripleYielder
 from shexer.io.graph.yielder.multi_rdflib_triple_yielder import MultiRdfLibTripleYielder
 from shexer.io.graph.yielder.remote.sgraph_from_selectors_triple_yielder import SgraphFromSelectorsTripleYielder
 from shexer.io.graph.yielder.filter.filter_namespaces_triple_yielder import FilterNamespacesTriplesYielder
@@ -37,7 +37,7 @@ def produce_shape_map_according_to_input(sm_format, sgraph, namespaces_prefix_di
 
 def get_triple_yielder(source_file=None, list_of_source_files=None, input_format=NT, namespaces_to_ignore=None,
                        allow_untyped_numbers=False, raw_graph=None, namespaces_dict=None, url_input=None,
-                       list_of_url_input=None, shape_map_file=None, shape_map_raw=None, shape_map_format=FIXED_SHAPE_MAP,
+                       list_of_url_input=None, rdflib_graph=None, shape_map_file=None, shape_map_raw=None, shape_map_format=FIXED_SHAPE_MAP,
                        track_classes_for_entities_at_last_depth_level=True, depth_for_building_subgraph=1,
                        url_endpoint=None, instantiation_property=None, strict_syntax_with_corners=False,
                        target_classes=None, file_target_classes=None, built_remote_graph=None,
@@ -65,17 +65,19 @@ def get_triple_yielder(source_file=None, list_of_source_files=None, input_format
                                                   )
     elif url_input is not None or list_of_url_input is not None:  # Always use rdflib to parse remote graphs
         if url_input:
-            result = RdflibTripleYielder(source=url_input,
-                                         allow_untyped_numbers=allow_untyped_numbers,
-                                         raw_graph=raw_graph,
-                                         input_format=input_format,
-                                         namespaces_dict=namespaces_dict)
+            result = RdflibParserTripleYielder(source=url_input,
+                                               allow_untyped_numbers=allow_untyped_numbers,
+                                               raw_graph=raw_graph,
+                                               input_format=input_format,
+                                               namespaces_dict=namespaces_dict)
         else:  # elif list_of_url_input:
             result = MultiRdfLibTripleYielder(list_of_files=list_of_url_input,
                                               allow_untyped_numbers=allow_untyped_numbers,
                                               input_format=input_format,
                                               namespaces_dict=namespaces_dict)
-
+    elif rdflib_graph is not None:
+        result = RdflibTripleYielder(rdflib_graph=rdflib_graph,
+                                     namespaces_dict=namespaces_dict)
     elif input_format == NT:
         if source_file is not None or raw_graph is not None:
             result = NtTriplesYielder(source_file=source_file,
@@ -94,11 +96,11 @@ def get_triple_yielder(source_file=None, list_of_source_files=None, input_format
                                               allow_untyped_numbers=allow_untyped_numbers)
     elif input_format in [TURTLE, N3, RDF_XML, JSON_LD]:
         if source_file is not None or raw_graph is not None:
-            result = RdflibTripleYielder(source=source_file,
-                                         allow_untyped_numbers=allow_untyped_numbers,
-                                         raw_graph=raw_graph,
-                                         input_format=input_format,
-                                         namespaces_dict=namespaces_dict)
+            result = RdflibParserTripleYielder(source=source_file,
+                                               allow_untyped_numbers=allow_untyped_numbers,
+                                               raw_graph=raw_graph,
+                                               input_format=input_format,
+                                               namespaces_dict=namespaces_dict)
         else:
             result = MultiRdfLibTripleYielder(list_of_files=list_of_source_files,
                                               allow_untyped_numbers=allow_untyped_numbers,
