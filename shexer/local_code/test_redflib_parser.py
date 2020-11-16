@@ -1,4 +1,4 @@
-from shexer.io.graph.yielder.rdflib_triple_yielder import RdflibTripleYielder
+from shexer.io.graph.yielder.rdflib_triple_yielder import RdflibParserTripleYielder
 
 graph = """
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -12,6 +12,6 @@ graph = """
     ex:homePage <http://purl.org/net/dajobe/>
   ] ."""
 
-yielder = RdflibTripleYielder(raw_graph=graph)
+yielder = RdflibParserTripleYielder(raw_graph=graph)
 for a_triple in yielder.yield_triples():
     print(a_triple)

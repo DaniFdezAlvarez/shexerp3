@@ -13,34 +13,15 @@ _SUPPORTED_FORMATS = [N3, TURTLE, RDF_XML, NT, JSON_LD]
 
 _XML_WRONG_URI = "http://www.w3.org/XML/1998/namespace"
 
+
 class RdflibTripleYielder(BaseTriplesYielder):
-
-    def __init__(self, input_format=TURTLE, source=None, allow_untyped_numbers=False,
-                 raw_graph=None, namespaces_dict=None):
-        """
-
-        :param input_format:
-        :param source: It can be local (a file path) or remote (an url to download some content)
-        :param namespaces_to_ignore:
-        :param allow_untyped_numbers:
-        :param raw_graph:
-        :param namespaces_dict:
-        """
+    def __init__(self, rdflib_graph, namespaces_dict=None):
         super().__init__()
-        self._check_input_format(input_format)
-
-        self._input_format = input_format
-        self._source = source
-        self._allow_untyped_numbers = allow_untyped_numbers
-        self._raw_graph = raw_graph
+        self._rdflib_graph = rdflib_graph
         self._namespaces_dict = namespaces_dict if namespaces_dict is not None else {}
-                                              # This object can be modified (and will be consumed externaly)
-                                              # when parse_namespaces in yiled_triples() is set to True
-
         self._triples_count = 0
 
         self._prefixes_parsed = False
-
 
     def yield_triples(self, parse_namespaces=True):
         self._reset_count()
@@ -48,7 +29,7 @@ class RdflibTripleYielder(BaseTriplesYielder):
         if parse_namespaces:
             self._integrate_namespaces_from_parsed_graph(tmp_graph, self._namespaces_dict)
             self._prefixes_parsed = True
-        for sub,pred,obj in tmp_graph:
+        for sub, pred, obj in tmp_graph:
             yield (
                 self._turn_rdflib_token_into_model_obj(sub),
                 self._turn_rdflib_prop_into_model_obj(pred),
@@ -76,12 +57,7 @@ class RdflibTripleYielder(BaseTriplesYielder):
                              "supposed to be a property: " + type(rdflib_obj) + " ( " + str(rdflib_obj) + " )")
 
     def _get_tmp_graph(self):
-        result = Graph()
-        if self._source is not None:
-            result.parse(source=self._source, format=self._input_format)
-        else:
-            result.parse(data=self._raw_graph, format=self._input_format)
-        return result
+        return self._rdflib_graph
 
     @staticmethod
     def _integrate_namespaces_from_parsed_graph(a_graph, namespaces_dict):
@@ -104,10 +80,6 @@ class RdflibTripleYielder(BaseTriplesYielder):
         return model_Literal(content=content,
                              elem_type=decide_literal_type(content))
 
-    @staticmethod
-    def _check_input_format(input_format):
-        if input_format not in _SUPPORTED_FORMATS:
-            raise ValueError("Unsupported input format: " + input_format)
 
     @property
     def yielded_triples(self):
@@ -129,6 +101,51 @@ class RdflibTripleYielder(BaseTriplesYielder):
 
     def _reset_count(self):
         self._triples_count = 0
+
+
+class RdflibParserTripleYielder(RdflibTripleYielder):
+
+    def __init__(self, input_format=TURTLE, source=None, allow_untyped_numbers=False, raw_graph=None,
+                 namespaces_dict=None):
+        """
+
+        :param input_format:
+        :param source: It can be local (a file path) or remote (an url to download some content)
+        :param namespaces_to_ignore:
+        :param allow_untyped_numbers:
+        :param raw_graph:
+        :param namespaces_dict:
+        """
+
+        super().__init__(rdflib_graph=None,
+                         namespaces_dict=namespaces_dict)
+        self._check_input_format(input_format)
+        self._input_format = input_format
+        self._source = source
+        self._allow_untyped_numbers = allow_untyped_numbers
+        self._raw_graph = raw_graph
+        self._namespaces_dict = namespaces_dict if namespaces_dict is not None else {}
+                                              # This object can be modified (and will be consumed externaly)
+                                              # when parse_namespaces in yiled_triples() is set to True
+
+        self._triples_count = 0
+
+        self._prefixes_parsed = False
+
+
+    def _get_tmp_graph(self):
+        result = Graph()
+        if self._source is not None:
+            result.parse(source=self._source, format=self._input_format)
+        else:
+            result.parse(data=self._raw_graph, format=self._input_format)
+        return result
+
+    @staticmethod
+    def _check_input_format(input_format):
+        if input_format not in _SUPPORTED_FORMATS:
+            raise ValueError("Unsupported input format: " + input_format)
+
 
 
 

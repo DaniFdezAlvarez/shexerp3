@@ -12,12 +12,18 @@ from shexer.utils.factories.shape_serializer_factory import get_shape_serializer
 
 class Shaper(object):
 
-    def __init__(self, target_classes=None, file_target_classes=None,
-                 input_format=NT, instances_file_input=None,
-                 graph_file_input=None, graph_list_of_files_input=None,
+    def __init__(self, target_classes=None,
+                 file_target_classes=None,
+                 input_format=NT,
+                 instances_file_input=None,
+                 graph_file_input=None,
+                 graph_list_of_files_input=None,
                  raw_graph=None,
-                 url_graph_input=None, list_of_url_input=None,
-                 namespaces_dict=None, namespaces_dict_file=None,
+                 url_graph_input=None,
+                 rdflib_graph=None,
+                 list_of_url_input=None,
+                 namespaces_dict=None,
+                 namespaces_dict_file=None,
                  instantiation_property=RDF_TYPE,
                  namespaces_to_ignore=None,
                  infer_numeric_types_for_untyped_literals=False,
@@ -59,7 +65,8 @@ class Shaper(object):
                                 (raw_graph, "raw_graph"),
                                 (url_graph_input, "url_input"),
                                 (list_of_url_input, "list_of_url_input"),
-                                (url_endpoint, "url_endpoint")
+                                (url_endpoint, "url_endpoint"),
+                                (rdflib_graph, "rdflib_graph")
                                 )
 
         check_one_or_zero_not_none((namespaces_dict, "namespaces_dict"),
@@ -83,6 +90,7 @@ class Shaper(object):
         self._graph_list_of_files_input = graph_list_of_files_input
         self._url_graph_input = url_graph_input
         self._list_of_url_input = list_of_url_input
+        self._rdflib_graph = rdflib_graph
         self._namespaces_dict = namespaces_dict if namespaces_dict is not None else {}
         # self._namespaces_dict_file = namespaces_dict_file  # TODO Need to parse this
         self._instantiation_property = instantiation_property
@@ -204,6 +212,7 @@ class Shaper(object):
                                   namespaces_dict=self._namespaces_dict,
                                   url_input=self._url_graph_input,
                                   list_of_url_input=self._list_of_url_input,
+                                  rdflib_graph=self._rdflib_graph,
                                   shape_map_file=self._shape_map_file,
                                   shape_map_raw=self._shape_map_raw,
                                   track_classes_for_entities_at_last_depth_level=self._track_classes_for_entities_at_last_depth_level,
@@ -230,6 +239,7 @@ class Shaper(object):
                                     namespaces_dict=self._namespaces_dict,
                                     url_input=self._url_graph_input,
                                     list_of_url_input=self._list_of_url_input,
+                                    rdflib_graph=self._rdflib_graph,
                                     shape_map_file=self._shape_map_file,
                                     shape_map_raw=self._shape_map_raw,
                                     track_classes_for_entities_at_last_depth_level=self._track_classes_for_entities_at_last_depth_level,
