@@ -3,7 +3,7 @@ from shexer.shaper import Shaper
 from test.const import G1, BASE_FILES, G1_NT, NAMESPACES_WITH_FOAF_AND_EX
 from test.t_utils import file_vs_str_tunned_comparison
 
-from shexer.consts import NT, TURTLE
+from shexer.consts import TURTLE
 
 _BASE_DIR = BASE_FILES + "general\\"
 
