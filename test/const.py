@@ -1,4 +1,6 @@
-BASE_FILES = "C:\\Users\\Dani\\repos-git\\shexerp3\\test\\files\\"
+BASE_FILES = "C:\\Users\\Dani\\repos-git\\shexerp3\\test\\t_files\\"
+
+BASE_FILES_GENERAL = BASE_FILES + "general\\"
 
 G1 = BASE_FILES + "t_graph_1.ttl"
 G1_NT = BASE_FILES + "t_graph_1.nt"
