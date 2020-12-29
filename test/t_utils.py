@@ -23,7 +23,7 @@ def get_namespaces_and_shapes_from_str(str_target):
         elif a_line.startswith(_END_SHAPE):
             current_shape = None
         elif current_shape is not None:
-            shapes[current_shape].append(a_line)
+            shapes[current_shape].append(a_line.replace(";", ""))  # Avoid trailing ";", that can be there or not
 
         last_line = a_line  # Always execute
 
