@@ -78,7 +78,9 @@ class RdflibTripleYielder(BaseTriplesYielder):
         if rdflib_literal.language is not None:
             content = '"' + content + '"@' + rdflib_literal.language
         return model_Literal(content=content,
-                             elem_type=decide_literal_type(content))
+                             elem_type=str(rdflib_literal.datatype)
+                             if rdflib_literal.datatype is not None
+                             else decide_literal_type(content))
 
 
     @property
