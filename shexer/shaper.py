@@ -23,7 +23,7 @@ class Shaper(object):
                  rdflib_graph=None,
                  list_of_url_input=None,
                  namespaces_dict=None,
-                 namespaces_dict_file=None,
+                 # namespaces_dict_file=None,
                  instantiation_property=RDF_TYPE,
                  namespaces_to_ignore=None,
                  infer_numeric_types_for_untyped_literals=False,
@@ -69,8 +69,8 @@ class Shaper(object):
                                 (rdflib_graph, "rdflib_graph")
                                 )
 
-        check_one_or_zero_not_none((namespaces_dict, "namespaces_dict"),
-                                   (namespaces_dict_file, "namespaces_dict_file"))
+        # check_one_or_zero_not_none((namespaces_dict, "namespaces_dict"),
+        #                            (namespaces_dict_file, "namespaces_dict_file"))
 
         self._check_target_classes(target_classes=target_classes,
                                    file_target_classes=file_target_classes,
