@@ -9,6 +9,8 @@ G1_JSON_LD = BASE_FILES + "t_graph_1.json"
 G1_XML = BASE_FILES + "t_graph_1.xml"
 G1_N3 = BASE_FILES + "t_graph_1.n3"
 
+G1_ALL_CLASSES_NO_COMMENTS = BASE_FILES_GENERAL + "g1_all_classes_no_comments.shex"
+
 
 # PREFIX xml: <http://www.w3.org/XML/1998/namespace/>
 # PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
