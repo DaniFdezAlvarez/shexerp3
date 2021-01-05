@@ -15,7 +15,7 @@ OPENGIS_PREFIX = "geo"
 LANG_STRING_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
 STRING_TYPE = "http://www.w3.org/2001/XMLSchema#string"
 FLOAT_TYPE = "http://www.w3.org/2001/XMLSchema#float"
-INTEGER_TYPE = "http://www.w3.org/2001/XMLSchema#int"
+INTEGER_TYPE = "http://www.w3.org/2001/XMLSchema#integer"
 
 
 def _add_prefix(unprefixed_elem, prefix):
