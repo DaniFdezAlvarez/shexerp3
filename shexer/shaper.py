@@ -234,6 +234,7 @@ class Shaper(object):
                                     file_target_classes=self._file_target_classes,
                                     input_format=self._input_format,
                                     instantiation_property=self._instantiation_property,
+                                    infer_numeric_types_for_untyped_literals=self._infer_numeric_types_for_untyped_literals,
                                     raw_graph=self._raw_graph,
                                     all_classes_mode=self._all_classes_mode,
                                     namespaces_dict=self._namespaces_dict,
