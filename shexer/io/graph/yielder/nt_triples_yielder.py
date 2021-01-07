@@ -26,7 +26,7 @@ class NtTriplesYielder(BaseTriplesYielder):
             tokens = self._look_for_tokens(a_line.strip())
             if len(tokens) != 3:
                 self._error_triples += 1
-                log_to_error(msg="This line caused error: " + a_line,
+                log_to_error(msg="This line was discarded: " + a_line,
                              source=self._source_file)
             else:
                 yield (tune_token(a_token=tokens[0]),
@@ -53,7 +53,7 @@ class NtTriplesYielder(BaseTriplesYielder):
                 current_first_index = last_index + 1
             elif str_line[current_first_index] == '.':
                 break
-            elif self._allow_untyped_numbers and str_line[current_first_index].isnumeric():
+            elif str_line[current_first_index].isnumeric():
                 last_index = self._look_for_last_index_of_unlabelled_number_token(str_line, current_first_index)
                 result.append(str_line[current_first_index:last_index + 1])
                 current_first_index = last_index + 1

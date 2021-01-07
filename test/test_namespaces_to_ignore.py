@@ -10,10 +10,13 @@ _BASE_DIR = BASE_FILES + "namespaces_to_ignore\\"
 class TestNamespacesToIgnore(unittest.TestCase):
 
     def test_excluding_other(self):
+
+        namespaces = {key:value for key, value in NAMESPACES_WITH_FOAF_AND_EX.items()}
+
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=_BASE_DIR + "g1_namespaces.ttl",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=namespaces,
                         namespaces_to_ignore=["http://other.org/"],
                         all_classes_mode=False,
                         input_format=TURTLE,
@@ -23,10 +26,12 @@ class TestNamespacesToIgnore(unittest.TestCase):
                                                       str_target=str_result))
 
     def test_excliding_direct_other(self):
+        namespaces = {key: value for key, value in NAMESPACES_WITH_FOAF_AND_EX.items()}
+
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=_BASE_DIR + "g1_namespaces_indirect.ttl",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=namespaces,
                         namespaces_to_ignore=["http://other.org/"],
                         all_classes_mode=False,
                         input_format=TURTLE,
