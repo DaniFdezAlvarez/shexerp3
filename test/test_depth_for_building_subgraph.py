@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX
+from test.const import NAMESPACES_WITH_FOAF_AND_EX
 from test.t_utils import number_of_shapes, shape_contains_constraint
 
 
