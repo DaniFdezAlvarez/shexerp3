@@ -7,81 +7,81 @@ from shexer.consts import TURTLE
 
 _BASE_DIR = BASE_FILES + "shape_map\\"
 
-class TestRawShapeMap(unittest.TestCase):
+class TestShapeMapFile(unittest.TestCase):
 
     def test_node(self):
-        shape_map = "<http://example.org/Jimmy>@<Person>"
+        shape_map_file = _BASE_DIR + "node_selector.sm"
         shaper = Shaper(graph_file_input=G1,
                         namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
-                        shape_map_raw=shape_map
+                        shape_map_file=shape_map_file
                         )
         str_result = shaper.shex_graph(string_output=True)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "a_node.shex",
                                                       str_target=str_result))
 
     def test_prefixed_node(self):
-        shape_map = "ex:Jimmy@<Person>"
+        shape_map_file = _BASE_DIR + "prefixed_node_selector.sm"
         shaper = Shaper(graph_file_input=G1,
                         namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
-                        shape_map_raw=shape_map
+                        shape_map_file=shape_map_file
                         )
         str_result = shaper.shex_graph(string_output=True)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "a_node.shex",
                                                       str_target=str_result))
 
     def test_focus(self):
-        shape_map = "{FOCUS a foaf:Person}@<Person>"
+        shape_map_file = _BASE_DIR + "focus.sm"
         shaper = Shaper(graph_file_input=G1,
                         namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
-                        shape_map_raw=shape_map
+                        shape_map_file=shape_map_file
                         )
         str_result = shaper.shex_graph(string_output=True)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "focus_nodes.shex",
                                                       str_target=str_result))
 
     def test_focus_wildcard(self):
-        shape_map = "{FOCUS foaf:name _}@<WithName>"
+        shape_map_file = _BASE_DIR + "focus_and_wildcard.sm"
         shaper = Shaper(graph_file_input=G1,
                         namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
-                        shape_map_raw=shape_map
+                        shape_map_file=shape_map_file
                         )
         str_result = shaper.shex_graph(string_output=True)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "focus_and_wildcard.shex",
                                                       str_target=str_result))
 
     def test_sparql_selector(self):
-        shape_map = "SPARQL \"select ?p where { ?p a foaf:Person }\"@<Person>"
+        shape_map_file = _BASE_DIR + "sparql_selector.sm"
         shaper = Shaper(graph_file_input=G1,
                         namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
-                        shape_map_raw=shape_map
+                        shape_map_file=shape_map_file
                         )
         str_result = shaper.shex_graph(string_output=True)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "focus_nodes.shex",
                                                       str_target=str_result))
 
     def test_several_shapemap_items(self):
-        shape_map = "{FOCUS a foaf:Person}@<Person>\n{FOCUS a foaf:Document}@<Document>"
+        shape_map_file = _BASE_DIR + "several_shm_items.sm"
         shaper = Shaper(graph_file_input=G1,
                         namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
-                        shape_map_raw=shape_map
+                        shape_map_file=shape_map_file
                         )
         str_result = shaper.shex_graph(string_output=True)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "several_shm_items.shex",
