@@ -1,0 +1,38 @@
+import unittest
+from shexer.shaper import Shaper
+from test.const import G1, BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX
+from test.t_utils import file_vs_str_tunned_comparison
+
+from shexer.consts import TURTLE
+
+_BASE_DIR = BASE_FILES + "shape_map_raw\\"
+
+class TestRawShapeMap(unittest.TestCase):
+
+    def test_node(self):
+        shape_map = "<http://example.org/Jimmy>@<Person>"
+        shaper = Shaper(graph_file_input=G1,
+                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        all_classes_mode=False,
+                        input_format=TURTLE,
+                        disable_comments=True,
+                        shape_map_raw=shape_map
+                        )
+        str_result = shaper.shex_graph(string_output=True)
+        # print(str_result)
+        self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "a_node.shex",
+                                                      str_target=str_result))
+
+    def test_focus(self):
+        shape_map = "{FOCUS a foaf:Person}@<Person>"
+        shaper = Shaper(graph_file_input=G1,
+                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        all_classes_mode=False,
+                        input_format=TURTLE,
+                        disable_comments=True,
+                        shape_map_raw=shape_map
+                        )
+        str_result = shaper.shex_graph(string_output=True)
+        # print(str_result)
+        self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "focus_nodes.shex",
+                                                      str_target=str_result))

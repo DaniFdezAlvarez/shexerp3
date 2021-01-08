@@ -121,14 +121,18 @@ class Shaper(object):
         self._built_remote_graph = get_remote_graph_if_needed(endpoint_url=url_endpoint,
                                                               store_locally=True)
         self._built_shape_map = get_shape_map_if_needed(sm_format=self._shape_map_format,
-                                                        sgraph=self._built_remote_graph,
+                                                        remote_sgraph=self._built_remote_graph,
                                                         namespaces_prefix_dict=self._namespaces_dict,
                                                         target_classes=self._target_classes,
                                                         file_target_classes=self._file_target_classes,
                                                         shape_map_file=self._shape_map_file,
                                                         shape_map_raw=self._shape_map_raw,
                                                         instantiation_property=self._instantiation_property,
-                                                        shape_map_already_built=None)
+                                                        shape_map_already_built=None,
+                                                        rdflib_graph=self._rdflib_graph,
+                                                        raw_graph=self._raw_graph,
+                                                        input_format=self._input_format,
+                                                        source_file_graph=self._graph_file_input)
 
 
 
