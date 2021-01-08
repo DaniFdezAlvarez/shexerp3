@@ -81,3 +81,24 @@ def file_vs_file_tunned_comparison(file_path1, file_path2):
     with open(file_path2, "r") as in_stream:
         content2 = in_stream.read()
     return tunned_str_comparison(content1, content2)
+
+def number_of_shapes(target_str):
+    counter = 0
+    for a_line in target_str.split("\n"):
+        if a_line.startswith(_BEG_SHAPE):
+            counter += 1
+    return counter
+
+def shape_contains_constraint(target_str, shape, constraint):
+    constraint = constraint.replace(";","").strip()
+    lines = target_str.split("\n")
+    seeking_mode = False
+    for i in range(len(lines)):
+        if seeking_mode:
+            if lines[i].replace(";", "").strip() == constraint:
+                return True
+            if lines[i].startswith(_END_SHAPE):
+                return False
+        if lines[i].startswith(_BEG_SHAPE) and shape == lines[i-1].strip():
+            seeking_mode = True
+    return False
