@@ -25,6 +25,11 @@ class EndpointSGraph(SGraph):
                                               str_query=str_query,
                                               endpoint_url=self._endpoint_url)
 
+    def serialize_current_local_sgraph(self, path_file, format):
+        if self._local_sgraph is not None:
+            self._local_sgraph.serialize(path=path_file,
+                                         format=format)
+
 
     def yield_class_triples_of_an_s(self, target_node, instantiation_property):
         if self._store_locally:
