@@ -75,6 +75,10 @@ def file_vs_str_tunned_comparison(file_path, str_target):
         content = in_stream.read()
     return tunned_str_comparison(content, str_target)
 
+def file_vs_str_exact_comparison(file_path, target_str):
+    with open(file_path, "r") as in_stream:
+        return in_stream.read().strip() == target_str.strip()
+
 def file_vs_file_tunned_comparison(file_path1, file_path2):
     with open(file_path1, "r") as in_stream:
         content1 = in_stream.read()
