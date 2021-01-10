@@ -51,11 +51,15 @@ class BaseStatementSerializer(object):
     @staticmethod
     def tune_token(a_token, namespaces_dict):
         # TODO:  a lot to correct here for normal behaviour
+        if a_token.startswith(STARTING_CHAR_FOR_SHAPE_NAME):  # Shape
+            return STARTING_CHAR_FOR_SHAPE_NAME +":" + a_token.replace(STARTING_CHAR_FOR_SHAPE_NAME, "")
         if a_token == IRI_ELEM_TYPE: # iri
             return a_token
-        if a_token.startswith(STARTING_CHAR_FOR_SHAPE_NAME):  # Shape
-            return "@:" + a_token.replace(STARTING_CHAR_FOR_SHAPE_NAME, "")
-
+        if ":" not in a_token:
+            if "<" in a_token:
+                return STARTING_CHAR_FOR_SHAPE_NAME + a_token
+            else:
+                return STARTING_CHAR_FOR_SHAPE_NAME + "<" + a_token + ">"
         candidate_prefixed = BaseStatementSerializer._prefixize_uri_if_possible(uri=a_token,
                                                                                 namespaces_dict=namespaces_dict)
         if candidate_prefixed is not None:

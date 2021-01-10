@@ -28,6 +28,10 @@ class RdflibSgraph(SGraph):
         rows_res = self._rdflib_graph.query(str_query)
         return [str(a_row[0]) for a_row in rows_res]
 
+    def serialize(self, path, format):
+        self._rdflib_graph.serialize(destination=path,
+                                     format=format)
+
 
     def yield_p_o_triples_of_an_s(self, target_node):
         for s, p ,o in self._rdflib_graph.triples((URIRef(target_node), None, None)):

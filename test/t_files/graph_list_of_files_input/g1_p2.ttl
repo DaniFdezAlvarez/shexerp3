@@ -18,3 +18,4 @@ ex:x1 rdf:type foaf:Document ;
 
 ex:x2 rdf:type foaf:Document ;
 	foaf:title "Another thing" .
+
