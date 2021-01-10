@@ -34,7 +34,6 @@ class TestDiscardUselessConstraintsAndCompliantMode(unittest.TestCase):
                         discard_useless_constraints_with_positive_closure=False,
                         all_instances_are_compliant_mode=True)
         str_result = shaper.shex_graph(string_output=True)
-        # print(str_result)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "compliant_no_discard.shex",
                                                       str_target=str_result))
 
@@ -49,7 +48,6 @@ class TestDiscardUselessConstraintsAndCompliantMode(unittest.TestCase):
                         discard_useless_constraints_with_positive_closure=True,
                         all_instances_are_compliant_mode=False)
         str_result = shaper.shex_graph(string_output=True)
-        # print(str_result)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "no_compliant_discard.shex",
                                                       str_target=str_result))
 
@@ -64,6 +62,5 @@ class TestDiscardUselessConstraintsAndCompliantMode(unittest.TestCase):
                         discard_useless_constraints_with_positive_closure=True,  # default value
                         all_instances_are_compliant_mode=True)  # default value
         str_result = shaper.shex_graph(string_output=True)
-        # print(str_result)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=G1_ALL_CLASSES_NO_COMMENTS,
                                                       str_target=str_result))

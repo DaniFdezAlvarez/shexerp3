@@ -15,7 +15,6 @@ class TestRemoveEmptyShapes(unittest.TestCase):
                         disable_comments=True,
                         remove_empty_shapes=True)
         str_result = shaper.shex_graph(string_output=True)
-        # print(str_result)
         self.assertTrue(number_of_shapes(str_result) == 0)
 
     def test_one_empty_not_remove(self):
@@ -26,7 +25,6 @@ class TestRemoveEmptyShapes(unittest.TestCase):
                         disable_comments=True,
                         remove_empty_shapes=False)
         str_result = shaper.shex_graph(string_output=True)
-        # print(str_result)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "one_empty_not_remove.shex",
                                                       str_target=str_result))
 
@@ -41,7 +39,6 @@ class TestRemoveEmptyShapes(unittest.TestCase):
                         disable_comments=True,
                         remove_empty_shapes=True)
         str_result = shaper.shex_graph(string_output=True)
-        # print(str_result)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=G1_ALL_CLASSES_NO_COMMENTS,
                                                       str_target=str_result))
 
@@ -55,6 +52,5 @@ class TestRemoveEmptyShapes(unittest.TestCase):
                         disable_comments=True,
                         remove_empty_shapes=False)
         str_result = shaper.shex_graph(string_output=True)
-        print(str_result)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "some_empty_not_remove.shex",
                                                       str_target=str_result))
