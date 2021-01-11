@@ -1,0 +1,23 @@
+import unittest
+from shexer.shaper import Shaper
+from test.const import BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX
+from test.t_utils import file_vs_str_tunned_comparison
+
+from shexer.consts import TURTLE
+
+_BASE_DIR = BASE_FILES + "disable_or\\"
+
+class TestGraphFileInput(unittest.TestCase):
+
+    def test_some_format(self):
+        shaper = Shaper(graph_file_input=_BASE_DIR + "g3_or_example.ttl",
+                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        all_classes_mode=True,
+                        input_format=TURTLE,
+                        disable_comments=True,
+                        disable_or_statements=False)
+        str_result = shaper.shex_graph(string_output=True)
+        print(str_result)
+        self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "or_enabled.shex",
+                                                      str_target=str_result,
+                                                      or_shapes=True))
