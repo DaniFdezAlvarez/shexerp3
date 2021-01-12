@@ -75,6 +75,12 @@ def get_namespaces_and_shapes_from_str_with_or(str_target):
 def unordered_lists_match(list1, list2):
     return set(list1) == set(list2)
 
+def unordered_sets_match(sets1, sets2):
+    for a_set1 in sets1:
+        if a_set1 not in sets2:
+            return False
+    return True
+
 def simple_and_or_str_constraints(str_constraints):  # TODO Fix here. Receive a dict, not a list. check call to this method
     simple_c = []
     or_c = []
@@ -91,16 +97,20 @@ def unordered_or_constraints_match(or_list_1, or_list_2):
     for i in range(len(or_list_1)):
         or_list_1[i] = set(or_list_1[i].split(_OR))
         or_list_2[i] = set(or_list_2[i].split(_OR))
-    return unordered_lists_match(or_list_1, or_list_2)
+    return unordered_sets_match(or_list_1, or_list_2)
 
 
 def or_shapes_comparison(shapes1, shapes2):
-    simple_constraints1, or_constraints1 = simple_and_or_str_constraints(shapes1)
-    simple_constraints2, or_constraints2 = simple_and_or_str_constraints(shapes2)
-
-    if not unordered_lists_match(simple_constraints1, simple_constraints2):
-        return False
-    return unordered_or_constraints_match(or_constraints1, or_constraints2)
+    for a_key_label in shapes1:
+        if a_key_label not in shapes2:
+            return False
+        simple_constraints1, or_constraints1 = simple_and_or_str_constraints(shapes1[a_key_label])
+        simple_constraints2, or_constraints2 = simple_and_or_str_constraints(shapes2[a_key_label])
+        if not unordered_lists_match(simple_constraints1, simple_constraints2):
+            return False
+        if not unordered_or_constraints_match(or_constraints1, or_constraints2):
+            return False
+    return True
 
 
 def namespaces_match(names1, names2):
