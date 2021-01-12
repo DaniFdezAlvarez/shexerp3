@@ -1,3 +1,6 @@
+POSITIVE_CLOSURE = "+"
+KLEENE_CLOSURE = "*"
+
 class Statement(object):
 
     def __init__(self, st_property, st_type, cardinality, probability,

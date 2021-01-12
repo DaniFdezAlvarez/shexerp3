@@ -193,6 +193,22 @@ class Shaper(object):
             self._instance_tracker = self._build_instance_tracker()
         self._target_classes_dict = self._instance_tracker.track_instances()
 
+    def _build_class_shexer(self):
+        return get_class_shexer(class_instances_target_dict=self._target_classes_dict,
+                                class_profile_dict=self._profile,
+                                original_target_classes=self._target_classes,
+                                original_shape_map=self._built_shape_map,
+                                remove_empty_shapes=self._remove_empty_shapes,
+                                discard_useless_constraints_with_positive_closure=
+                                self._discard_useles_constraints_with_positive_closure,
+                                keep_less_specific=self._keep_less_specific,
+                                all_compliant_mode=self._all_compliant_mode,
+                                instantiation_property=self._instantiation_property,
+                                disable_or_statements=self._disable_or_statements,
+                                disable_comments=self._disable_comments,
+                                namespaces_dict=self._namespaces_dict
+                                )
+
     def _build_shapes_serializer(self, target_file, string_return, output_format):
         return get_shape_serializer(shapes_list=self._shape_list,
                                     target_file=target_file,
@@ -200,12 +216,7 @@ class Shaper(object):
                                     namespaces_dict=self._namespaces_dict,
                                     output_format=output_format,
                                     instantiation_property=self._instantiation_property,
-                                    all_compliant_mode=self._all_compliant_mode,
-                                    keep_less_specific=self._keep_less_specific,
-                                    discard_useless_constraints_with_positive_closure=
-                                    self._discard_useles_constraints_with_positive_closure,
-                                    disable_comments=self._disable_comments,
-                                    disable_or_statements=self._disable_or_statements)
+                                    disable_comments=self._disable_comments)
 
     def _build_class_profiler(self):
         return get_class_profiler(target_classes_dict=self._target_classes_dict,
@@ -260,13 +271,6 @@ class Shaper(object):
                                     built_remote_graph=self._built_remote_graph,
                                     built_shape_map=self._built_shape_map)
 
-    def _build_class_shexer(self):
-        return get_class_shexer(class_instances_target_dict=self._target_classes_dict,
-                                class_profile_dict=self._profile,
-                                original_target_classes=self._target_classes,
-                                original_shape_map=self._built_shape_map,
-                                remove_empty_shapes=self._remove_empty_shapes
-                                )
 
     @staticmethod
     def _check_correct_output_params(string_output, target_file):

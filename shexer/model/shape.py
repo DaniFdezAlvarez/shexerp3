@@ -32,6 +32,5 @@ class Shape(object):
         for a_statement in self._statements:
             yield a_statement
 
-
     def sort_statements(self, callback, reverse=False):
         self._statements.sort(key=lambda x :callback(x), reverse=reverse)
