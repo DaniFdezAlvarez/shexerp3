@@ -12,8 +12,6 @@ class TestAllClasesMode(unittest.TestCase):
 
     def test_all_classes_g1(self):
         shaper = Shaper(
-            # target_classes=["http://xmlns.com/foaf/0.1/Person",
-            #                 "http://xmlns.com/foaf/0.1/Document"],
             graph_file_input=G1,
             namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
             all_classes_mode=True,
@@ -25,8 +23,6 @@ class TestAllClasesMode(unittest.TestCase):
 
     def test_all_classes_ex_a(self):
         shaper = Shaper(
-            # target_classes=["http://xmlns.com/foaf/0.1/Person",
-            #                 "http://xmlns.com/foaf/0.1/Document"],
             graph_file_input=_BASE_DIR + "G1_ex_a.ttl",
             namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
             all_classes_mode=True,
