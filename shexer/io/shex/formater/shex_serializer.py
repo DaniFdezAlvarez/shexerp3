@@ -13,7 +13,7 @@ class ShexSerializer(object):
     def __init__(self, target_file, shapes_list, namespaces_dict=None,
                  tolerance_to_keep_similar_rules=0.01, keep_less_specific=True, string_return=False,
                  instantiation_property_str=RDF_TYPE_STR, discard_useless_positive_closures=True,
-                 all_compliant_mode=True, disable_comments=False):
+                 all_compliant_mode=True, disable_comments=False, disable_or_statements=True):
         self._target_file = target_file
         self._shapes_list = shapes_list
         # self._aceptance_theshold = aceptance_threshold
@@ -27,6 +27,7 @@ class ShexSerializer(object):
         self._discard_useless_positive_closures = discard_useless_positive_closures
         self._all_compliant_mode = all_compliant_mode
         self._disable_comments = disable_comments
+        self._disable_or_statements = disable_or_statements
 
     def serialize_shex(self):
 
@@ -189,14 +190,46 @@ class ShexSerializer(object):
                             already_visited.add(candidate_statements[j])
                     if len(group_to_decide) == 1:
                         result.append(a_statement)
-                    elif not self._group_contains_IRI_statements(group_to_decide):
-                        for a_statement in group_to_decide:
-                            result.append(a_statement)
                     else:
-                        # pass
-                        for a_new_statement in self._compose_statements_with_IRI_objects(group_to_decide):
-                            result.append(a_new_statement)
+                        if self._disable_or_statements:
+                            for a_sentence in self._manage_group_to_decide_without_or(group_to_decide):
+                                result.append(a_sentence)
+                        else:
+                            for a_sentence in self._manage_group_to_decide_with_or(group_to_decide):
+                                result.append(a_sentence)
+
         return result
+
+    def _manage_group_to_decide_with_or(self, group_to_decide):
+        if not self._group_contains_IRI_statements(group_to_decide):
+            for a_statement in group_to_decide:
+                yield a_statement
+        else:
+            for a_new_statement in self._compose_statements_with_IRI_objects(group_to_decide):
+                yield a_new_statement
+
+    def _manage_group_to_decide_without_or(self, group_to_decide):
+        result = []
+        to_compose = []
+        for a_statement in group_to_decide:
+            if self._is_an_IRI(a_statement.st_type):
+                to_compose.append(a_statement)
+            else:
+                result.append(a_statement)
+        to_compose.sort(reverse=True, key=lambda x: x.probability)
+        target_sentence = self._get_IRI_statement_in_group(to_compose)
+        self._remove_IRI_statements_if_useles(group_of_statements=to_compose)
+        if len(to_compose) > 1:
+            for a_statement in to_compose:
+                if a_statement.st_type != IRI_ELEM_TYPE:
+                    target_sentence.add_comment(self._turn_statement_into_comment(a_statement))
+            result.append(target_sentence)
+        elif len(to_compose) == 1:
+            result.append(to_compose[0])
+        # else  # No sentences to join
+
+        return result
+
 
     def _group_constraints_with_same_prop_and_obj(self, candidate_statements):
         result = []
@@ -257,7 +290,7 @@ class ShexSerializer(object):
             else:
                 result.append(a_statement)
         to_compose.sort(reverse=True, key=lambda x: x.probability)
-        target_probability = self._get_probability_or_IRI_statement_in_group(to_compose)
+        target_probability = self._get_probability_of_IRI_statement_in_group(to_compose)
         self._remove_IRI_statements_if_useles(to_compose)
         if len(to_compose) > 1:  # There are som sentences to join in an OR
             composed_statement = FixedPropChoiceStatement(st_property=to_compose[0].st_property,
@@ -278,8 +311,12 @@ class ShexSerializer(object):
 
         return result
 
+    def _get_IRI_statement_in_group(self, group_of_statements):
+        for a_statement in group_of_statements:
+            if a_statement.st_type == IRI_ELEM_TYPE:
+                return a_statement
 
-    def _get_probability_or_IRI_statement_in_group(self, group_of_statements):
+    def _get_probability_of_IRI_statement_in_group(self, group_of_statements):
         for a_statement in group_of_statements:
             if a_statement.st_type == IRI_ELEM_TYPE:
                 return a_statement.probability
@@ -296,30 +333,8 @@ class ShexSerializer(object):
                 break
         if index_of_IRI_statement != -1:
             if group_of_statements[1].probability == group_of_statements[index_of_IRI_statement].probability:
-                # the previous 'if' works, trust me, im engineer
+                # the previous 'if' works, trust me, im an engineer
                 del group_of_statements[index_of_IRI_statement]
-
-    # def _compose_statement_with_objects_in_or(self, list_of_candidate_statements):
-    #     list_of_candidate_statements.sort(reverse=True, key=lambda x: x.probability)
-    #     composed_type = list_of_candidate_statements[0].st_type
-    #     composed_probability = list_of_candidate_statements[0].probability
-    #     for a_sentence in list_of_candidate_statements[1:]:
-    #         composed_type += " OR " + a_sentence.st_type
-    #         composed_probability += a_sentence.probability
-    #
-    #
-    #
-    #     result = Statement(st_property=list_of_candidate_statements[0].st_property,
-    #                        st_type=composed_type,
-    #                        probability=composed_probability,
-    #                        cardinality=POSITIVE_CLOSURE)
-    #
-    #     for a_sentence in list_of_candidate_statements:
-    #         for a_comment in a_sentence.comments:
-    #             result.add_comment(a_comment)
-    #             result.add_comment(self._turn_statement_into_comment(a_sentence))
-    #
-    #     return result
 
     def _decide_best_statement_with_cardinalities_in_comments(self, list_of_candidate_statements):
         if self._discard_useless_positive_closures:

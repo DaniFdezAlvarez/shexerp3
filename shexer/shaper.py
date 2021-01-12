@@ -41,7 +41,8 @@ class Shaper(object):
                  shape_qualifiers_mode=False,
                  namespaces_for_qualifier_props=None,
                  remove_empty_shapes=True,
-                 disable_comments=False):
+                 disable_comments=False,
+                 disable_or_statements=True):
         """
 
         :param target_classes:
@@ -106,6 +107,7 @@ class Shaper(object):
 
         self._remove_empty_shapes=remove_empty_shapes
         self._disable_comments = disable_comments
+        self._disable_or_statements = disable_or_statements
 
         self._depth_for_building_subgraph = depth_for_building_subgraph
         self._track_classes_for_entities_at_last_depth_level = track_classes_for_entities_at_last_depth_level
@@ -202,7 +204,8 @@ class Shaper(object):
                                     keep_less_specific=self._keep_less_specific,
                                     discard_useless_constraints_with_positive_closure=
                                     self._discard_useles_constraints_with_positive_closure,
-                                    disable_comments=self._disable_comments)
+                                    disable_comments=self._disable_comments,
+                                    disable_or_statements=self._disable_or_statements)
 
     def _build_class_profiler(self):
         return get_class_profiler(target_classes_dict=self._target_classes_dict,
