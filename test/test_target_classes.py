@@ -29,18 +29,18 @@ class TestTargetClasses(unittest.TestCase):
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "two_targets.shex",
                                                       str_target=str_result))
 
-    # NOT SUPPORTED YET
-    #
-    # def test_one_target_prefixed_targets(self):
-    #     shaper = Shaper(target_classes=["foaf:Person"],
-    #                     namespaces_dict={"http://xmlns.com/foaf/0.1/" : "foaf"},
-    #                     graph_file_input=G1,
-    #                     all_classes_mode=False,
-    #                     input_format="turtle",
-    #                     disable_comments=True)
-    #     str_result = shaper.shex_graph(string_output=True)
-    #     self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "one_target.shex",
-    #                                                   str_target=str_result))
+
+    def test_one_target_prefixed_targets(self):
+        shaper = Shaper(target_classes=["foaf:Person"],
+                        namespaces_dict={"http://xmlns.com/foaf/0.1/" : "foaf"},
+                        graph_file_input=G1,
+                        all_classes_mode=False,
+                        input_format="turtle",
+                        disable_comments=True)
+        str_result = shaper.shex_graph(string_output=True)
+        print(str_result)
+        self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "one_target.shex",
+                                                      str_target=str_result))
 
 
 

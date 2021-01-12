@@ -9,8 +9,8 @@ from shexer.io.graph.yielder.filter.filter_namespaces_triple_yielder import Filt
 from shexer.utils.factories.shape_map_parser_factory import get_shape_map_parser
 from shexer.model.graph.endpoint_sgraph import EndpointSGraph
 from shexer.utils.translators.list_of_classes_to_shape_map import ListOfClassesToShapeMap
+from shexer.utils.uri import remove_corners, unprefixize_uri_if_possible
 from shexer.utils.dict import reverse_keys_and_values
-from shexer.utils.uri import remove_corners
 
 from shexer.consts import NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP, JSON_LD
 
@@ -18,6 +18,7 @@ from shexer.consts import NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP, JSO
 def produce_shape_map_according_to_input(sm_format, sgraph, namespaces_prefix_dict, target_classes,
                                          file_target_classes, shape_map_file, shape_map_raw,
                                          instantiation_property, shape_map_already_built=None):
+    prefix_namespaces_dict = reverse_keys_and_values(namespaces_prefix_dict)
     if shape_map_already_built is not None:
         return shape_map_already_built
     if shape_map_raw is not None or shape_map_file is not None:
@@ -29,9 +30,12 @@ def produce_shape_map_according_to_input(sm_format, sgraph, namespaces_prefix_di
                                                 raw_content=shape_map_raw)
     else:
         translator = ListOfClassesToShapeMap(sgraph=sgraph,
-                                             prefix_namespaces_dict=reverse_keys_and_values(namespaces_prefix_dict))
-        target_classes = tune_target_classes_if_needed(
-                target_classes) if target_classes is not None else read_target_classes_from_file(file_target_classes)
+                                             prefix_namespaces_dict=prefix_namespaces_dict)
+        target_classes = tune_target_classes_if_needed(list_target_classes=target_classes,
+                                                       prefix_namespaces_dict=prefix_namespaces_dict) \
+            if target_classes is not None \
+            else read_target_classes_from_file(file_target_classes=file_target_classes,
+                                               prefix_namespaces_dict=prefix_namespaces_dict)
         return translator.str_class_list_to_shape_map_sparql_selectors(str_list=target_classes,
                                                                        instantiation_property=instantiation_property)
 
@@ -117,20 +121,23 @@ def get_triple_yielder(source_file=None, list_of_source_files=None, input_format
                                               namespaces_to_ignore=namespaces_to_ignore)
 
 
-def tune_target_classes_if_needed(list_target_classes):
+def tune_target_classes_if_needed(list_target_classes, prefix_namespaces_dict):
     result = []
     for a_original_class in list_target_classes:
-        result.append(remove_corners(a_uri=a_original_class,
-                                     raise_error_if_no_corners=False))
+        if a_original_class.startswith("<"):
+            result.append(remove_corners(a_uri=a_original_class))
+        else:
+            result.append(unprefixize_uri_if_possible(target_uri=a_original_class,
+                                                      prefix_namespaces_dict=prefix_namespaces_dict))
     return result
 
 
-def read_target_classes_from_file(file_target_classes):
+def read_target_classes_from_file(file_target_classes, prefix_namespaces_dict):
     result = []
     with open(file_target_classes, "r") as in_stream:
         for a_line in in_stream:
             candidate = a_line.strip()
             if candidate != "":
-                result.append(remove_corners(a_uri=candidate,
-                                             raise_error_if_no_corners=False))
-    return result
+                result.append(candidate)
+    return tune_target_classes_if_needed(list_target_classes=result,
+                                         prefix_namespaces_dict=prefix_namespaces_dict)

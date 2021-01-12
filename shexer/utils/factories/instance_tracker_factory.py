@@ -8,6 +8,7 @@ from shexer.utils.factories.iri_factory import create_IRIs_from_string_list
 from shexer.utils.factories.shape_map_parser_factory import get_shape_map_parser
 from shexer.model.graph.endpoint_sgraph import EndpointSGraph
 from shexer.model.graph.rdflib_sgraph import RdflibSgraph
+from shexer.utils.dict import reverse_keys_and_values
 
 
 def get_instance_tracker(instances_file_input=None, graph_file_input=None,
@@ -63,6 +64,7 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
     :return:
     """
 
+    prefix_namespaces_dict = reverse_keys_and_values(namespaces_dict)
     instance_yielder = None
     if instances_file_input is not None:
         instance_yielder = get_triple_yielder(source_file=instances_file_input,
@@ -133,7 +135,10 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
         model_classes = None
         if file_target_classes or target_classes is not None:
             list_of_str_target_classes = tune_target_classes_if_needed(
-                target_classes) if target_classes is not None else read_target_classes_from_file(file_target_classes)
+                list_target_classes=target_classes,
+                prefix_namespaces_dict=prefix_namespaces_dict) if target_classes is not None else read_target_classes_from_file(
+                file_target_classes=file_target_classes,
+                prefix_namespaces_dict=prefix_namespaces_dict)
             model_classes = get_list_of_model_classes(list_of_str_target_classes)
 
         pure_instances_tracker = InstanceTracker(target_classes=model_classes,
@@ -155,6 +160,7 @@ def _get_adequate_sgraph(endpoint_url, graph_file_input, url_input, graph_format
                             raw_graph=raw_graph,
                             format=graph_format)
 
+
 def _decide_tracker_to_return(selectors_tracker, pure_instances_tracker):
     if selectors_tracker is not None and pure_instances_tracker is not None:
         return MixedInstanceTracker(list_of_instance_trackers=[selectors_tracker, pure_instances_tracker])
@@ -175,6 +181,3 @@ def _are_there_some_target_classes(target_classes, file_target_classes, all_clas
 
 def get_list_of_model_classes(list_of_str_target_classes):
     return create_IRIs_from_string_list(list_of_str_target_classes)
-
-
-
