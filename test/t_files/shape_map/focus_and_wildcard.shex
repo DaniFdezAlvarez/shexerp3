@@ -9,9 +9,9 @@ PREFIX : <http://weso.es/shapes/>
 <WithName>
 {
    foaf:name  xsd:string  ;
-   foaf:familyName  xsd:string  *;
-   rdf:type  [foaf:Person]  *;
-   foaf:age  xsd:integer  *;
-   foaf:knows  @<WithName>  *;
-   foaf:knows  IRI  *
+   foaf:familyName  xsd:string  ?;
+   rdf:type  [foaf:Person]  ?;
+   foaf:age  xsd:integer  ?;
+   foaf:knows  @<WithName>  ?;
+   foaf:knows  IRI  ?
 }

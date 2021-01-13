@@ -9,5 +9,5 @@ PREFIX : <http://weso.es/shapes/>
 :Person
 {
    rdf:type  [foaf:Person]  ;
-   foaf:age  xsd:integer  *
+   foaf:age  xsd:integer  ?
 }

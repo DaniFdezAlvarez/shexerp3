@@ -37,7 +37,8 @@ class TestShapeQualifiersMode(unittest.TestCase):
                         namespaces_for_qualifier_props=["http://www.wikidata.org/prop/"],
                         shape_qualifiers_mode=True,
                         disable_comments=True,
-                        all_classes_mode=False)
+                        all_classes_mode=False,
+                        allow_opt_cardinality=False)
         str_result = shaper.shex_graph(string_output=True)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "virus_qualifiers.shex",
                                                       str_target=str_result))

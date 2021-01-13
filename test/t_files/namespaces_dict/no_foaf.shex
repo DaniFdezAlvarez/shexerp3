@@ -9,9 +9,9 @@ PREFIX : <http://weso.es/shapes/>
 {
    rdf:type  [<http://xmlns.com/foaf/0.1/Person>]  ;
    <http://xmlns.com/foaf/0.1/name>  xsd:string  ;
-   <http://xmlns.com/foaf/0.1/age>  xsd:integer  *;
-   <http://xmlns.com/foaf/0.1/familyName>  xsd:string  *;
-   <http://xmlns.com/foaf/0.1/knows>  @:Person  *
+   <http://xmlns.com/foaf/0.1/age>  xsd:integer  ?;
+   <http://xmlns.com/foaf/0.1/familyName>  xsd:string  ?;
+   <http://xmlns.com/foaf/0.1/knows>  @:Person  ?
 }
 
 
@@ -19,5 +19,5 @@ PREFIX : <http://weso.es/shapes/>
 {
    rdf:type  [<http://xmlns.com/foaf/0.1/Document>]  ;
    <http://xmlns.com/foaf/0.1/title>  xsd:string  ;
-   <http://xmlns.com/foaf/0.1/depiction>  xsd:string  *
+   <http://xmlns.com/foaf/0.1/depiction>  xsd:string  ?
 }
