@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import G1, BASE_FILES, G1_ALL_CLASSES_NO_COMMENTS, NAMESPACES_WITH_FOAF_AND_EX
+from test.const import G1, BASE_FILES, G1_ALL_CLASSES_NO_COMMENTS, default_namespaces
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import TURTLE
@@ -11,7 +11,7 @@ class TestGraphFileInput(unittest.TestCase):
 
     def test_t_0(self):
         shaper = Shaper(graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=True,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -23,7 +23,7 @@ class TestGraphFileInput(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -36,7 +36,7 @@ class TestGraphFileInput(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -49,7 +49,7 @@ class TestGraphFileInput(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)

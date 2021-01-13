@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX
+from test.const import BASE_FILES, default_namespaces
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import TURTLE
@@ -13,7 +13,7 @@ class TestAllowOptCardinality(unittest.TestCase):
     def test_opt_enabled(self):
         shaper = Shaper(
             graph_file_input=_BASE_DIR + "g4_opt_cardinality.ttl",
-            namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+            namespaces_dict=default_namespaces(),
             all_classes_mode=True,
             input_format=TURTLE,
             disable_comments=True,
@@ -25,7 +25,7 @@ class TestAllowOptCardinality(unittest.TestCase):
     def test_opt_disabled(self):
         shaper = Shaper(
             graph_file_input=_BASE_DIR + "g4_opt_cardinality.ttl",
-            namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+            namespaces_dict=default_namespaces(),
             all_classes_mode=True,
             input_format=TURTLE,
             disable_comments=True,

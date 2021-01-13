@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import G1, BASE_FILES, G1_NT, NAMESPACES_WITH_FOAF_AND_EX, BASE_FILES_GENERAL
+from test.const import G1, BASE_FILES, G1_NT, default_namespaces, BASE_FILES_GENERAL
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import NT, TURTLE
@@ -13,7 +13,7 @@ class TestGraphListOfFilesInput(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_list_of_files_input=[G1],
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -26,7 +26,7 @@ class TestGraphListOfFilesInput(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_list_of_files_input=[G1_NT],
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         input_format=NT,
                         all_classes_mode=False,
                         disable_comments=True)
@@ -39,7 +39,7 @@ class TestGraphListOfFilesInput(unittest.TestCase):
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_list_of_files_input=[_BASE_DIR + "g1_p1.nt",
                                                    _BASE_DIR + "g1_p2.nt"],
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         input_format=NT,
                         all_classes_mode=False,
                         disable_comments=True)
@@ -53,7 +53,7 @@ class TestGraphListOfFilesInput(unittest.TestCase):
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_list_of_files_input=[_BASE_DIR + "g1_p1.ttl",
                                                    _BASE_DIR + "g1_p2.ttl"],
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)

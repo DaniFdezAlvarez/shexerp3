@@ -1,7 +1,7 @@
 import json
 from shexer.model.statement import Statement
 from shexer.model.shape import Shape
-from shexer.consts import RDF_TYPE
+from shexer.consts import RDF_TYPE, SHAPES_DEFAULT_NAMESPACE
 from shexer.utils.shapes import build_shapes_name_for_class_uri
 from shexer.utils.target_elements import determine_original_target_nodes_if_needed
 from shexer.io.shex.formater.statement_serializers.base_statement_serializer import BaseStatementSerializer
@@ -18,7 +18,7 @@ class ClassShexer(object):
                  discard_useless_constraints_with_positive_closure=True, keep_less_specific=True,
                  all_compliant_mode=True, instantiation_property=RDF_TYPE, disable_or_statements=True,
                  disable_comments=False, namespaces_dict=None, tolerance_to_keep_similar_rules=0,
-                 allow_opt_cardinality=True, disable_exact_cardinality=False):
+                 allow_opt_cardinality=True, disable_exact_cardinality=False, shapes_namespace=SHAPES_DEFAULT_NAMESPACE):
         self._class_counts_dict = class_counts_dict
         self._class_profile_dict = class_profile_dict if class_profile_dict is not None else self._load_class_profile_dict_from_file(
             class_profile_json_file)
@@ -34,10 +34,12 @@ class ClassShexer(object):
         self._tolerance = tolerance_to_keep_similar_rules
         self._allow_opt_cardinality = allow_opt_cardinality
         self._disable_exact_cardinality = disable_exact_cardinality
+        self._shapes_namespace = shapes_namespace
 
         self._original_target_nodes = determine_original_target_nodes_if_needed(remove_empty_shapes=remove_empty_shapes,
                                                                                 original_target_classes=original_target_classes,
-                                                                                original_shape_map=original_shape_map)
+                                                                                original_shape_map=original_shape_map,
+                                                                                shapes_namespace=shapes_namespace)
 
 
     def shex_classes(self, acceptance_threshold=0):
@@ -324,7 +326,8 @@ class ClassShexer(object):
 
     def _build_shapes(self, acceptance_threshold):
         for a_class_key in self._class_profile_dict:
-            name = build_shapes_name_for_class_uri(a_class_key)
+            name = build_shapes_name_for_class_uri(class_uri=a_class_key,
+                                                   shapes_namespace=self._shapes_namespace)
             number_of_instances = float(self._class_counts_dict[a_class_key])
             statements = []
             for a_prop_key in self._class_profile_dict[a_class_key]:

@@ -12,8 +12,7 @@ PREFIX : <http://weso.es/shapes/>
    rdf:type  [foaf:Person]  ;
    foaf:familyName  xsd:string  ?;
    foaf:age  xsd:integer  ?;
-   foaf:knows  @<Person>  ?;
-   foaf:knows  IRI  ?
+   foaf:knows  @<Person>  ?
 }
 
 

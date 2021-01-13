@@ -5,6 +5,7 @@ from shexer.utils.target_elements import determine_original_target_nodes_if_need
 from shexer.model.property import Property
 from shexer.model.bnode import BNode
 from shexer.utils.uri import remove_corners
+from shexer.consts import SHAPES_DEFAULT_NAMESPACE
 
 RDF_TYPE_STR = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 
@@ -19,10 +20,12 @@ _O = 2
 class ClassProfiler(object):
 
     def __init__(self, triples_yielder, target_classes_dict, instantiation_property_str=RDF_TYPE_STR,
-                 remove_empty_shapes=True, original_target_classes=None, original_shape_map=None ):
+                 remove_empty_shapes=True, original_target_classes=None, original_shape_map=None,
+                 shapes_namespace=SHAPES_DEFAULT_NAMESPACE):
         self._triples_yielder = triples_yielder
         self._target_classes_dict = target_classes_dict
         self._instances_shape_dict = {}
+        self._shapes_namespace = shapes_namespace
         self._classes_shape_dict = self._build_classes_shape_dict_with_just_classes()
         self._shape_names_dict = self._build_shape_names_dict()
         self._relevant_triples = 0
@@ -30,7 +33,9 @@ class ClassProfiler(object):
         self._remove_empty_shapes=remove_empty_shapes
         self._original_target_nodes = determine_original_target_nodes_if_needed(remove_empty_shapes=remove_empty_shapes,
                                                                                 original_target_classes=original_target_classes,
-                                                                                original_shape_map=original_shape_map)
+                                                                                original_shape_map=original_shape_map,
+                                                                                shapes_namespace=shapes_namespace)
+
 
 
 
@@ -61,7 +66,8 @@ class ClassProfiler(object):
     def _build_shape_names_dict(self):
         result = {}
         for a_class in self._target_classes_dict:
-            name = build_shapes_name_for_class_uri(a_class)
+            name = build_shapes_name_for_class_uri(class_uri=a_class,
+                                                   shapes_namespace=self._shapes_namespace)
             result[a_class] = name
         return result
 

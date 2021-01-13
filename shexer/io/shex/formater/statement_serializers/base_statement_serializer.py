@@ -2,7 +2,7 @@ from shexer.io.shex.formater.consts import SPACES_GAP_BETWEEN_TOKENS, \
     COMMENT_INI, TARGET_LINE_LENGHT, SPACES_GAP_FOR_FREQUENCY, KLEENE_CLOSURE, POSITIVE_CLOSURE, OPT_CARDINALITY
 from shexer.model.IRI import IRI_ELEM_TYPE
 from shexer.model.shape import STARTING_CHAR_FOR_SHAPE_NAME
-
+from shexer.utils.shapes import prefixize_shape_name_if_possible
 
 
 class BaseStatementSerializer(object):
@@ -10,7 +10,6 @@ class BaseStatementSerializer(object):
     def __init__(self, instantiation_property_str, disable_comments=False):
         self._instantiation_property_str = instantiation_property_str
         self._disable_comments = disable_comments
-
 
     def serialize_statement_with_indent_level(self, a_statement, is_last_statement_of_shape, namespaces_dict):
         tuples_line_indent = []
@@ -35,7 +34,6 @@ class BaseStatementSerializer(object):
 
         return tuples_line_indent
 
-
     def str_of_target_element(self, target_element, st_property, namespaces_dict):
         """
         Special treatment for instantiation_property. We build a value set with an specific URI
@@ -47,13 +45,15 @@ class BaseStatementSerializer(object):
             return "[" + BaseStatementSerializer.tune_token(target_element, namespaces_dict) + "]"
         return BaseStatementSerializer.tune_token(target_element, namespaces_dict)
 
-
     @staticmethod
     def tune_token(a_token, namespaces_dict):
         # TODO:  a lot to correct here for normal behaviour
         if a_token.startswith(STARTING_CHAR_FOR_SHAPE_NAME):  # Shape
-            return STARTING_CHAR_FOR_SHAPE_NAME +":" + a_token.replace(STARTING_CHAR_FOR_SHAPE_NAME, "")
-        if a_token == IRI_ELEM_TYPE: # iri
+            # return STARTING_CHAR_FOR_SHAPE_NAME +":" + a_token.replace(STARTING_CHAR_FOR_SHAPE_NAME, "")
+            return STARTING_CHAR_FOR_SHAPE_NAME \
+                   + prefixize_shape_name_if_possible(a_shape_name=a_token,
+                                                      namespaces_prefix_dict=namespaces_dict)
+        if a_token == IRI_ELEM_TYPE:  # iri
             return a_token
         if ":" not in a_token:
             if "<" in a_token:
@@ -64,7 +64,6 @@ class BaseStatementSerializer(object):
                                                                                 namespaces_dict=namespaces_dict)
         if candidate_prefixed is not None:
             return candidate_prefixed
-
 
         return "<" + a_token + ">"  # Complete URIs
 
@@ -83,13 +82,11 @@ class BaseStatementSerializer(object):
                 if best_match is None or len(best_match) < len(a_namespace):
                     best_match = a_namespace
 
-
         return None if best_match is None else uri.replace(best_match, namespaces_dict[best_match] + ":")
 
     @staticmethod
     def probability_representation(probability):
         return COMMENT_INI + str(probability * 100) + " %"
-
 
     @staticmethod
     def cardinality_representation(cardinality, statement, out_of_comment=False):
@@ -100,13 +97,11 @@ class BaseStatementSerializer(object):
         else:
             return "{" + str(cardinality) + "}"
 
-
     @staticmethod
     def closure_of_statement(is_last_statement):
         if is_last_statement:
             return ""
         return ";"
-
 
     @staticmethod
     def adequate_amount_of_final_spaces(current_line):
