@@ -25,7 +25,7 @@ class TestNamespacesToIgnore(unittest.TestCase):
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "g1_other_namespace.shex",
                                                       str_target=str_result))
 
-    def test_excliding_direct_other(self):
+    def test_excluding_direct_other(self):
         namespaces = {key: value for key, value in NAMESPACES_WITH_FOAF_AND_EX.items()}
 
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",

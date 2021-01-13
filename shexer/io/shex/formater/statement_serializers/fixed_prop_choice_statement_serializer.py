@@ -1,5 +1,5 @@
 from shexer.io.shex.formater.statement_serializers.base_statement_serializer import BaseStatementSerializer
-from shexer.io.shex.formater.consts import SPACES_GAP_BETWEEN_TOKENS, KLEENE_CLOSURE
+from shexer.io.shex.formater.consts import SPACES_GAP_BETWEEN_TOKENS, KLEENE_CLOSURE, OPT_CARDINALITY
 
 
 class FixedPropChoiceStatementSerializer(BaseStatementSerializer):
@@ -46,7 +46,7 @@ class FixedPropChoiceStatementSerializer(BaseStatementSerializer):
                                                                      out_of_comment=True) + \
                   BaseStatementSerializer.closure_of_statement(is_last_statement_of_shape)
 
-        if a_statement.cardinality != KLEENE_CLOSURE and not self._disable_comments:
+        if a_statement.cardinality not in [KLEENE_CLOSURE, OPT_CARDINALITY] and not self._disable_comments:
             str_res += BaseStatementSerializer.adequate_amount_of_final_spaces(str_res) + \
                        BaseStatementSerializer.probability_representation(a_statement.probability)
         return str_res, 1

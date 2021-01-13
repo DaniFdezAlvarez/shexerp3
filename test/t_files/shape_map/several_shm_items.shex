@@ -10,10 +10,10 @@ PREFIX : <http://weso.es/shapes/>
 {
    foaf:name  xsd:string  ;
    rdf:type  [foaf:Person]  ;
-   foaf:familyName  xsd:string  *;
-   foaf:age  xsd:integer  *;
-   foaf:knows  @<Person>  *;
-   foaf:knows  IRI  *
+   foaf:familyName  xsd:string  ?;
+   foaf:age  xsd:integer  ?;
+   foaf:knows  @<Person>  ?;
+   foaf:knows  IRI  ?
 }
 
 
@@ -21,5 +21,5 @@ PREFIX : <http://weso.es/shapes/>
 {
    rdf:type  [foaf:Document]  ;
    foaf:title  xsd:string  ;
-   foaf:depiction  xsd:string  *
+   foaf:depiction  xsd:string  ?
 }

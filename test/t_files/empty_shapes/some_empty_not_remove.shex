@@ -15,9 +15,9 @@ PREFIX : <http://weso.es/shapes/>
 {
    foaf:name  xsd:string  ;
    rdf:type  [foaf:Person]  ;
-   foaf:age  xsd:integer  *;
-   foaf:familyName  xsd:string  *;
-   foaf:knows  @:Person  *
+   foaf:age  xsd:integer  ?;
+   foaf:familyName  xsd:string  ?;
+   foaf:knows  @:Person  ?
 }
 
 
@@ -25,5 +25,5 @@ PREFIX : <http://weso.es/shapes/>
 {
    rdf:type  [foaf:Document]  ;
    foaf:title  xsd:string  ;
-   foaf:depiction  xsd:string  *
+   foaf:depiction  xsd:string  ?
 }

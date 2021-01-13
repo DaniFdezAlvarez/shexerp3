@@ -9,6 +9,6 @@ PREFIX : <http://weso.es/shapes/>
 :Person
 {
    rdf:type  [foaf:Person]  ;                                  # 100.0 %
-   foaf:age  xsd:integer  *
+   foaf:age  xsd:integer  ?
             # 50.0 % obj: xsd:integer. Cardinality: {1}
 }

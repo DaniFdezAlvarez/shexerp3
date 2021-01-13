@@ -12,7 +12,8 @@ def get_class_shexer(class_instances_target_dict,
                      instantiation_property,
                      disable_or_statements,
                      disable_comments,
-                     namespaces_dict):
+                     namespaces_dict,
+                     allow_opt_cardinality):
     class_count_dicts = {}
 
     for a_class_key in class_instances_target_dict:
@@ -31,5 +32,6 @@ def get_class_shexer(class_instances_target_dict,
         instantiation_property=instantiation_property,
         disable_or_statements=disable_or_statements,
         disable_comments=disable_comments,
-        namespaces_dict=namespaces_dict
+        namespaces_dict=namespaces_dict,
+        allow_opt_cardinality=allow_opt_cardinality
     )

@@ -1,5 +1,6 @@
 POSITIVE_CLOSURE = "+"
 KLEENE_CLOSURE = "*"
+OPT_CARDINALITY = "?"
 
 class Statement(object):
 

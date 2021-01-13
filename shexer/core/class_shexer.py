@@ -5,7 +5,7 @@ from shexer.consts import RDF_TYPE
 from shexer.utils.shapes import build_shapes_name_for_class_uri
 from shexer.utils.target_elements import determine_original_target_nodes_if_needed
 from shexer.io.shex.formater.statement_serializers.base_statement_serializer import BaseStatementSerializer
-from shexer.model.statement import POSITIVE_CLOSURE, KLEENE_CLOSURE
+from shexer.model.statement import POSITIVE_CLOSURE, KLEENE_CLOSURE, OPT_CARDINALITY
 from shexer.model.IRI import IRI_ELEM_TYPE
 from shexer.io.shex.formater.statement_serializers.fixed_prop_choice_statement_serializer import FixedPropChoiceStatementSerializer  # TODO: REPFACTOR
 from shexer.model.fixed_prop_choice_statement import FixedPropChoiceStatement
@@ -17,7 +17,8 @@ class ClassShexer(object):
                  remove_empty_shapes=True, original_target_classes=None, original_shape_map=None,
                  discard_useless_constraints_with_positive_closure=True, keep_less_specific=True,
                  all_compliant_mode=True, instantiation_property=RDF_TYPE, disable_or_statements=True,
-                 disable_comments=False, namespaces_dict=None, tolerance_to_keep_similar_rules=0):
+                 disable_comments=False, namespaces_dict=None, tolerance_to_keep_similar_rules=0,
+                 allow_opt_cardinality=True):
         self._class_counts_dict = class_counts_dict
         self._class_profile_dict = class_profile_dict if class_profile_dict is not None else self._load_class_profile_dict_from_file(
             class_profile_json_file)
@@ -31,6 +32,7 @@ class ClassShexer(object):
         self._namespaces_dict = namespaces_dict if namespaces_dict is not None else {}
         self._keep_less_specific = keep_less_specific
         self._tolerance = tolerance_to_keep_similar_rules
+        self._allow_opt_cardinality = allow_opt_cardinality
 
         self._original_target_nodes = determine_original_target_nodes_if_needed(remove_empty_shapes=remove_empty_shapes,
                                                                                 original_target_classes=original_target_classes,
@@ -66,13 +68,15 @@ class ClassShexer(object):
     def _modify_cardinalities_of_statements_non_compliant_with_all_instances(self, statements):
         for a_statement in statements:
             if a_statement.probability != 1:
-                self._change_statement_cardinality_to_kleene_closure(a_statement)
+                self._change_statement_cardinality_to_all_compliant(a_statement)
 
-    def _change_statement_cardinality_to_kleene_closure(self, statement):
+    def _change_statement_cardinality_to_all_compliant(self, statement):
         comment_for_current_sentence = self._turn_statement_into_comment(statement)
         statement.add_comment(comment=comment_for_current_sentence,
                               insert_first=True)
-        statement.cardinality = KLEENE_CLOSURE
+        statement.cardinality = OPT_CARDINALITY if \
+            self._allow_opt_cardinality and statement.cardinality == 1 \
+            else KLEENE_CLOSURE
         statement.probability = 1
 
 

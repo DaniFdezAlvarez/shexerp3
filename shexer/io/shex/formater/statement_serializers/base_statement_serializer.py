@@ -1,5 +1,5 @@
 from shexer.io.shex.formater.consts import SPACES_GAP_BETWEEN_TOKENS, \
-    COMMENT_INI, TARGET_LINE_LENGHT, SPACES_GAP_FOR_FREQUENCY, KLEENE_CLOSURE, POSITIVE_CLOSURE
+    COMMENT_INI, TARGET_LINE_LENGHT, SPACES_GAP_FOR_FREQUENCY, KLEENE_CLOSURE, POSITIVE_CLOSURE, OPT_CARDINALITY
 from shexer.model.IRI import IRI_ELEM_TYPE
 from shexer.model.shape import STARTING_CHAR_FOR_SHAPE_NAME
 
@@ -25,7 +25,7 @@ class BaseStatementSerializer(object):
         result = st_property + SPACES_GAP_BETWEEN_TOKENS + st_target_element + SPACES_GAP_BETWEEN_TOKENS + \
                  cardinality + BaseStatementSerializer.closure_of_statement(is_last_statement_of_shape)
 
-        if a_statement.cardinality != KLEENE_CLOSURE and not self._disable_comments:
+        if a_statement.cardinality not in [KLEENE_CLOSURE, OPT_CARDINALITY] and not self._disable_comments:
             result += BaseStatementSerializer.adequate_amount_of_final_spaces(result)
             result += BaseStatementSerializer.probability_representation(a_statement.probability)
         tuples_line_indent.append((result, 1))
@@ -95,7 +95,7 @@ class BaseStatementSerializer(object):
     def cardinality_representation(cardinality, statement, out_of_comment=False):
         if out_of_comment and statement.cardinality == 1:
             return ""
-        if cardinality in [POSITIVE_CLOSURE, KLEENE_CLOSURE]:
+        if cardinality in [POSITIVE_CLOSURE, KLEENE_CLOSURE, OPT_CARDINALITY]:
             return cardinality
         else:
             return "{" + str(cardinality) + "}"
