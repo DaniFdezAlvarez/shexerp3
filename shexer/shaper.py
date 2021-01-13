@@ -43,7 +43,8 @@ class Shaper(object):
                  remove_empty_shapes=True,
                  disable_comments=False,
                  disable_or_statements=True,
-                 allow_opt_cardinality=True):
+                 allow_opt_cardinality=True,
+                 disable_exact_cardinality=False):
         """
 
         :param target_classes:
@@ -110,6 +111,7 @@ class Shaper(object):
         self._disable_comments = disable_comments
         self._disable_or_statements = disable_or_statements
         self._allow_opt_cardinality = allow_opt_cardinality
+        self._disable_exact_cardinality = disable_exact_cardinality
 
         self._depth_for_building_subgraph = depth_for_building_subgraph
         self._track_classes_for_entities_at_last_depth_level = track_classes_for_entities_at_last_depth_level
@@ -209,7 +211,8 @@ class Shaper(object):
                                 disable_or_statements=self._disable_or_statements,
                                 disable_comments=self._disable_comments,
                                 namespaces_dict=self._namespaces_dict,
-                                allow_opt_cardinality=self._allow_opt_cardinality
+                                allow_opt_cardinality=self._allow_opt_cardinality,
+                                disable_exact_cardinality=self._disable_exact_cardinality
                                 )
 
     def _build_shapes_serializer(self, target_file, string_return, output_format):

@@ -18,7 +18,7 @@ class ClassShexer(object):
                  discard_useless_constraints_with_positive_closure=True, keep_less_specific=True,
                  all_compliant_mode=True, instantiation_property=RDF_TYPE, disable_or_statements=True,
                  disable_comments=False, namespaces_dict=None, tolerance_to_keep_similar_rules=0,
-                 allow_opt_cardinality=True):
+                 allow_opt_cardinality=True, disable_exact_cardinality=False):
         self._class_counts_dict = class_counts_dict
         self._class_profile_dict = class_profile_dict if class_profile_dict is not None else self._load_class_profile_dict_from_file(
             class_profile_json_file)
@@ -33,6 +33,7 @@ class ClassShexer(object):
         self._keep_less_specific = keep_less_specific
         self._tolerance = tolerance_to_keep_similar_rules
         self._allow_opt_cardinality = allow_opt_cardinality
+        self._disable_exact_cardinality = disable_exact_cardinality
 
         self._original_target_nodes = determine_original_target_nodes_if_needed(remove_empty_shapes=remove_empty_shapes,
                                                                                 original_target_classes=original_target_classes,
@@ -43,7 +44,7 @@ class ClassShexer(object):
         self._build_shapes(acceptance_threshold)
         self._sort_shapes()
         self._set_valid_constraints_of_shapes()
-        self._clean_shapes()
+        self._clean_empty_shapes()
 
         return self._shapes_list
 
@@ -57,6 +58,9 @@ class ClassShexer(object):
             if self._all_compliant_mode:
                 self._modify_cardinalities_of_statements_non_compliant_with_all_instances(valid_statements)
 
+            if self._disable_exact_cardinality:
+                self._generalize_exact_cardinalities(valid_statements)
+
             if self._disable_comments:
                 self._remove_comments_from_statements(valid_statements)
         a_shape.statements = valid_statements
@@ -64,6 +68,11 @@ class ClassShexer(object):
     def _remove_comments_from_statements(self, valid_statements):
         for a_statement in valid_statements:
             a_statement.remove_comments()
+
+    def _generalize_exact_cardinalities(self, statements):
+        for a_statement in statements:
+            if type(a_statement.cardinality) == int and a_statement.cardinality > 1:
+                a_statement.cardinality = POSITIVE_CLOSURE
 
     def _modify_cardinalities_of_statements_non_compliant_with_all_instances(self, statements):
         for a_statement in statements:
@@ -343,7 +352,7 @@ class ClassShexer(object):
             a_shape.sort_statements(reverse=True,
                                     callback=self._value_to_compare_statements)
 
-    def _clean_shapes(self):
+    def _clean_empty_shapes(self):
 
         if not self._remove_empty_shapes:
             return
