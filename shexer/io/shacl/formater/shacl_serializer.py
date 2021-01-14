@@ -115,6 +115,7 @@ class ShaclSerializer(object):
     def _add_cardinality(self, r_shape_uri, statement, r_constraint_node):
         pass  # TODO
 
+
     def _add_bnode_property(self, r_shape_uri, r_constraint_node):
         self._add_triple(r_shape_uri, _R_SHACL_PROPERTY_PROP, r_constraint_node)
 
