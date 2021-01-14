@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import NAMESPACES_WITH_FOAF_AND_EX
+from test.const import default_namespaces
 from test.t_utils import number_of_shapes, shape_contains_constraint
 
 
@@ -18,7 +18,7 @@ class TestDepthBuildingSubGraph(unittest.TestCase):
                         "LIMIT 10'@<Flag>"
         shaper = Shaper(shape_map_raw=shape_map_raw,
                         url_endpoint="https://query.wikidata.org/sparql",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         instantiation_property="http://www.wikidata.org/prop/direct/P31",
                         disable_comments=True,
                         depth_for_building_subgraph=1,
@@ -37,7 +37,7 @@ class TestDepthBuildingSubGraph(unittest.TestCase):
                         "LIMIT 10'@<Flag>"
         shaper = Shaper(shape_map_raw=shape_map_raw,
                         url_endpoint="https://query.wikidata.org/sparql",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         instantiation_property="http://www.wikidata.org/prop/direct/P31",
                         disable_comments=True,
                         depth_for_building_subgraph=1,
@@ -57,7 +57,7 @@ class TestDepthBuildingSubGraph(unittest.TestCase):
     #                     "LIMIT 10'@<Flag>"
     #     shaper = Shaper(shape_map_raw=shape_map_raw,
     #                     url_endpoint="https://query.wikidata.org/sparql",
-    #                     namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+    #                     namespaces_dict=default_namespaces(),
     #                     instantiation_property="http://www.wikidata.org/prop/direct/P31",
     #                     disable_comments=True,
     #                     depth_for_building_subgraph=2,
@@ -76,7 +76,7 @@ class TestDepthBuildingSubGraph(unittest.TestCase):
     #                     "LIMIT 10'@<Flag>"
     #     shaper = Shaper(shape_map_raw=shape_map_raw,
     #                     url_endpoint="https://query.wikidata.org/sparql",
-    #                     namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+    #                     namespaces_dict=default_namespaces(),
     #                     instantiation_property="http://www.wikidata.org/prop/direct/P31",
     #                     disable_comments=True,
     #                     depth_for_building_subgraph=2,

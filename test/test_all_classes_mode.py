@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import G1, BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX, G1_ALL_CLASSES_NO_COMMENTS
+from test.const import G1, BASE_FILES, default_namespaces, G1_ALL_CLASSES_NO_COMMENTS
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import TURTLE
@@ -13,7 +13,7 @@ class TestAllClasesMode(unittest.TestCase):
     def test_all_classes_g1(self):
         shaper = Shaper(
             graph_file_input=G1,
-            namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+            namespaces_dict=default_namespaces(),
             all_classes_mode=True,
             input_format=TURTLE,
             disable_comments=True)
@@ -24,7 +24,7 @@ class TestAllClasesMode(unittest.TestCase):
     def test_all_classes_ex_a(self):
         shaper = Shaper(
             graph_file_input=_BASE_DIR + "G1_ex_a.ttl",
-            namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+            namespaces_dict=default_namespaces(),
             all_classes_mode=True,
             input_format=TURTLE,
             instantiation_property="http://example.org/a",

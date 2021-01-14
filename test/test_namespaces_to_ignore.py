@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX, G1_ALL_CLASSES_NO_COMMENTS
+from test.const import BASE_FILES, default_namespaces
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import TURTLE
@@ -11,7 +11,7 @@ class TestNamespacesToIgnore(unittest.TestCase):
 
     def test_excluding_other(self):
 
-        namespaces = {key:value for key, value in NAMESPACES_WITH_FOAF_AND_EX.items()}
+        namespaces = {key:value for key, value in default_namespaces().items()}
 
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
@@ -26,7 +26,7 @@ class TestNamespacesToIgnore(unittest.TestCase):
                                                       str_target=str_result))
 
     def test_excluding_direct_other(self):
-        namespaces = {key: value for key, value in NAMESPACES_WITH_FOAF_AND_EX.items()}
+        namespaces = {key: value for key, value in default_namespaces().items()}
 
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],

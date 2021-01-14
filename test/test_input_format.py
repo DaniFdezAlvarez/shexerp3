@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import G1, BASE_FILES, G1_JSON_LD, G1_NT, G1_TSVO_SPO, G1_XML, G1_N3, NAMESPACES_WITH_FOAF_AND_EX
+from test.const import G1, BASE_FILES, G1_JSON_LD, G1_NT, G1_TSVO_SPO, G1_XML, G1_N3, default_namespaces
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import NT, TSV_SPO, RDF_XML, JSON_LD, N3, TURTLE
@@ -13,7 +13,7 @@ class TestInputFormat(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -26,7 +26,7 @@ class TestInputFormat(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1_NT,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=NT,
                         disable_comments=True)
@@ -39,7 +39,7 @@ class TestInputFormat(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1_N3,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=N3,
                         disable_comments=True)
@@ -51,7 +51,7 @@ class TestInputFormat(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1_TSVO_SPO,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TSV_SPO,
                         disable_comments=True)
@@ -63,7 +63,7 @@ class TestInputFormat(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1_XML,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=RDF_XML,
                         disable_comments=True)
@@ -76,7 +76,7 @@ class TestInputFormat(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1_JSON_LD,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=JSON_LD,
                         disable_comments=True)

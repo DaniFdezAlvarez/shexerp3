@@ -2,8 +2,8 @@ from shexer.core.class_profiler import RDF_TYPE_STR
 
 from shexer.model.property import Property
 from shexer.utils.uri import remove_corners
+from shexer.utils.shapes import prefixize_shape_name_if_possible
 from shexer.io.shex.formater.consts import SPACES_LEVEL_INDENTATION
-
 
 
 class ShexSerializer(object):
@@ -44,11 +44,10 @@ class ShexSerializer(object):
     def _serialize_namespaces(self):
         for a_namespace in self._namespaces_dict:
             self._write_line(self._prefix_line(a_namespace), 0)
-        self._serialize_empty_namespace()
         self._write_line("", 0)
 
     def _prefix_line(self, namespace_key):
-        return "PREFIX " +  self._namespaces_dict[namespace_key] + ": <" + namespace_key + ">"
+        return "PREFIX " + self._namespaces_dict[namespace_key] + ": <" + namespace_key + ">"
 
     def _serialize_empty_namespace(self):
         self._write_line("PREFIX : <http://weso.es/shapes/>")
@@ -105,12 +104,11 @@ class ShexSerializer(object):
             self._write_line(a_line=line_indent_tuple[0],
                              indent_level=line_indent_tuple[1])
 
-
     def _serialize_shape_name(self, a_shape):
-        name = a_shape.name.replace("@", ":")
-        if ":" not in name:
-            name = "<" + name + ">"
-        self._write_line(name)
+        self._write_line(
+            prefixize_shape_name_if_possible(a_shape_name=a_shape.name,
+                                             namespaces_prefix_dict=self._namespaces_dict)
+        )
 
     def _serialize_opening_of_rules(self):
         self._write_line("{")

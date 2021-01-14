@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import G1_NT, G1, BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX, G1_ALL_CLASSES_NO_COMMENTS
+from test.const import G1_NT, G1, BASE_FILES, default_namespaces, G1_ALL_CLASSES_NO_COMMENTS
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import TURTLE, NT
@@ -14,7 +14,7 @@ class TestInstantiationProperty(unittest.TestCase):
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1,
                         instantiation_property="http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -27,7 +27,7 @@ class TestInstantiationProperty(unittest.TestCase):
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1,
                         # instantiation_property="http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -40,7 +40,7 @@ class TestInstantiationProperty(unittest.TestCase):
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=_BASE_DIR + "G1_ex_a.ttl",
                         instantiation_property="http://example.org/a",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -54,7 +54,7 @@ class TestInstantiationProperty(unittest.TestCase):
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=_BASE_DIR + "G1_ex_a_some_rdftype.ttl",
                         instantiation_property="http://example.org/a",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)

@@ -1,7 +1,7 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import NAMESPACES_WITH_FOAF_AND_EX
-from test.t_utils import number_of_shapes, shape_contains_constraint
+from test.const import default_namespaces
+from test.t_utils import number_of_shapes
 
 
 class TestUrlEndpoint(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestUrlEndpoint(unittest.TestCase):
                         "LIMIT 1'@<Flag>"
         shaper = Shaper(shape_map_raw=shape_map_raw,
                         url_endpoint="https://query.wikidata.org/sparql",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         instantiation_property="http://www.wikidata.org/prop/direct/P31",
                         disable_comments=True,
                         depth_for_building_subgraph=1,
@@ -30,7 +30,7 @@ class TestUrlEndpoint(unittest.TestCase):
         shape_map_raw = "SPARQL'select ?s where {?s a <http://dbpedia.org/ontology/Person>} LIMIT 1'@<Flag>"
         shaper = Shaper(shape_map_raw=shape_map_raw,
                         url_endpoint="https://dbpedia.org/sparql",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         disable_comments=True,
                         depth_for_building_subgraph=1,
                         track_classes_for_entities_at_last_depth_level=False,

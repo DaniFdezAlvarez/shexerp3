@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import G1_NT, G1, BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX, G1_ALL_CLASSES_NO_COMMENTS
+from test.const import G1_NT, G1, BASE_FILES, default_namespaces, G1_ALL_CLASSES_NO_COMMENTS
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import TURTLE, NT
@@ -13,7 +13,7 @@ class TestNamespacesDict(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -38,6 +38,21 @@ class TestNamespacesDict(unittest.TestCase):
                         disable_comments=True)
         str_result = shaper.shex_graph(string_output=True)
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "\\no_foaf.shex",
+                                                      str_target=str_result))
+
+    def test_overwrite_empty(self):
+        namespaces = default_namespaces()
+        namespaces["http://unuseful.but.yet/here/"] = ""
+
+        shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
+                                        "http://xmlns.com/foaf/0.1/Document"],
+                        graph_file_input=G1,
+                        namespaces_dict=namespaces,
+                        all_classes_mode=False,
+                        input_format=TURTLE,
+                        disable_comments=True)
+        str_result = shaper.shex_graph(string_output=True)
+        self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "\\overwrite_empty.shex",
                                                       str_target=str_result))
 
     def test_overwrite_some_namespaces(self):

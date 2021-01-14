@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import G1, BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX
+from test.const import G1, BASE_FILES, default_namespaces
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import TURTLE
@@ -12,7 +12,7 @@ class TestRawShapeMap(unittest.TestCase):
     def test_node(self):
         shape_map = "<http://example.org/Jimmy>@<Person>"
         shaper = Shaper(graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
@@ -25,7 +25,7 @@ class TestRawShapeMap(unittest.TestCase):
     def test_prefixed_node(self):
         shape_map = "ex:Jimmy@<Person>"
         shaper = Shaper(graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
@@ -38,7 +38,7 @@ class TestRawShapeMap(unittest.TestCase):
     def test_focus(self):
         shape_map = "{FOCUS a foaf:Person}@<Person>"
         shaper = Shaper(graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
@@ -51,7 +51,7 @@ class TestRawShapeMap(unittest.TestCase):
     def test_focus_wildcard(self):
         shape_map = "{FOCUS foaf:name _}@<WithName>"
         shaper = Shaper(graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
@@ -64,7 +64,7 @@ class TestRawShapeMap(unittest.TestCase):
     def test_sparql_selector(self):
         shape_map = "SPARQL \"select ?p where { ?p a foaf:Person }\"@<Person>"
         shaper = Shaper(graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,
@@ -77,7 +77,7 @@ class TestRawShapeMap(unittest.TestCase):
     def test_several_shapemap_items(self):
         shape_map = "{FOCUS a foaf:Person}@<Person>\n{FOCUS a foaf:Document}@<Document>"
         shaper = Shaper(graph_file_input=G1,
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True,

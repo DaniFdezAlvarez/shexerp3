@@ -3,6 +3,7 @@ from shexer.utils.uri import remove_corners
 from shexer.utils.factories.h_tree import get_basic_h_tree
 from shexer.core.instances.annotators.annotator_func import get_proper_annotator
 from shexer.core.instances.abstract_instance_tracker import AbstractInstanceTracker
+from shexer.consts import SHAPES_DEFAULT_NAMESPACE
 
 
 
@@ -14,7 +15,8 @@ class InstanceTracker(AbstractInstanceTracker):
 
     def __init__(self, target_classes, triples_yielder, instantiation_property=_RDF_TYPE,
                  all_classes_mode=False, subclass_property=_RDFS_SUBCLASS_OF, track_hierarchies=True,
-                 shape_qualifiers_mode=False, namespaces_for_qualifier_props=None):
+                 shape_qualifiers_mode=False, namespaces_for_qualifier_props=None,
+                 shapes_namespace=SHAPES_DEFAULT_NAMESPACE):
         self._target_classes = target_classes
         self._all_classes_mode = all_classes_mode
         self._instances_dict = self._build_instances_dict(self._target_classes)
@@ -26,6 +28,7 @@ class InstanceTracker(AbstractInstanceTracker):
         self._track_hierarchies = track_hierarchies
         self._shape_qualifiers_mode = shape_qualifiers_mode
         self._namespaces_for_qualifiers_props = [] if namespaces_for_qualifier_props is None else namespaces_for_qualifier_props
+        self._shapes_namespace = shapes_namespace
 
         self._htree = get_basic_h_tree() if track_hierarchies else None
         self._classes_considered_in_htree = set() if track_hierarchies else None

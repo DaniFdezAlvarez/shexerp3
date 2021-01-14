@@ -1,6 +1,6 @@
 from shexer.utils.obj_references import check_just_one_not_none, check_one_or_zero_not_none
 
-from shexer.consts import SHEX, NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP, JSON_LD, RDF_TYPE
+from shexer.consts import SHEX, NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP, JSON_LD, RDF_TYPE, SHAPES_DEFAULT_NAMESPACE
 from shexer.utils.factories.class_profiler_factory import get_class_profiler
 from shexer.utils.factories.instance_tracker_factory import get_instance_tracker
 from shexer.utils.factories.class_shexer_factory import get_class_shexer
@@ -8,6 +8,7 @@ from shexer.utils.factories.remote_graph_factory import get_remote_graph_if_need
 from shexer.utils.factories.shape_map_factory import get_shape_map_if_needed
 from shexer.io.profile.formater.abstract_profile_serializer import AbstractProfileSerializer
 from shexer.utils.factories.shape_serializer_factory import get_shape_serializer
+from shexer.utils.namespaces import find_adequate_prefix_for_shapes_namespaces
 
 
 class Shaper(object):
@@ -44,7 +45,8 @@ class Shaper(object):
                  disable_comments=False,
                  disable_or_statements=True,
                  allow_opt_cardinality=True,
-                 disable_exact_cardinality=False):
+                 disable_exact_cardinality=False,
+                 shapes_namespace=SHAPES_DEFAULT_NAMESPACE):
         """
 
         :param target_classes:
@@ -120,6 +122,10 @@ class Shaper(object):
         self._shape_map_format = shape_map_format
         self._shape_qualifiers_mode = shape_qualifiers_mode
         self._namespaces_for_qualifier_props = namespaces_for_qualifier_props
+        self._shapes_namespace = shapes_namespace
+
+        self._add_shapes_namespaces_to_namespaces_dict()
+
         #TODO check correctness of these last seven params
 
 
@@ -182,6 +188,10 @@ class Shaper(object):
         return serializer.serialize_shex()  # If string return is active, returns string.
         # Otherwise, it writes to file and returns None
 
+    def _add_shapes_namespaces_to_namespaces_dict(self):
+        self._namespaces_dict[self._shapes_namespace] = \
+            find_adequate_prefix_for_shapes_namespaces(self._namespaces_dict)
+
     def _launch_class_profiler(self):
         if self._class_profiler is None:
             self._class_profiler = self._build_class_profiler()
@@ -212,7 +222,8 @@ class Shaper(object):
                                 disable_comments=self._disable_comments,
                                 namespaces_dict=self._namespaces_dict,
                                 allow_opt_cardinality=self._allow_opt_cardinality,
-                                disable_exact_cardinality=self._disable_exact_cardinality
+                                disable_exact_cardinality=self._disable_exact_cardinality,
+                                shapes_namespace=self._shapes_namespace
                                 )
 
     def _build_shapes_serializer(self, target_file, string_return, output_format):
@@ -275,7 +286,8 @@ class Shaper(object):
                                     namespaces_for_qualifier_props=self._namespaces_for_qualifier_props,
                                     shape_qualifiers_mode=self._shape_qualifiers_mode,
                                     built_remote_graph=self._built_remote_graph,
-                                    built_shape_map=self._built_shape_map)
+                                    built_shape_map=self._built_shape_map,
+                                    shapes_namespace=self._shapes_namespace)
 
 
     @staticmethod

@@ -1,6 +1,6 @@
 import unittest
 from shexer.shaper import Shaper
-from test.const import BASE_FILES, NAMESPACES_WITH_FOAF_AND_EX, G1_ALL_CLASSES_NO_COMMENTS
+from test.const import BASE_FILES, default_namespaces, G1_ALL_CLASSES_NO_COMMENTS
 from test.t_utils import file_vs_str_tunned_comparison
 
 from shexer.consts import NT, TURTLE
@@ -13,7 +13,7 @@ class TestUrlGraphFormat(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         url_graph_input="https://raw.githubusercontent.com/DaniFdezAlvarez/shexerp3/develop/test/t_files/t_graph_1.ttl",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=TURTLE,
                         disable_comments=True)
@@ -26,7 +26,7 @@ class TestUrlGraphFormat(unittest.TestCase):
         shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
                                         "http://xmlns.com/foaf/0.1/Document"],
                         url_graph_input="https://raw.githubusercontent.com/DaniFdezAlvarez/shexerp3/develop/test/t_files/t_graph_1.nt",
-                        namespaces_dict=NAMESPACES_WITH_FOAF_AND_EX,
+                        namespaces_dict=default_namespaces(),
                         all_classes_mode=False,
                         input_format=NT,
                         disable_comments=True)

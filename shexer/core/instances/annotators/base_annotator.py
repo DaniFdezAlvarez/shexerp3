@@ -20,6 +20,7 @@ class BaseAnnotator(object):
         self._shape_qualifiers_mode = self._instance_tracker._shape_qualifiers_mode
         self._namespaces_for_qualifiers_props = self._instance_tracker._namespaces_for_qualifiers_props
         self._target_classes = self._instance_tracker._target_classes
+        self._shapes_namespace = self._instance_tracker._shapes_namespace
 
         self._strategy_mode = self._get_proper_strategy()
 
@@ -63,7 +64,8 @@ class BaseAnnotator(object):
         if self._shape_qualifiers_mode:
             strategies_list.append(
                 ShapeQualifiersMode(annotator_ref=self,
-                                    namespaces_for_qualifiers_props=self._namespaces_for_qualifiers_props))
+                                    namespaces_for_qualifiers_props=self._namespaces_for_qualifiers_props,
+                                    shapes_namespace=self._shapes_namespace))
 
         if len(strategies_list) == 0:
             raise ValueError("Wrong combination of params when building the instance tracker. There are not target classes")
