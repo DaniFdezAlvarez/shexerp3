@@ -5,10 +5,11 @@ from shexer.core.instances.pconsts import _P, _O
 
 class ShapeQualifiersMode(BaseStrategyMode):
 
-    def __init__(self, annotator_ref, namespaces_for_qualifiers_props):
+    def __init__(self, annotator_ref, namespaces_for_qualifiers_props, shapes_namespace):
         super().__init__(annotator_ref)
         self._namespaces_for_qualifiers_props = namespaces_for_qualifiers_props
         self._dict_of_qualifier_properties = {}
+        self._shapes_namespace = shapes_namespace
 
 
     def is_relevant_triple(self, a_triple):
@@ -30,7 +31,9 @@ class ShapeQualifiersMode(BaseStrategyMode):
     def _annotate_qualifier_prop(self, a_property):
         str_prop = a_property.iri
         if str_prop not in self._dict_of_qualifier_properties:
-            self._dict_of_qualifier_properties[str_prop] = build_shape_name_for_qualifier_prop_uri(str_prop)
+            self._dict_of_qualifier_properties[str_prop] = \
+                build_shape_name_for_qualifier_prop_uri(prop_uri=str_prop,
+                                                        shapes_namespace=self._shapes_namespace)
             self._instances_dict[self._dict_of_qualifier_properties[str_prop]] = set()
 
     # def annotation_post_parsing(self):

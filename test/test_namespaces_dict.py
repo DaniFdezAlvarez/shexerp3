@@ -40,6 +40,21 @@ class TestNamespacesDict(unittest.TestCase):
         self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "\\no_foaf.shex",
                                                       str_target=str_result))
 
+    def test_overwrite_empty(self):
+        namespaces = default_namespaces()
+        namespaces["http://unuseful.but.yet/here/"] = ""
+
+        shaper = Shaper(target_classes=["http://xmlns.com/foaf/0.1/Person",
+                                        "http://xmlns.com/foaf/0.1/Document"],
+                        graph_file_input=G1,
+                        namespaces_dict=namespaces,
+                        all_classes_mode=False,
+                        input_format=TURTLE,
+                        disable_comments=True)
+        str_result = shaper.shex_graph(string_output=True)
+        self.assertTrue(file_vs_str_tunned_comparison(file_path=_BASE_DIR + "\\overwrite_empty.shex",
+                                                      str_target=str_result))
+
     def test_overwrite_some_namespaces(self):
         namespaces = {"http://example.org/": "ex",
                       "http://www.w3.org/XML/1998/namespace/": "xml",

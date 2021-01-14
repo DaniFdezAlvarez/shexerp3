@@ -13,21 +13,24 @@ def build_shapes_name_for_class_uri(class_uri, shapes_namespace):
             last_piece = class_uri[class_uri.rfind("/") + 1:]
         else:
             last_piece = class_uri[class_uri[:-1].rfind("/") + 1:]
+    if last_piece is not None and last_piece.endswith(">"):
+        last_piece = last_piece[:-1]
     return STARTING_CHAR_FOR_SHAPE_NAME + "<" + shapes_namespace + last_piece + ">" if last_piece is not None else class_uri
         # return class_uri
 
 
-def build_shape_name_for_qualifier_prop_uri(prop_uri):  # TODO REVIEW!
-    result = prop_uri
+def build_shape_name_for_qualifier_prop_uri(prop_uri, shapes_namespace):  # TODO REVIEW!
+    last_piece = None
     if "#" in prop_uri and prop_uri[-1] != "#":
-        return STARTING_CHAR_FOR_SHAPE_NAME + prop_uri[prop_uri.rfind("#") + 1:]
+        last_piece = prop_uri[prop_uri.rfind("#") + 1:]
     if "/" in prop_uri:
         if prop_uri[-1] != "/":
-            return STARTING_CHAR_FOR_SHAPE_NAME + prop_uri[prop_uri.rfind("/") + 1:]
+            last_piece = prop_uri[prop_uri.rfind("/") + 1:]
         else:
-            return STARTING_CHAR_FOR_SHAPE_NAME + prop_uri[prop_uri[:-1].rfind("/") + 1:]
-    else:
-        return result.upper()
+            last_piece = prop_uri[prop_uri[:-1].rfind("/") + 1:]
+    if last_piece is not None:
+        return STARTING_CHAR_FOR_SHAPE_NAME + "<" + shapes_namespace + last_piece + ">"
+    return STARTING_CHAR_FOR_SHAPE_NAME + prop_uri.upper()
 
 
 def prefixize_shape_name_if_possible(a_shape_name, namespaces_prefix_dict):

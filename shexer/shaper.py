@@ -286,7 +286,8 @@ class Shaper(object):
                                     namespaces_for_qualifier_props=self._namespaces_for_qualifier_props,
                                     shape_qualifiers_mode=self._shape_qualifiers_mode,
                                     built_remote_graph=self._built_remote_graph,
-                                    built_shape_map=self._built_shape_map)
+                                    built_shape_map=self._built_shape_map,
+                                    shapes_namespace=self._shapes_namespace)
 
 
     @staticmethod

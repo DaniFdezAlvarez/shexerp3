@@ -1,4 +1,4 @@
-from shexer.consts import NT, FIXED_SHAPE_MAP
+from shexer.consts import NT, FIXED_SHAPE_MAP, SHAPES_DEFAULT_NAMESPACE
 from shexer.utils.factories.triple_yielders_factory import get_triple_yielder, tune_target_classes_if_needed, \
     read_target_classes_from_file
 from shexer.core.instances.instance_tracker import InstanceTracker
@@ -33,7 +33,8 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                          namespaces_for_qualifier_props=None,
                          shape_qualifiers_mode=False,
                          built_remote_graph=None,
-                         built_shape_map=None
+                         built_shape_map=None,
+                         shapes_namespace=SHAPES_DEFAULT_NAMESPACE
                          ):
     """
 
@@ -147,7 +148,8 @@ def get_instance_tracker(instances_file_input=None, graph_file_input=None,
                                                  all_classes_mode=all_classes_mode,
                                                  track_hierarchies=False,
                                                  namespaces_for_qualifier_props=namespaces_for_qualifier_props,
-                                                 shape_qualifiers_mode=shape_qualifiers_mode)
+                                                 shape_qualifiers_mode=shape_qualifiers_mode,
+                                                 shapes_namespace=shapes_namespace)
 
     return _decide_tracker_to_return(selectors_tracker, pure_instances_tracker)
 
