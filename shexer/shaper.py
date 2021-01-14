@@ -185,7 +185,7 @@ class Shaper(object):
         serializer = self._build_shapes_serializer(target_file=output_file,
                                                    string_return=string_output,
                                                    output_format=output_format)
-        return serializer.serialize_shex()  # If string return is active, returns string.
+        return serializer.serialize_shapes()  # If string return is active, returns string.
         # Otherwise, it writes to file and returns None
 
     def _add_shapes_namespaces_to_namespaces_dict(self):
