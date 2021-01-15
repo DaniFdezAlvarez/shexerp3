@@ -1,6 +1,6 @@
-from shexer.utils.obj_references import check_just_one_not_none, check_one_or_zero_not_none
+from shexer.utils.obj_references import check_just_one_not_none
 
-from shexer.consts import SHEX, NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP, JSON_LD, RDF_TYPE, SHAPES_DEFAULT_NAMESPACE
+from shexer.consts import SHEXC, SHACL_TURTLE, NT, TSV_SPO, N3, TURTLE, RDF_XML, FIXED_SHAPE_MAP, JSON_LD, RDF_TYPE, SHAPES_DEFAULT_NAMESPACE
 from shexer.utils.factories.class_profiler_factory import get_class_profiler
 from shexer.utils.factories.instance_tracker_factory import get_instance_tracker
 from shexer.utils.factories.class_shexer_factory import get_class_shexer
@@ -46,7 +46,8 @@ class Shaper(object):
                  disable_or_statements=True,
                  allow_opt_cardinality=True,
                  disable_exact_cardinality=False,
-                 shapes_namespace=SHAPES_DEFAULT_NAMESPACE):
+                 shapes_namespace=SHAPES_DEFAULT_NAMESPACE
+                 ):
         """
 
         :param target_classes:
@@ -165,7 +166,10 @@ class Shaper(object):
             return AbstractProfileSerializer(self._profile).get_string_representation()
         return AbstractProfileSerializer(self._profile).write_profile_to_file(target_file=output_file)
 
-    def shex_graph(self, string_output=False, output_file=None, output_format=SHEX, acceptance_threshold=0):
+    def shex_graph(self, string_output=False,
+                   output_file=None,
+                   output_format=SHEXC,
+                   acceptance_threshold=0):
         """
         :param string_output:
         :param output_file:
@@ -317,7 +321,7 @@ class Shaper(object):
 
     @staticmethod
     def _check_output_format(output_format):
-        if output_format != SHEX:
+        if output_format not in [SHEXC, SHACL_TURTLE]:
             raise ValueError("Currently unsupported output format: " + output_format)
 
     @staticmethod
