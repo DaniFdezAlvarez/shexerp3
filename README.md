@@ -1,8 +1,12 @@
-# Shexer
+# sheXer
 
-Try an online demo: [http://shexer.weso.es/](http://shexer.weso.es/) (and ping if you find this service down or you have any problem using it).
+This library can be used to perform automatic extraction of shape expressions (ShEx) or Shapes Constraint Language (SHACL) for a target RDF grpah.
 
-Language: Python 3.5
+Try an online demo: [http://shexer.weso.es/](http://shexer.weso.es/) . 
+
+Please, contact Dani Fernández at fernandezalvdaniel@uniovi.es or add an issue to this repository if you find any bug in sheXer.
+
+Language: Python 3
 This repository contains a software prototype to perform induction of Shapes in an RDF Graph. 
 
 ## Installation
@@ -18,18 +22,22 @@ Shexer itself can be installed using pip as well:
     $ pip install shexer
 
 ## Features
-This library can be used to perform automatic extraction of shape expressions for a target RDF grpah. Main features:
+Main features:
 
-* Several ways to provide the input data, consisting of a target graph and some target shapes. Tha graph can be provided via a raw string content, local/remote files or tracking on the fly some triples from a SPARQL endpoint. There are defined interfaces in case you want to implement some other way to provide this information. Targte shapes cna be selected by just picking some/all classes in the graph, in which case their respective instances will be used to extract the shape, or with custom node agrupations associated via shape maps.
-* Valid ShEx. The produced shapes are compilant with the current expecification of ShEx2.
-* Score of thrustworthines. Every triple constraint is serialized associated to one or more comments. In the comments there is information about how many of the instances of a given class actually conform to the inferred triple constraint.
+* Several ways to provide the input data, consisting of a target graph and some target shapes. Tha graph can be provided via a raw string content, local/remote file(s) or tracking on the fly some triples from a SPARQL endpoint. There are defined interfaces in case you want to implement some other way to provide this information. 
+* Several ways to select your target shapes. You may want to generat a shapes for each class in the graph or maybe just for some of them. You may want to generate a shape for some custom node agrupations. Or maybe you are extracting some shapes from a big grpah and you just want to extract shapes in the neighborhood of some seed nodes.  For custom node aggrupations sheXer supports ShEx's shape maps syntax, and it provides configuration params to target different classes or graph depths from seed nodes. 
+* Valid ShEx and SHACL. The produced shapes are compilant with the current specification of ShEx2 and SHACL.
 * Threshold of tolerance. The constraints inferred for each shape may not be compatible with every node associated to the shapes (except constraints with Kleene closure). With this threshold you can indicate the minimun percentage of nodes that should conform with a constraint c. If c does not reach the indicated ratio, its associated information will not appear in the fina shape.
-* Literals recognition. All kinds of literals are recognized and treated separately when inferring the constraints. In case a literal is not explicitly associated with a type in the original KG, xsd:string is used by default. By default, when it finds an untyped literal shexer may try to infer its type in case it is a number. Support to some other literals, such as geolocated points, will be included in future releases.
+* Informative comments (just for ShEx, by now). Each constraint inferred is associated to one or more comments. Those comments include different types of information, such as the ratio of nodes that actually conform with a given constraint. You can keep this informative comments or exclude them from the results.
+* Sorted constraints (just for ShEx, by now). Constraints are sorted in the results w.r.t. the ratio of nodes that conform with them, which is used as score of trustworthiness. The constraints in a shape are sorted w.r.t. this score.
+* Literals recognition. All kinds of typed literals are recognized and treated separately when inferring the constraints. In case a literal is not explicitly associated with a type in the original KG, xsd:string is used by default. By default, when it finds an untyped literal shexer may try to infer its type in case it is a number. Support to some other untyped literals, such as geolocated points, will be included in future releases.
 * Shapes interlinkage: sheXer is able to detect links between nodes in target shapes. If that's the case, it will create constraints relating the shapes. If it detects triples whose object is a node which dos not belong to any other shape, then it will use the macro IRI instead.
 * Special treatment of rdf:type (or the specified instantiation property). The only exception to the previous feature happens when analyzing triples whose predicate is rdf:type. In those cases, if the object is an IRI, we create a triple constraint whose object is a value set containing a single element, which is the actual object of the original triple.
-* Cardinality management. Some of the triples of a given instance may fit in an infinite number of constraint triples with the same predicate and object but different cardinality. For example, if a given instance has a single label specified by rdfs:label, that makes it fit with infinite triple constraints with the schema {rdfs:label xsd:string C}, where C can be any cardinality that includes the posibility of a single occurrence: {1}, + , {1,2}, {1,3}, {1,4},... Currently, our prototype just keeps rules with exact cardinality or + closure. 
-* Configurable priority of cardinalities. Our prototype can be configured to prioritize the less specific cardinality or the most specific one if its trustworthiness is high enough.
-
+* Cardinality management. Some of the triples of a given instance may fit in an infinite number of constraint triples with the same predicate and object but different cardinality. For example, if a given instance has a single label specified by rdfs:label, that makes it fit with infinite triple constraints with the schema {rdfs:label xsd:string C}, where C can be any cardinality that includes the posibility of a single occurrence: {1}, + , {1,2}, {1,3}, {1,4},... Currently, sheXer admints exact cardinalities ({2}, {3}..), kleene closure (\*), positive closure (+), and optional cardinality (?).
+* Configurable priority of cardinalities. sheXer can be configured to prioritize the less specific cardinality or the most specific one if its trustworthiness is high enough.
+* All compliant mode : WORK IN PROGRESS...
+* Manage of empty shapes : WORK IN PROGRESS...
+* Adaptation to Wikidata model : WORK IN PROGRESS...
 
 ## Experimental results
 
