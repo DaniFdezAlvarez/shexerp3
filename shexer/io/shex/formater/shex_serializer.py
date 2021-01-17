@@ -20,7 +20,7 @@ class ShexSerializer(object):
 
         self._string_result = ""
 
-    def serialize_shex(self):
+    def serialize_shapes(self):
 
         self._reset_target_file()
         self._serialize_namespaces()
