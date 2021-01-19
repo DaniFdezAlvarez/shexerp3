@@ -46,7 +46,8 @@ class Shaper(object):
                  disable_or_statements=True,
                  allow_opt_cardinality=True,
                  disable_exact_cardinality=False,
-                 shapes_namespace=SHAPES_DEFAULT_NAMESPACE
+                 shapes_namespace=SHAPES_DEFAULT_NAMESPACE,
+                 limit_remote_instances=-1
                  ):
         """
 
@@ -115,6 +116,7 @@ class Shaper(object):
         self._disable_or_statements = disable_or_statements
         self._allow_opt_cardinality = allow_opt_cardinality
         self._disable_exact_cardinality = disable_exact_cardinality
+        self._limit_remote_instances = limit_remote_instances
 
         self._depth_for_building_subgraph = depth_for_building_subgraph
         self._track_classes_for_entities_at_last_depth_level = track_classes_for_entities_at_last_depth_level
@@ -145,7 +147,8 @@ class Shaper(object):
                                                         rdflib_graph=self._rdflib_graph,
                                                         raw_graph=self._raw_graph,
                                                         input_format=self._input_format,
-                                                        source_file_graph=self._graph_file_input)
+                                                        source_file_graph=self._graph_file_input,
+                                                        limit_remote_instances=self._limit_remote_instances)
 
 
 
@@ -262,7 +265,8 @@ class Shaper(object):
                                   file_target_classes=self._file_target_classes,
                                   built_remote_graph=self._built_remote_graph,
                                   built_shape_map=self._built_shape_map,
-                                  remove_empty_shapes=self._remove_empty_shapes)
+                                  remove_empty_shapes=self._remove_empty_shapes,
+                                  limit_remote_instances=self._limit_remote_instances)
 
 
     def _build_instance_tracker(self):
@@ -291,7 +295,8 @@ class Shaper(object):
                                     shape_qualifiers_mode=self._shape_qualifiers_mode,
                                     built_remote_graph=self._built_remote_graph,
                                     built_shape_map=self._built_shape_map,
-                                    shapes_namespace=self._shapes_namespace)
+                                    shapes_namespace=self._shapes_namespace,
+                                    limit_remote_instances=self._limit_remote_instances)
 
 
     @staticmethod
