@@ -47,7 +47,8 @@ class Shaper(object):
                  allow_opt_cardinality=True,
                  disable_exact_cardinality=False,
                  shapes_namespace=SHAPES_DEFAULT_NAMESPACE,
-                 limit_remote_instances=-1
+                 limit_remote_instances=-1,
+                 wikidata_annotation=False
                  ):
         """
 
@@ -117,6 +118,7 @@ class Shaper(object):
         self._allow_opt_cardinality = allow_opt_cardinality
         self._disable_exact_cardinality = disable_exact_cardinality
         self._limit_remote_instances = limit_remote_instances
+        self._wikidata_annotation = wikidata_annotation
 
         self._depth_for_building_subgraph = depth_for_building_subgraph
         self._track_classes_for_entities_at_last_depth_level = track_classes_for_entities_at_last_depth_level
@@ -128,8 +130,6 @@ class Shaper(object):
         self._shapes_namespace = shapes_namespace
 
         self._add_shapes_namespaces_to_namespaces_dict()
-
-        #TODO check correctness of these last seven params
 
 
         #The following two atts are used for optimizations
@@ -240,7 +240,8 @@ class Shaper(object):
                                     namespaces_dict=self._namespaces_dict,
                                     output_format=output_format,
                                     instantiation_property=self._instantiation_property,
-                                    disable_comments=self._disable_comments)
+                                    disable_comments=self._disable_comments,
+                                    wikidata_annotation=self._wikidata_annotation)
 
     def _build_class_profiler(self):
         return get_class_profiler(target_classes_dict=self._target_classes_dict,
