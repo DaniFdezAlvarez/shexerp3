@@ -21,7 +21,7 @@ PREFIX ex: <http://example.org/>
 }
 
 
-:215627
+:Q215627
 {
-   wdt:P31  [wd:215627]
+   wdt:P31  [wd:Q215627]
 }
