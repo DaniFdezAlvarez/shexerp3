@@ -9,7 +9,7 @@ setup(
   author = 'Daniel Fernandez-Alvarez',
   author_email = 'danifdezalvarez@gmail.com',
   url = 'https://github.com/DaniFdezAlvarez/shexerp3',
-  download_url = 'https://github.com/DaniFdezAlvarez/shexer/tarball/1.1.0',
+  download_url = 'https://github.com/DaniFdezAlvarez/shexerp3/archive/1.1.0.tar.gz',
   keywords = ['testing', 'shexer', 'shexerp3', "rdf", "shex", "shacl", "schema"],
   classifiers = [],
   install_requires=[            
@@ -17,6 +17,7 @@ setup(
           'Flask-Cors',
 		  'rdflib',
 		  'SPARQLWrapper',
-		  'rdflib-jsonld'
+		  'rdflib-jsonld',
+      'wlighter'
       ],
 )

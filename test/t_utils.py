@@ -207,3 +207,10 @@ def graph_comparison_file_vs_str(file_path, str_target, format="turtle"):
 
     return graph_comparison_rdflib(g1, g2)
 
+def text_contains_lines(text, list_lines):
+    for a_line in list_lines:
+        if a_line not in text:
+            print(a_line)
+            return False
+        return True
+

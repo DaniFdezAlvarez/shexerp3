@@ -4,6 +4,8 @@ from rdflib import Graph, Namespace, URIRef, RDF, BNode, XSD, Literal
 from shexer.model.statement import POSITIVE_CLOSURE, KLEENE_CLOSURE, OPT_CARDINALITY
 from shexer.utils.uri import XSD_NAMESPACE, LANG_STRING_TYPE
 from shexer.model.const_elem_types import IRI_ELEM_TYPE, LITERAL_ELEM_TYPE, DOT_ELEM_TYPE, BNODE_ELEM_TYPE
+from shexer.io.wikidata import wikidata_annotation
+from wlighter import TURTLE_FORMAT
 
 _EXPECTED_SHAPE_BEGINING = STARTING_CHAR_FOR_SHAPE_NAME + "<"
 _EXPECTED_SHAPE_ENDING = ">"
@@ -47,12 +49,13 @@ _MACRO_MAPPING = {IRI_ELEM_TYPE: _R_SHACL_NODEKIND_IRI,
 class ShaclSerializer(object):
 
     def __init__(self, target_file, shapes_list, namespaces_dict=None, string_return=False,
-                 instantiation_property_str=RDF_TYPE_STR):
+                 instantiation_property_str=RDF_TYPE_STR, wikidata_annotation=False):
         self._target_file = target_file
         self._namespaces_dict = namespaces_dict if namespaces_dict is not None else {}
         self._shapes_list = shapes_list
         self._string_return = string_return
         self._instantiation_property_str = instantiation_property_str
+        self._wikidata_annotation = wikidata_annotation
 
         self._g_shapes = Graph()
 
@@ -303,8 +306,22 @@ class ShaclSerializer(object):
     #################### OUTPUT
 
     def _produce_output(self):
-        destination = None if self._string_return else self._target_file
-        result = self._g_shapes.serialize(destination=destination, format="turtle")
+        if self._wikidata_annotation:
+            return self._produce_wikidata_annotation_output()
+        # destination = None if self._string_return else self._target_file
+        if self._string_return:
+            return self._g_shapes.serialize(format="turtle").decode("utf-8")
+        else:
+            self._g_shapes.serialize(destination=self._target_file, format="turtle")
+
+
+    def _produce_wikidata_annotation_output(self):
+        result = self._g_shapes.serialize(format="turtle").decode("utf-8")
+        result = wikidata_annotation(raw_input=result,
+                                     string_return=self._string_return,
+                                     out_file=self._target_file,
+                                     format=TURTLE_FORMAT,
+                                     rdfs_comments=False)
         if self._string_return:
             return result
 
