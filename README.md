@@ -184,6 +184,7 @@ Again, all these params have a default value and you don't need to worry about t
 * remove_empty_shapes (default True). When set to True, the result does not contain any empty shape nor any mention to it. If a shape A has a constraint pointing to a shape B and B is empty, then the constraint is modified and the macro IRI is used instead of B.
 * disable_comments (dafault False). When set to True, the results do not contain comments.
 * shapes_namespace (default: http://weso.es/shapes/). This property allows you to change the namespace in which the shape labels are created in case you do not want to use the default one. The prefix of this namespace will be the empty prefix unless the empty prefix is already being used by other namespace. In that case, sheXer looks for other preferred prefixes, or will generate a random one if any of the default ones is available. 
+* wikidata_annotation (default: False). This param can be used when the output will contain Wikidata IDs. Using the library [wLighter](https://github.com/DaniFdezAlvarez/wLighter), the ourput is annotated with comments that associate a given every Wikidata ID with its English label. 
 
 
 ### Method __shex\_graph__
